@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Loader2, MessageSquare, Building2, User, Landmark, AlertTriangle, TrendingDown, ShieldAlert, ExternalLink, X, Pin } from "lucide-react";
+import { Search, Loader2, Building2, User, Landmark, AlertTriangle, TrendingDown, ShieldAlert, ExternalLink, X, Pin } from "lucide-react";
 import dynamic from "next/dynamic";
 import TrendingSearches from "@/components/TrendingSearches";
-import BoardPage from "@/components/BoardPage";
 import PinboardPanel from "@/components/PinboardPanel";
 import VoteWidget from "@/components/VoteWidget";
 import { usePinboardStore } from "@/lib/pinboard-store";
@@ -23,7 +22,6 @@ export default function HomePage() {
   const [query, setQuery] = useState("");
   const [graphData, setGraphData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"graph" | "board">("graph");
   const [selectedNode, setSelectedNode] = useState<NodeDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
@@ -38,7 +36,6 @@ export default function HomePage() {
     const graphRes = await fetch(`/api/graph?q=${encodeURIComponent(q)}`).then((r) => r.json());
     setGraphData(graphRes);
     setLoading(false);
-    setActiveTab("graph");
   }, []);
 
   useEffect(() => {
@@ -116,57 +113,31 @@ export default function HomePage() {
 
         {/* 오른쪽 메인 */}
         <div className="lg:col-span-3 space-y-4">
-          {/* 탭 */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActiveTab("graph")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === "graph" ? "bg-[var(--accent)] text-white" : "bg-[var(--surface)] text-[var(--text-muted)] hover:text-[var(--text)]"
-              }`}
-            >
-              관계망 분석
-            </button>
-            <button
-              onClick={() => setActiveTab("board")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                activeTab === "board" ? "bg-[var(--accent)] text-white" : "bg-[var(--surface)] text-[var(--text-muted)] hover:text-[var(--text)]"
-              }`}
-            >
-              <MessageSquare className="w-4 h-4" /> 제보·분석요청
-            </button>
+          {/* 그래프 */}
+          <div className="relative rounded-xl border border-[var(--border)] overflow-hidden">
+            {graphData && graphData.nodes.length > 0 ? (
+              <EntityGraph data={graphData} onNodeSelect={handleNodeSelect} />
+            ) : (
+              <div className="w-full h-[450px] flex items-center justify-center bg-[var(--surface)] text-[var(--text-muted)]">
+                {query ? "검색 결과가 없습니다" : "회사명을 입력하여 관계망을 탐색하세요"}
+              </div>
+            )}
+            <div className="absolute bottom-4 left-4 flex gap-3 text-xs bg-[var(--surface)]/90 rounded-lg px-3 py-2 border border-[var(--border)]">
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--corp-color)]" /><span>회사</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--person-color)]" /><span>인물</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--fund-color)]" /><span>법인/조합</span></div>
+            </div>
           </div>
 
-          {activeTab === "graph" && (
-            <>
-              {/* 그래프 */}
-              <div className="relative rounded-xl border border-[var(--border)] overflow-hidden">
-                {graphData && graphData.nodes.length > 0 ? (
-                  <EntityGraph data={graphData} onNodeSelect={handleNodeSelect} />
-                ) : (
-                  <div className="w-full h-[450px] flex items-center justify-center bg-[var(--surface)] text-[var(--text-muted)]">
-                    {query ? "검색 결과가 없습니다" : "회사명을 입력하여 관계망을 탐색하세요"}
-                  </div>
-                )}
-                <div className="absolute bottom-4 left-4 flex gap-3 text-xs bg-[var(--surface)]/90 rounded-lg px-3 py-2 border border-[var(--border)]">
-                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--corp-color)]" /><span>회사</span></div>
-                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--person-color)]" /><span>인물</span></div>
-                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--fund-color)]" /><span>법인/조합</span></div>
-                </div>
-              </div>
-
-              {/* 선택한 노드 상세 정보 */}
-              {detailLoading && (
-                <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                  <Loader2 className="w-4 h-4 animate-spin" /> 불러오는 중...
-                </div>
-              )}
-              {selectedNode && !detailLoading && (
-                <NodeDetailPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
-              )}
-            </>
+          {/* 선택한 노드 상세 정보 */}
+          {detailLoading && (
+            <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex items-center gap-2 text-sm text-[var(--text-muted)]">
+              <Loader2 className="w-4 h-4 animate-spin" /> 불러오는 중...
+            </div>
           )}
-
-          {activeTab === "board" && <BoardPage />}
+          {selectedNode && !detailLoading && (
+            <NodeDetailPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
+          )}
         </div>
       </div>
 
