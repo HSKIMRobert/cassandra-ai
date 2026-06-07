@@ -138,3 +138,33 @@ model Signal {
   @@index([corpId, firedAt])
   @@index([firedAt])
 }
+
+// ─── 검색 로그 (실시간 검색어) ───
+model SearchLog {
+  id        String   @id @default(uuid())
+  query     String
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([query])
+}
+
+// ─── 게시판 (제보·분석요청) ───
+model BoardPost {
+  id          String   @id @default(uuid())
+  authorName  String   @default("익명")
+  password    String   // 게시글 수정/삭제용 비밀번호 (해시)
+  title       String
+  content     String
+  category    String   @default("REPORT") // REPORT | ANALYSIS_REQUEST | DISCUSSION
+  targetCorp   String? // 제보 대상 회사명
+  targetPerson String? // 제보 대상 인물명
+  status      String   @default("PENDING") // PENDING | REVIEWED | RESOLVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([createdAt])
+  @@index([status])
+}
