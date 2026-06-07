@@ -15,8 +15,11 @@ export default function PinboardPanel() {
 
   const handleGenerate = () => {
     if (items.length === 0) return;
-    // URL-safe: 각 항목을 type:label:uid 형식으로 인코딩
-    const encoded = items.map((i) => `${i.type}:${encodeURIComponent(i.label)}:${encodeURIComponent(i.uid || "")}`).join(",");
+    const encoded = items
+      .filter((i) => i.type && i.label)
+      .map((i) => `${i.type}:${encodeURIComponent(i.label)}:${encodeURIComponent(i.uid || i.label)}`)
+      .join(",");
+    if (!encoded) return;
     router.push(`/report?items=${encodeURIComponent(encoded)}`);
   };
 

@@ -24,8 +24,8 @@ export default function ReportPage() {
 
     const items = itemsParam.split(",").map((seg) => {
       const [type, label, uid] = seg.split(":").map(decodeURIComponent);
-      return { id: `${type}-${label}`, type, label, uid: uid || label };
-    });
+      return { id: `${type}-${label}`, type, label: label || "", uid: uid || label || "" };
+    }).filter((i) => i.type && i.label && i.type !== "undefined");
 
     fetch("/api/report", {
       method: "POST",

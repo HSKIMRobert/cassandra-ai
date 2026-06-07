@@ -158,7 +158,8 @@ function NodeDetailPanel({ node, onClose }: { node: NodeDetail; onClose: () => v
     if (isPinned) {
       removeItem(nodeId);
     } else {
-      addItem({ id: nodeId, type: node.type as "corp" | "person" | "fund", label: node.label, uid: (node as any).uid || node.label });
+      const uid = (node as any).personUid || (node as any).fundUid || (node as any).corpCode || node.label;
+      addItem({ id: nodeId, type: node.type as "corp" | "person" | "fund", label: node.label, uid });
     }
   };
 
