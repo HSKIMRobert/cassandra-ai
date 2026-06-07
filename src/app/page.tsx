@@ -62,18 +62,26 @@ export default function HomePage() {
   return (
     <div className="space-y-6">
       {/* 검색 바 */}
-      <div className="relative max-w-2xl mx-auto">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="회사명, 인물명, 법인명으로 검색..."
-          className="w-full h-14 pl-12 pr-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-muted)] text-lg focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all"
-        />
-        {loading && (
-          <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-[var(--accent-glow)]" />
-        )}
+      <div className="max-w-2xl mx-auto flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && doSearch(query)}
+            placeholder="회사명, 인물명, 법인명으로 검색..."
+            className="w-full h-14 pl-12 pr-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-muted)] text-lg focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all"
+          />
+        </div>
+        <button
+          onClick={() => doSearch(query)}
+          disabled={loading}
+          className="h-14 px-6 rounded-xl bg-[var(--accent)] text-white font-medium text-sm hover:opacity-90 disabled:opacity-50 transition-opacity shrink-0 flex items-center gap-2"
+        >
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+          검색
+        </button>
       </div>
 
       {/* 실시간 검색어 + 메인 콘텐츠 */}
@@ -132,14 +140,47 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* disclaimer */}
-      <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
-        <p className="text-xs text-[var(--text-muted)]">
+      {/* 법적 고지 */}
+      <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
+        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
           <strong className="text-[var(--warning)]">※ CASSANDRA AI</strong> —
-          본 정보는 DART 공시 사실의 색인이며 평가나 투자 권유가 아닙니다.
-          모든 데이터 포인트는 원본 공시(rcept_no)로 역추적 가능합니다.
-          제보된 정보는 이상 징후 패턴 학습에 활용됩니다.
+          본 서비스는 금융감독원 전자공시시스템(DART)에 공시된 사실 정보를 색인·분석하여 제공하는
+          <strong> 공익 목적의 이상 징후 탐지 도구</strong>입니다.
+          특정 개인·법인에 대한 평가나 투자 권유가 아니며, 모든 데이터는 원본 공시(접수번호)로 역추적 가능합니다.
         </p>
+        <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
+          본 서비스에서 제공되는 정보는 공시 제출인의 책임 하에 작성된 것으로 금융감독원이 그 정확성 및 완전성을 보장하지 않습니다.
+          이용자는 본 정보를 투자 판단의 근거로 사용해서는 안 되며, 이를 위반하여 발생한 손실에 대해 서비스 제공자는
+          민·형사상 어떠한 책임도 부담하지 않습니다. 제보된 정보는 이상 징후 패턴 학습 목적으로만 활용됩니다.
+        </p>
+        <div className="flex items-center gap-3 pt-1 border-t border-[var(--border)]">
+          <a
+            href="https://github.com/gameworkerkim/vibe-investing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-[var(--accent-glow)] hover:underline"
+          >
+            github.com/gameworkerkim/vibe-investing
+          </a>
+          <span className="text-[var(--border)]">|</span>
+          <a
+            href="https://dart.fss.or.kr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text)]"
+          >
+            DART 전자공시
+          </a>
+          <span className="text-[var(--border)]">|</span>
+          <a
+            href="https://opendart.fss.or.kr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text)]"
+          >
+            OpenDART API
+          </a>
+        </div>
       </div>
     </div>
   );

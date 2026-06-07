@@ -234,6 +234,21 @@ export default function CorpDetailPage() {
           </div>
         </section>
       )}
+
+      {/* 법적 고지 */}
+      <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
+        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+          <strong className="text-[var(--warning)]">※ CASSANDRA AI</strong> —
+          본 정보는 금융감독원 DART 전자공시에 제출된 사실 정보를 색인·분석한 것입니다.
+          특정 개인·법인에 대한 평가가 아니며, 투자 권유가 아닙니다.
+          모든 데이터 포인트는 원본 공시 접수번호(rcept_no)로 역추적 가능합니다.
+        </p>
+        <div className="flex items-center gap-3 pt-1 border-t border-[var(--border)]">
+          <a href="https://github.com/gameworkerkim/vibe-investing" target="_blank" rel="noopener noreferrer" className="text-[10px] text-[var(--accent-glow)] hover:underline">github.com/gameworkerkim/vibe-investing</a>
+          <span className="text-[var(--border)]">|</span>
+          <a href="https://dart.fss.or.kr" target="_blank" rel="noopener noreferrer" className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text)]">DART 전자공시</a>
+        </div>
+      </div>
     </div>
   );
 }
