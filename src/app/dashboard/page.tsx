@@ -25,11 +25,10 @@ interface Snapshot {
 }
 
 const CATEGORY_LABEL: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  TOP_VOLUME: { label: "거래량 상위", icon: <BarChart3 className="w-3.5 h-3.5" />, color: "text-[var(--accent-glow)]" },
-  TOP_TURNOVER: { label: "거래대금 상위", icon: <Activity className="w-3.5 h-3.5" />, color: "text-[var(--warning)]" },
-  TOP_GAINERS: { label: "급등 상위", icon: <TrendingUp className="w-3.5 h-3.5" />, color: "text-[#ff4444]" },
+  TOP_MARKET_CAP: { label: "시가총액 상위", icon: <BarChart3 className="w-3.5 h-3.5" />, color: "text-[var(--accent-glow)]" },
+  TOP_VOLUME: { label: "거래량 상위", icon: <Activity className="w-3.5 h-3.5" />, color: "text-[var(--warning)]" },
+  TOP_GAINERS: { label: "등락률 상위", icon: <TrendingUp className="w-3.5 h-3.5" />, color: "text-[#ff4444]" },
   TOP_SEARCH: { label: "검색 상위", icon: <Search className="w-3.5 h-3.5" />, color: "text-[var(--person-color)]" },
-  VOLUME_PLUNGE: { label: "거래량 급감", icon: <ArrowDown className="w-3.5 h-3.5" />, color: "text-[var(--accent-glow)]" },
 };
 
 export default function DashboardPage() {

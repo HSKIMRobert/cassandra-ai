@@ -1,14 +1,14 @@
-import puppeteer from "puppeteer";
-import * as cheerio from "cheerio";
+import { prisma } from "./prisma";
 
 export interface StockItem {
   rank: number;
   name: string;
-  code?: string;
+  code: string;
   price: string;
   change: string;
-  changePercent?: number;
+  changePercent: number;
   volume?: string;
+  marketCap?: string;
 }
 
 export interface MarketData {
@@ -30,11 +30,11 @@ function computeStats(stocks: StockItem[]) {
   let withChange = 0;
 
   for (const s of stocks) {
-    if (s.changePercent !== undefined) {
+    if (s.changePercent !== undefined && !isNaN(s.changePercent)) {
       sumChange += s.changePercent;
       withChange++;
-      if (s.changePercent > 0.5) gainers++;
-      else if (s.changePercent < -0.5) losers++;
+      if (s.changePercent > 1) gainers++;
+      else if (s.changePercent < -1) losers++;
       else neutral++;
     } else {
       neutral++;
@@ -49,158 +49,88 @@ function computeStats(stocks: StockItem[]) {
   };
 }
 
-async function launchBrowser() {
-  return puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+const UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15";
+
+async function fetchStocks(
+  sortType: string,
+  pageSize: number
+): Promise<StockItem[]> {
+  const url = `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ?page=1&pageSize=${pageSize}&sortType=${sortType}`;
+  const res = await fetch(url, {
+    headers: { "User-Agent": UA, "Accept": "application/json" },
   });
+  const data = await res.json();
+  const stocks: StockItem[] = [];
+
+  for (let i = 0; i < (data.stocks || []).length; i++) {
+    const s = data.stocks[i];
+    const changeSign = s.compareToPreviousPrice?.code === "5" ? "-" :
+                       s.compareToPreviousPrice?.code === "2" ? "+" : "";
+    const changePercent = s.fluctuationsRatio ? parseFloat(s.fluctuationsRatio) : 0;
+    const changeAbs = s.compareToPreviousClosePrice || "";
+
+    stocks.push({
+      rank: i + 1,
+      name: s.stockName || "",
+      code: s.itemCode || "",
+      price: s.closePrice || "",
+      change: changeSign
+        ? `${changeSign}${changeAbs} (${changeSign}${Math.abs(changePercent)}%)`
+        : `${changeAbs} (${changePercent}%)`,
+      changePercent,
+      volume: s.accumulatedTradingVolume
+        ? Number(s.accumulatedTradingVolume).toLocaleString()
+        : undefined,
+      marketCap: s.marketValue
+        ? (Number(s.marketValue) / 1e8).toFixed(0) + "억"
+        : undefined,
+    });
+  }
+
+  return stocks;
 }
 
 export async function scrapeNaverFinance(): Promise<MarketData[]> {
-  const browser = await launchBrowser();
-  const page = await browser.newPage();
-  await page.setUserAgent(
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
-  );
-
   const results: MarketData[] = [];
 
   try {
-    await page.goto("https://m.stock.naver.com/", {
-      waitUntil: "networkidle2",
-      timeout: 30000,
+    // 1. 시가총액 상위
+    const marketCapStocks = await fetchStocks("MARKET_VALUE", 20);
+    results.push({
+      category: "TOP_MARKET_CAP",
+      stocks: marketCapStocks,
+      stats: computeStats(marketCapStocks),
     });
 
-    const html = await page.content();
-    const $ = cheerio.load(html);
-
-    // 모바일 버전에서 종목 데이터 추출
-    const extractItems = (selector: string, type: "name" | "price"): StockItem[] => {
-      const items: StockItem[] = [];
-      const elements = $(selector);
-      elements.each((i, el) => {
-        if (i >= 10) return false;
-
-        const text = $(el).text().trim();
-        const priceMatch = text.match(/([\d,]+)\s*([▲▼]?\s*[\d,.]+\s*\(?[+-]?\d+\.?\d*%?\)?)/);
-
-        if (type === "name") {
-          items.push({
-            rank: i + 1,
-            name: text.replace(/[\d,]+[▲▼].*/, "").trim() || text,
-            price: "",
-            change: "",
-          });
-        }
-      });
-      return items;
-    };
-
-    // 거래량 상위, 거래대금 상위 등은 JavaScript로 동적 로딩됨
-    // → Puppeteer로 DOM 접근
-
-    // 1. 코스닥 종목 추출 (종목명과 코드)
-    const kosdaqStocks = await page.evaluate(() => {
-      const items: any[] = [];
-      const links = document.querySelectorAll('a[href*="/item/"]');
-      const seen = new Set();
-      links.forEach((a, i) => {
-        if (i >= 50) return;
-        const href = a.getAttribute("href") || "";
-        const match = href.match(/\/item\/(\d+)/);
-        const name = a.textContent.trim();
-        if (match && name && !seen.has(name)) {
-          seen.add(name);
-          items.push({ code: match[1], name, rank: items.length + 1 });
-        }
-      });
-      return items;
+    // 2. 거래량 상위
+    const volumeStocks = await fetchStocks("ACCUMULATED_TRADING_VOLUME", 20);
+    results.push({
+      category: "TOP_VOLUME",
+      stocks: volumeStocks,
+      stats: computeStats(volumeStocks),
     });
 
-    // 2. 가격 정보 추출 (테이블에서)
-    const priceData = await page.evaluate(() => {
-      const rows: any[] = [];
-      const trs = document.querySelectorAll("tr");
-      trs.forEach((tr) => {
-        const tds = tr.querySelectorAll("td");
-        if (tds.length >= 3) {
-          const texts = Array.from(tds).map((td) => td.textContent.trim());
-          rows.push({ name: texts[0], price: texts[1], change: texts[2] });
-        }
-      });
-      return rows;
+    // 3. 등락률 상위 (급등)
+    const gainerStocks = await fetchStocks("FLUCTUATION_RATE", 20);
+    results.push({
+      category: "TOP_GAINERS",
+      stocks: gainerStocks,
+      stats: computeStats(gainerStocks),
     });
 
-    // 종목명 + 코드 매칭
-    const merged: StockItem[] = [];
-    for (const kos of kosdaqStocks.slice(0, 30)) {
-      const priceMatch = priceData.find(
-        (p) => p.name === kos.name || p.name.includes(kos.name) || kos.name.includes(p.name)
-      );
-      merged.push({
-        rank: merged.length + 1,
-        name: kos.name,
-        code: kos.code,
-        price: priceMatch?.price || "-",
-        change: priceMatch?.change || "-",
-        changePercent: parseChangePercent(priceMatch?.change || ""),
-      });
-    }
-
-    if (merged.length > 0) {
-      results.push({
-        category: "TOP_VOLUME",
-        stocks: merged.slice(0, 20),
-        stats: computeStats(merged.slice(0, 20)),
-      });
-    }
-
-    // 3. 코스닥 시세 페이지 추가 데이터
-    await page.goto("https://m.stock.naver.com/marketindex/kosdaq/volume", {
-      waitUntil: "networkidle2",
-      timeout: 20000,
-    }).catch(() => {});
-
-    const volumeHtml = await page.content();
-    const $$ = cheerio.load(volumeHtml);
-
-    const volumeStocks: StockItem[] = [];
-    $$("li").each((i, el) => {
-      if (i >= 20) return false;
-      const text = $$(el).text().trim();
-      if (text && text.length > 3) {
-        volumeStocks.push({
-          rank: i + 1,
-          name: text,
-          price: "",
-          change: "",
-        });
-      }
-    });
-
-    if (volumeStocks.length > 0) {
-      results.push({
-        category: "TOP_SEARCH",
-        stocks: volumeStocks.slice(0, 20),
-        stats: computeStats(volumeStocks.slice(0, 20)),
+    // 스냅샷 저장
+    for (const d of results) {
+      await prisma.marketSnapshot.create({
+        data: {
+          category: d.category,
+          data: d.stocks as any,
+          stats: d.stats as any,
+        },
       });
     }
   } catch (err) {
-    console.error("Naver scrape error:", err);
-  } finally {
-    await browser.close();
+    console.error("Naver Finance API error:", err);
   }
 
-  // 크롤링 실패 시 빈 배열 반환 (더미 데이터 대신)
   return results;
-}
-
-function parseChangePercent(change: string): number | undefined {
-  const m = change.match(/([+-]?\d+\.?\d*)%/);
-  if (m) {
-    const pct = parseFloat(m[1]);
-    if (change.includes("▼") || change.includes("-")) return -pct;
-    return pct;
-  }
-  return undefined;
 }
