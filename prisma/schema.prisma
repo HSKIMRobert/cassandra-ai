@@ -229,3 +229,15 @@ model CorpEvent {
   @@index([corpId, occurredAt])
   @@index([eventType])
 }
+
+// ─── 경제지표 스냅샷 (Naver Finance 크롤링) ───
+model MarketSnapshot {
+  id        String   @id @default(uuid())
+  category  String   // "TOP_VOLUME" | "TOP_TURNOVER" | "TOP_GAINERS" | "TOP_SEARCH" | "VOLUME_PLUNGE"
+  data      Json     // { stocks: [{ rank, name, code, price, change, volume }] }
+  stats     Json?    // { avgChange, gainerCount, loserCount, totalVolume }
+  createdAt DateTime @default(now())
+
+  @@index([category, createdAt])
+  @@index([createdAt])
+}
