@@ -85,14 +85,22 @@ export default function DashboardPage() {
 
       {error && (
         <div className="p-4 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20 text-[var(--warning)] text-sm">
-          {error} — Puppeteer/Chromium 환경이 필요합니다. 개발용 더미 데이터를 표시합니다.
+          {error}
+        </div>
+      )}
+
+      {snapshots.length === 0 && !error && (
+        <div className="p-4 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20 text-[var(--warning)] text-sm">
+          Naver Finance 크롤링에 실패했습니다. stock.naver.com은 동적 렌더링 + 안티봇으로 인해
+          Puppeteer로도 완전한 데이터 수집이 어렵습니다. 추후 KRX Open API 또는
+          대체 데이터 소스로 연동할 예정입니다.
         </div>
       )}
 
       {snapshots.length === 0 ? (
         <div className="text-center py-12 text-[var(--text-muted)]">
           <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-30" />
-          데이터가 없습니다
+          실시간 데이터 수집 준비 중...
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">

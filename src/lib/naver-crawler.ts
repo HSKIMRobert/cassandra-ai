@@ -191,15 +191,7 @@ export async function scrapeNaverFinance(): Promise<MarketData[]> {
     await browser.close();
   }
 
-  // 크롤링 실패 시 더미 데이터 반환 (개발용)
-  if (results.length === 0) {
-    results.push({
-      category: "TOP_VOLUME",
-      stocks: getDummyStocks(),
-      stats: computeStats(getDummyStocks()),
-    });
-  }
-
+  // 크롤링 실패 시 빈 배열 반환 (더미 데이터 대신)
   return results;
 }
 
@@ -211,19 +203,4 @@ function parseChangePercent(change: string): number | undefined {
     return pct;
   }
   return undefined;
-}
-
-function getDummyStocks(): StockItem[] {
-  return [
-    { rank: 1, name: "CBI", code: "013290", price: "1,250", change: "▲120 (+10.6%)", changePercent: 10.6, volume: "12,345,678" },
-    { rank: 2, name: "이엠앤아이", code: "EMNI00", price: "3,420", change: "▲250 (+7.9%)", changePercent: 7.9, volume: "8,765,432" },
-    { rank: 3, name: "CG인바이츠", code: "CGINV0", price: "890", change: "▼45 (-4.8%)", changePercent: -4.8, volume: "5,432,109" },
-    { rank: 4, name: "헬스커넥트", code: "HLCON0", price: "2,100", change: "▲310 (+17.3%)", changePercent: 17.3, volume: "15,678,901" },
-    { rank: 5, name: "제이케이시냅스", code: "JKSYN0", price: "1,780", change: "▼120 (-6.3%)", changePercent: -6.3, volume: "3,210,987" },
-    { rank: 6, name: "티쓰리", code: "T3COR0", price: "5,670", change: "▲30 (+0.5%)", changePercent: 0.5, volume: "2,345,678" },
-    { rank: 7, name: "스틱인베스트먼트", code: "STKIN0", price: "6,890", change: "▼230 (-3.2%)", changePercent: -3.2, volume: "1,987,654" },
-    { rank: 8, name: "인트로메딕", code: "150840", price: "4,320", change: "▲560 (+14.9%)", changePercent: 14.9, volume: "9,876,543" },
-    { rank: 9, name: "엔켐", code: "999990", price: "22,450", change: "▲1,200 (+5.6%)", changePercent: 5.6, volume: "4,321,098" },
-    { rank: 10, name: "씨아이테크", code: "999880", price: "3,150", change: "▼380 (-10.8%)", changePercent: -10.8, volume: "7,654,321" },
-  ];
 }
