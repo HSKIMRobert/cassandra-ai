@@ -234,7 +234,7 @@ export default function HomePage() {
 
 function NodeDetailPanel({ node, onClose }: { node: NodeDetail; onClose: () => void }) {
   const isPerson = node.type === "person";
-  const isBlacklisted = node.flags?.includes("blacklist");
+  const isBlacklisted = node.flags?.includes("stock_celebrity");
   const { addItem, removeItem, hasItem } = usePinboardStore();
   const nodeId = `${node.type}-${node.label}`;
   const isPinned = hasItem(nodeId);
@@ -298,7 +298,7 @@ function NodeDetailPanel({ node, onClose }: { node: NodeDetail; onClose: () => v
         <div className="flex flex-wrap gap-2 mb-4">
           {node.flags?.map((f: string) => (
             <span key={f} className={`px-2 py-0.5 rounded text-[10px] font-medium ${
-              f === "blacklist" ? "bg-[var(--danger)]/20 text-[var(--danger-glow)]" :
+              f === "stock_celebrity" ? "bg-[var(--danger)]/20 text-[var(--danger-glow)]" :
               f === "manipulation_suspect" || f === "delisting_related" ? "bg-[var(--warning)]/20 text-[var(--warning)]" :
               "bg-[var(--border)] text-[var(--text-muted)]"
             }`}>{f}</span>

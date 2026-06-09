@@ -5,7 +5,7 @@
     {
       "name": "신승수",
       "birthDate": "1973.02.06",
-      "flags": ["blacklist", "manipulation_suspect"],
+      "flags": ["stock_celebrity", "manipulation_suspect"],
       "context": "이엠앤아이 사내이사, 전 CBI 사내이사, 제이케이시냅스 사내이사·CB 매수, CG인바이츠 공동대표, 티쓰리·헬스커넥트 기타비상무이사. 다수 코스닥 기업 등기임원 겸직 및 CB 투자 이력. 경영권 분쟁 소송 원고.",
       "companies": ["CBI", "인트로메딕", "이엠앤아이", "제이케이시냅스", "티쓰리", "CG인바이츠", "헬스커넥트", "스틱인베스트먼트", "코이엠앤아이"],
       "patterns": ["CB 매수 후 되팔기", "다수 기업 등기임원 겸직", "경영권 분쟁 소송"]
@@ -13,7 +13,7 @@
     {
       "name": "오종원",
       "birthDate": "1972.03.29",
-      "flags": ["blacklist", "manipulation_suspect"],
+      "flags": ["stock_celebrity", "manipulation_suspect"],
       "context": "전 사이월드제트 CFO, 현 인트로메딕 상무이사, CBI CB 발행 관여",
       "companies": ["CBI", "인트로메딕"],
       "patterns": ["CB 발행 주도", "SPC 통한 자금 조달"]
@@ -21,7 +21,7 @@
     {
       "name": "김준범",
       "birthDate": "",
-      "flags": ["blacklist", "fugitive", "manipulation_suspect"],
+      "flags": ["stock_celebrity", "fugitive", "manipulation_suspect"],
       "context": "씨그널엔터 사건으로 재판 도주중, 싸이월드제트 관련자, 다수 코스닥 CB·무자본 M&A 관여",
       "companies": ["씨그널엔터", "싸이월드제트"],
       "patterns": ["재판 도주", "CB 발행", "무자본 M&A"],
@@ -29,43 +29,43 @@
     },
     {
       "name": "이준민",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["카나리아바이오"],
       "patterns": ["대주주변경 14회", "CB 발행·유상증자 관여"]
     },
     {
       "name": "박정규",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["다보링크", "테라사이언스"],
       "patterns": ["증자 34회 (다보링크20+테라14)", "대주주변경 15회", "CB 4회"]
     },
     {
       "name": "안상현",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["유테크", "셀피글로벌", "멜파스", "디딤이앤에프"],
       "patterns": ["4개사 분산 운영", "소송 4건", "CB 3건"]
     },
     {
       "name": "이일준",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["웰바이오텍", "삼부토건", "디와이디(DYD)"],
       "patterns": ["DYD CB 9회·증자 11회·대주주 4회"]
     },
     {
       "name": "이기훈",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["웰바이오텍", "삼부토건"],
       "patterns": []
     },
     {
       "name": "구세현",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["웰바이오텍", "디와이디(DYD)"],
       "patterns": ["DYD CB 9회·증자 11회"]
     },
     {
       "name": "배상윤",
-      "flags": ["blacklist"],
+      "flags": ["stock_celebrity"],
       "companies": ["필룩스", "아이에이치큐", "장원테크", "CSA코스믹", "DSC인베스트먼트(빛과전자)"],
       "patterns": ["증자 30회 (필룩스20+아이에이치큐10)"]
     }

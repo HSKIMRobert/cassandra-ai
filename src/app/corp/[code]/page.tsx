@@ -124,7 +124,7 @@ export default function CorpDetailPage() {
               >
                 <div>
                   <span className="text-sm font-medium">{rel.person.name}</span>
-                  {rel.person.flags?.includes("blacklist") && (
+                  {rel.person.flags?.includes("stock_celebrity") && (
                     <AlertTriangle className="inline w-3 h-3 text-[var(--danger-glow)] ml-1" />
                   )}
                 </div>
@@ -152,7 +152,7 @@ export default function CorpDetailPage() {
               >
                 <div>
                   <span className="text-sm font-medium">{rel.fund.name}</span>
-                  {rel.fund.flags?.includes("blacklist") && (
+                  {rel.fund.flags?.includes("stock_celebrity") && (
                     <AlertTriangle className="inline w-3 h-3 text-[var(--danger-glow)] ml-1" />
                   )}
                 </div>

@@ -6,7 +6,7 @@
       { "title": "김준범, 씨그널엔터 사건 재판 도주", "url": "https://n.news.naver.com/mnews/article/092/0002411192?sid=105" }
     ],
     "aliases": ["김준범"],
-    "flags": ["blacklist", "fugitive", "manipulation_suspect"]
+    "flags": ["stock_celebrity", "fugitive", "manipulation_suspect"]
   },
   {
     "name": "신승수",
@@ -15,13 +15,13 @@
       { "title": "이엠앤아이 경영권 분쟁 - 신승수 측 주주총회소집허가 신청", "url": "https://dart.fss.or.kr" }
     ],
     "aliases": ["신승수"],
-    "flags": ["blacklist", "manipulation_suspect"]
+    "flags": ["stock_celebrity", "manipulation_suspect"]
   },
   {
     "name": "오종원",
     "context": "1972년생. 전 사이월드제트 CFO, 현 인트로메딕 상무이사. CBI CB 발행 관여. 다수 코스닥 기업에서 CB 인수 및 자금 조달 패턴에 관여.",
     "news": [],
     "aliases": ["오종원"],
-    "flags": ["blacklist", "manipulation_suspect"]
+    "flags": ["stock_celebrity", "manipulation_suspect"]
   }
 ]

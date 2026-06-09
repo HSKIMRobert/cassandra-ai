@@ -49,7 +49,7 @@ export default function WikiPage() {
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{p.name}</span>
-                  {p.flags?.includes("blacklist") && <AlertTriangle className="w-3.5 h-3.5 text-[var(--danger-glow)]" />}
+                  {p.flags?.includes("stock_celebrity") && <AlertTriangle className="w-3.5 h-3.5 text-[var(--danger-glow)]" />}
                 </div>
                 <div className="flex gap-1 mt-1 flex-wrap">
                   {p.flags?.map((f: string) => (

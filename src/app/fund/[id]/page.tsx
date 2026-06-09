@@ -35,11 +35,11 @@ export default function FundDetailPage() {
         <h1 className="text-2xl font-bold">{fund.name}</h1>
         {fund.flags?.map((f: string) => (
           <span key={f} className={`px-2 py-0.5 rounded text-xs border ${
-            f === "blacklist" ? "bg-[var(--danger)]/20 text-[var(--danger-glow)] border-[var(--danger)]/30" :
+            f === "stock_celebrity" ? "bg-[var(--danger)]/20 text-[var(--danger-glow)] border-[var(--danger)]/30" :
             f === "shell" ? "bg-[var(--warning)]/20 text-[var(--warning)] border-[var(--warning)]/30" :
             "bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)]"
           }`}>
-            {f === "blacklist" && <AlertTriangle className="inline w-3 h-3 mr-1" />}
+            {f === "stock_celebrity" && <AlertTriangle className="inline w-3 h-3 mr-1" />}
             {f}
           </span>
         ))}
@@ -83,7 +83,7 @@ export default function FundDetailPage() {
               <a key={rel.id} href={`/person/${rel.person.personUid}`} className="flex items-center justify-between p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)]">
                 <div>
                   <span className="text-sm font-medium">{rel.person.name}</span>
-                  {rel.person.flags?.includes("blacklist") && <AlertTriangle className="inline w-3 h-3 text-[var(--danger-glow)] ml-1" />}
+                  {rel.person.flags?.includes("stock_celebrity") && <AlertTriangle className="inline w-3 h-3 text-[var(--danger-glow)] ml-1" />}
                 </div>
                 <span className="text-xs text-[var(--text-muted)] px-2 py-0.5 rounded bg-[var(--border)]">{rel.role}</span>
               </a>
