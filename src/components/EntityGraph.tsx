@@ -52,7 +52,7 @@ export default function EntityGraph({ data, onNodeSelect }: Props) {
 
     const cy = cytoscape({
       container: containerRef.current,
-      style: [
+      style: ([] as any).concat([
         {
           selector: "node",
           style: {
@@ -102,7 +102,7 @@ export default function EntityGraph({ data, onNodeSelect }: Props) {
           selector: 'edge[type="fund_person"]',
           style: { "line-style": "dashed", "line-color": "#f39c12", "target-arrow-color": "#f39c12" },
         },
-      ],
+      ]),
       layout: {
         name: "cose",
         animate: true,

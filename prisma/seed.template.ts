@@ -32,7 +32,7 @@ async function main() {
       stockCode: "000001",
       companyName: "예시기업A",
       market: "KOSDAQ",
-      marketCap: 35000000000n,
+      marketCap: 35000000000 as any,
       isAdmin: false,
     },
   });

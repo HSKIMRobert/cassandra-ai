@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
   // 1. 질문에서 인물명과 카테고리 추출
   const namePattern = /[가-힣]{2,4}/g;
-  const rawNames = query.match(namePattern) || [];
+  const rawNames: string[] = query.match(namePattern) || [];
   const excludeWords = ["찾아줘", "분석", "관련", "추가", "알려줘", "검색", "변경", "최근", "법인", "회사", "기업"];
   const names = [...new Set(rawNames)].filter((n) => !excludeWords.includes(n));
 

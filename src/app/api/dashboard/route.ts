@@ -25,11 +25,11 @@ export async function GET() {
 
     for (const d of data) {
       await prisma.marketSnapshot.create({
-        data: {
+        data: JSON.parse(JSON.stringify({
           category: d.category,
           data: d.stocks,
           stats: d.stats,
-        },
+        })),
       });
     }
 

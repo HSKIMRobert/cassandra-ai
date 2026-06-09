@@ -121,11 +121,11 @@ export async function scrapeNaverFinance(): Promise<MarketData[]> {
     // 스냅샷 저장
     for (const d of results) {
       await prisma.marketSnapshot.create({
-        data: {
+        data: JSON.parse(JSON.stringify({
           category: d.category,
-          data: d.stocks as any,
-          stats: d.stats as any,
-        },
+          data: d.stocks,
+          stats: d.stats,
+        })),
       });
     }
   } catch (err) {
