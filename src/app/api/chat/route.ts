@@ -6,8 +6,13 @@ import path from "path";
 
 // DART API 키 읽기
 function getDartKey(): string {
-  return process.env.DART_API_KEY || 
-    (() => { try { return (require("fs").readFileSync(require("path").join(process.cwd(), ".env"), "utf-8").match(/DART_API_KEY=(.+)/) || [])[1]?.trim() || ""; } catch { return ""; } })();
+  // Next.js 자동 로드
+  if (process.env.DART_API_KEY) return process.env.DART_API_KEY;
+  // 로컬 .env 폴백
+  try {
+    const fs = require("fs"), p = require("path");
+    return (fs.readFileSync(p.join(process.cwd(), ".env"), "utf-8").match(/DART_API_KEY=(.+)/) || [])[1]?.trim() || "";
+  } catch { return ""; }
 }
 
 // DART 기업 매핑 (전체)
