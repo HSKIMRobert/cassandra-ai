@@ -171,28 +171,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 공시 요약 */}
-      {disclosureSummary && disclosureSummary.length > 0 && (
-        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
-          <div className="px-4 py-2 border-b border-[var(--border)] text-xs font-semibold">
-            📋 최근 공시 ({disclosureSummary.length}건)
-          </div>
-          <div className="divide-y divide-[var(--border)] max-h-[300px] overflow-y-auto">
-            {disclosureSummary.map((f: any, i: number) => (
-              <div key={i} className="px-4 py-2 flex items-center gap-3 text-xs">
-                <span className="text-[var(--text-muted)] shrink-0 w-24">{f.date}</span>
-                <span className={`px-1.5 py-0.5 rounded text-[10px] shrink-0 ${
-                  f.type === 'CB_ISSUANCE' ? 'bg-[var(--accent)]/10 text-[var(--accent-glow)]' :
-                  f.type === 'LAWSUIT' ? 'bg-[var(--danger)]/10 text-[var(--danger-glow)]' :
-                  f.type === 'MAJORITY_HOLDER_CHANGE' ? 'bg-[var(--warning)]/10 text-[var(--warning)]' :
-                  'bg-[var(--border)] text-[var(--text-muted)]'
-                }`}>{f.type}</span>
-                <span className="truncate">{f.title}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+          {/* 공시 분석 */}
+          {disclosureSummary && disclosureSummary.length > 0 && (
+            <DisclosureAnalysis filings={disclosureSummary} />
+          )}
 
       {/* 챗봇 */}
       <ChatPanel />
@@ -405,6 +387,72 @@ function NodeDetailPanel({ node, onClose }: { node: NodeDetail; onClose: () => v
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function DisclosureAnalysis({ filings }: { filings: any[] }) {
+  const cats: Record<string, { count: number; items: any[] }> = {};
+  const risks: string[] = [];
+
+  filings.forEach((f: any) => {
+    const t = f.title;
+    let cat = '기타';
+    if (/소송|판결|가처분|회생/.test(t)) { cat = '⚖️ 소송/분쟁'; if (!risks.includes('경영권 분쟁')) risks.push('경영권 분쟁'); }
+    else if (/합병/.test(t)) { cat = '🔄 합병'; if (!risks.includes('합병/구조조정')) risks.push('합병/구조조정'); }
+    else if (/주주총회|주주명부|의결권/.test(t)) { cat = '📋 주주총회'; if (!risks.includes('주주총회 빈번')) risks.push('주주총회 빈번'); }
+    else if (/증자|감자|병합/.test(t)) { cat = '💰 자본변동'; if (!risks.includes('자본변동')) risks.push('자본변동'); }
+    else if (/대량보유|주요주주|소유/.test(t)) { cat = '📊 지분공시'; if (!risks.includes('주요주주 변동')) risks.push('주요주주 변동'); }
+    else if (/사채|CB|차입/.test(t)) { cat = '💳 자금조달'; }
+    else if (/매매.*정지/.test(t)) { cat = '🛑 매매정지'; if (!risks.includes('매매정지')) risks.push('매매정지'); }
+    if (!cats[cat]) cats[cat] = { count: 0, items: [] };
+    cats[cat].count++;
+    cats[cat].items.push(f);
+  });
+
+  const sorted = Object.entries(cats).sort((a, b) => b[1].count - a[1].count);
+  const riskLevel = risks.length >= 3 ? 'HIGH' : risks.length >= 1 ? 'MEDIUM' : 'LOW';
+
+  return (
+    <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+      <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+        <span className="text-sm font-bold">📋 공시 분석 ({filings.length}건)</span>
+        <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+          riskLevel === 'HIGH' ? 'bg-[var(--danger)]/20 text-[var(--danger-glow)]' :
+          riskLevel === 'MEDIUM' ? 'bg-[var(--warning)]/20 text-[var(--warning)]' :
+          'bg-[var(--accent)]/10 text-[var(--accent-glow)]'
+        }`}>위험도: {riskLevel}</span>
+      </div>
+
+      {/* 위험 신호 */}
+      {risks.length > 0 && (
+        <div className="px-4 py-3 border-b border-[var(--border)]">
+          <div className="flex flex-wrap gap-1.5">
+            {risks.map((r, i) => (
+              <span key={i} className="px-2 py-0.5 rounded text-[10px] bg-[var(--danger)]/10 text-[var(--danger-glow)] border border-[var(--danger)]/20">
+                ⚠ {r}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 카테고리 + 타임라인 */}
+      <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
+        {sorted.slice(0, 2).map(([cat, data]) => (
+          <div key={cat} className="p-3">
+            <h5 className="text-xs font-semibold mb-2">{cat} ({data.count}건)</h5>
+            <div className="space-y-1 max-h-[150px] overflow-y-auto">
+              {data.items.slice(0, 8).map((f: any, i: number) => (
+                <div key={i} className="text-[10px] flex gap-2">
+                  <span className="text-[var(--text-muted)] shrink-0">{f.date.slice(5)}</span>
+                  <span className="truncate">{f.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
