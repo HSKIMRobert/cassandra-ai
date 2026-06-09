@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   // 로그인 상태면 / 와 /login → /board 로 리다이렉트
   if (token && (path === "/" || path === "/login")) {
-    return NextResponse.redirect(new URL("/board", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // 비로그인 → /login 으로
