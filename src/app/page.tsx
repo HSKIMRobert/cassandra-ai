@@ -141,7 +141,7 @@ export default function HomePage() {
       </div>
 
       {/* 실시간 검색어 + 메인 콘텐츠 */}
-      <div className="grid gap-6 lg:grid-cols-5">
+      <div className="grid gap-6 lg:grid-cols-4">
         {/* 왼쪽 사이드바: 실검 랭킹 + 핀보드 */}
         <div className="lg:col-span-1 space-y-4">
           <TrendingSearches onSelect={(q) => { setQuery(q); doSearch(q); }} />
