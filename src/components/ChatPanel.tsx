@@ -98,7 +98,7 @@ export default function ChatPanel() {
           <div className="text-center py-10 text-xs text-[var(--text-muted)]">
             <Bot className="w-8 h-8 mx-auto mb-2 opacity-30" />
             <p>인물명이나 회사명을 입력하세요</p>
-            <p className="mt-1">예: 신승수 관련사를 더 찾아줘</p>
+            <p className="mt-1">예: 씨그널엔터 김준범 관련사를 더 찾아줘</p>
           </div>
         )}
 
@@ -164,7 +164,7 @@ export default function ChatPanel() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="예: 신승수, 오종원 관련사를 더 찾아줘"
+          placeholder="예: 씨그널엔터 김준범 관련사를 더 찾아줘"
           className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs text-[var(--text)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
         />
         <button
