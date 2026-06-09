@@ -103,6 +103,35 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // === 3.5 공시 본문 검색 (인물명이 DB에 없을 때) ===
+  if (results.length === 0) {
+    for (const token of tokens) {
+      const filings = await prisma.filing.findMany({
+        where: {
+          OR: [{ title: { contains: token } }, { summary: { contains: token } }],
+        },
+        include: { corp: true },
+        orderBy: { filedAt: "desc" },
+        take: 10,
+      });
+      if (filings.length > 0) {
+        const grouped = new Map<string, any[]>();
+        for (const f of filings) {
+          const key = f.corp.companyName;
+          if (!grouped.has(key)) grouped.set(key, []);
+          grouped.get(key)!.push(f);
+        }
+        for (const [company, items] of grouped) {
+          results.push({
+            personName: token, companyName: company, corpCode: items[0].corp.corpCode,
+            role: `공시 ${items.length}건 언급`, totalDisclosures: items.length,
+            dartDisclosures: items.map((f: any) => ({ title: f.title, date: f.filedAt?.toISOString()?.slice(0, 10) || "", rceptNo: f.rceptNo })),
+          });
+        }
+      }
+    }
+  }
+
   // === 4. 최종 폴백: DART 실시간 전체 검색 ===
   if (results.length === 0 && dartKey) {
     try {
