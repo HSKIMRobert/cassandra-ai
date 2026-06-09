@@ -25,8 +25,8 @@ jobs:
       - run: npx prisma generate
       - name: Run daily sync
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DART_API_KEY: ${{ secrets.DART_API_KEY }}
+          DATABASE_URL: ${{ vars.DATABASE_URL || secrets.DATABASE_URL }}
+          DART_API_KEY: ${{ vars.DART_API_KEY || secrets.DART_API_KEY }}
         run: |
           echo "DB: ${#DATABASE_URL} chars, DART: ${#DART_API_KEY} chars"
           npx tsx scripts/daily-sync.ts
