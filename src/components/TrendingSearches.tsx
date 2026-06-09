@@ -64,6 +64,15 @@ export default function TrendingSearches({ onSelect }: Props) {
             </span>
           </button>
         ))}
+        {/* 지식베이스 고정 항목 */}
+        <button
+          onClick={() => onSelect?.("씨그널엔터 김준범")}
+          className="w-full flex items-center gap-2.5 px-4 py-2.5 hover:bg-[var(--danger)]/10 transition-colors text-left border-t border-[var(--border)]"
+        >
+          <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold shrink-0 bg-[var(--danger)]/20 text-[var(--danger-glow)]">!</span>
+          <span className="text-sm truncate flex-1 text-[var(--danger-glow)]">씨그널엔터 김준범</span>
+          <span className="text-[10px] text-[var(--danger-glow)] shrink-0">🔍</span>
+        </button>
       </div>
     </div>
   );
