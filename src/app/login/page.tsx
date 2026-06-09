@@ -27,7 +27,7 @@ export default function LoginPage() {
         setError(data.error);
       } else {
         if (data.duplicateLogin) setDuplicate(true);
-        router.push("/");
+        router.push("/board");
         router.refresh();
       }
     } catch {
