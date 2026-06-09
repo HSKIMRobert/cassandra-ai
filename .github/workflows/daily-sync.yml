@@ -24,8 +24,8 @@ jobs:
       - run: npx prisma generate
       - name: Debug env
         run: |
-          echo "DATABASE_URL length: ${#DATABASE_URL}"
-          echo "DART_API_KEY length: ${#DART_API_KEY}"
+          if [ -z "$DATABASE_URL" ]; then echo "DATABASE_URL is EMPTY"; else echo "DATABASE_URL is SET (length: ${#DATABASE_URL})"; fi
+          if [ -z "$DART_API_KEY" ]; then echo "DART_API_KEY is EMPTY"; else echo "DART_API_KEY is SET (length: ${#DART_API_KEY})"; fi
       - name: Run daily sync
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
