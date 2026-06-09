@@ -25,6 +25,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [cacheAge, setCacheAge] = useState<number | null>(null);
   const [cacheStale, setCacheStale] = useState(false);
+  const [disclosureSummary, setDisclosureSummary] = useState<any[] | null>(null);
   const [selectedNode, setSelectedNode] = useState<NodeDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [knowledgePopup, setKnowledgePopup] = useState<any>(null);
@@ -43,6 +44,8 @@ export default function HomePage() {
     if (force) params.set("refresh", "1");
     const graphRes = await fetch(`/api/graph?${params}`).then((r) => r.json());
     setGraphData(graphRes);
+    if (graphRes.filings) setDisclosureSummary(graphRes.filings);
+    else setDisclosureSummary(null);
 
     // 지식베이스 별도 확인
     const searchRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`).then((r) => r.json());
@@ -167,6 +170,29 @@ export default function HomePage() {
           )}
         </div>
       </div>
+
+      {/* 공시 요약 */}
+      {disclosureSummary && disclosureSummary.length > 0 && (
+        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+          <div className="px-4 py-2 border-b border-[var(--border)] text-xs font-semibold">
+            📋 최근 공시 ({disclosureSummary.length}건)
+          </div>
+          <div className="divide-y divide-[var(--border)] max-h-[300px] overflow-y-auto">
+            {disclosureSummary.map((f: any, i: number) => (
+              <div key={i} className="px-4 py-2 flex items-center gap-3 text-xs">
+                <span className="text-[var(--text-muted)] shrink-0 w-24">{f.date}</span>
+                <span className={`px-1.5 py-0.5 rounded text-[10px] shrink-0 ${
+                  f.type === 'CB_ISSUANCE' ? 'bg-[var(--accent)]/10 text-[var(--accent-glow)]' :
+                  f.type === 'LAWSUIT' ? 'bg-[var(--danger)]/10 text-[var(--danger-glow)]' :
+                  f.type === 'MAJORITY_HOLDER_CHANGE' ? 'bg-[var(--warning)]/10 text-[var(--warning)]' :
+                  'bg-[var(--border)] text-[var(--text-muted)]'
+                }`}>{f.type}</span>
+                <span className="truncate">{f.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 챗봇 */}
       <ChatPanel />
