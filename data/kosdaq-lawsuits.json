@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "rank": 11,
+    "name": "메이슨캐피탈",
+    "code": "021880",
+    "price": "136",
+    "change": "+0 (+0%)",
+    "changePercent": 0,
+    "volume": "NaN",
+    "marketCap": "289억",
+    "marketCapRaw": 289,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": true,
+      "lawsuitDetail": "소송등의제기ㆍ신청(일정금액이상의청구)              ",
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 55
+    }
+  }
+]

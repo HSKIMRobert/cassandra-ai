@@ -1,1 +1,108 @@
-[]
+[
+  {
+    "rank": 11,
+    "name": "메이슨캐피탈",
+    "code": "021880",
+    "price": "136",
+    "change": "+0 (+0%)",
+    "changePercent": 0,
+    "volume": "NaN",
+    "marketCap": "289억",
+    "marketCapRaw": 289,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": true,
+      "lawsuitDetail": "소송등의제기ㆍ신청(일정금액이상의청구)              ",
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 55
+    }
+  },
+  {
+    "rank": 13,
+    "name": "디모아",
+    "code": "016670",
+    "price": "2,820",
+    "change": "+40 (+1.44%)",
+    "changePercent": 1.44,
+    "volume": "404",
+    "marketCap": "287억",
+    "marketCapRaw": 287,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 15,
+      "volatilityScore": 45
+    }
+  },
+  {
+    "rank": 15,
+    "name": "모아라이프플러스",
+    "code": "142760",
+    "price": "677",
+    "change": "-3 (-0.44%)",
+    "changePercent": -0.44,
+    "volume": "NaN",
+    "marketCap": "285억",
+    "marketCapRaw": 285,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경을수반하는주식담보제공계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 25,
+      "volatilityScore": 45
+    }
+  },
+  {
+    "rank": 1,
+    "name": "이노에이엑스",
+    "code": "296640",
+    "price": "5,690",
+    "change": "+70 (+1.25%)",
+    "changePercent": 1.25,
+    "volume": "NaN",
+    "marketCap": "295억",
+    "marketCapRaw": 295,
+    "flags": {
+      "hasNameChange": true,
+      "nameChangeDetail": "상호변경안내              ",
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 2,
+      "volatilityScore": 40
+    }
+  },
+  {
+    "rank": 20,
+    "name": "에코심플렉스",
+    "code": "038870",
+    "price": "2,020",
+    "change": "-10 (-0.49%)",
+    "changePercent": -0.49,
+    "volume": "NaN",
+    "marketCap": "283억",
+    "marketCapRaw": 283,
+    "flags": {
+      "hasNameChange": true,
+      "nameChangeDetail": "상호변경안내              ",
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 2,
+      "volatilityScore": 40
+    }
+  }
+]

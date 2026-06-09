@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "rank": 1,
+    "name": "이노에이엑스",
+    "code": "296640",
+    "price": "5,690",
+    "change": "+70 (+1.25%)",
+    "changePercent": 1.25,
+    "volume": "NaN",
+    "marketCap": "295억",
+    "marketCapRaw": 295,
+    "flags": {
+      "hasNameChange": true,
+      "nameChangeDetail": "상호변경안내              ",
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 2,
+      "volatilityScore": 40
+    }
+  },
+  {
+    "rank": 20,
+    "name": "에코심플렉스",
+    "code": "038870",
+    "price": "2,020",
+    "change": "-10 (-0.49%)",
+    "changePercent": -0.49,
+    "volume": "NaN",
+    "marketCap": "283억",
+    "marketCapRaw": 283,
+    "flags": {
+      "hasNameChange": true,
+      "nameChangeDetail": "상호변경안내              ",
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 2,
+      "volatilityScore": 40
+    }
+  }
+]

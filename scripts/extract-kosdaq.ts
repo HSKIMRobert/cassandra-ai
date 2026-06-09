@@ -60,12 +60,12 @@ interface StockReport extends Stock {
   flags: AnomalyFlags;
 }
 
-async function fetchKosdaqStocks(sortType: string, count: number): Promise<Stock[]> {
+async function fetchKosdaqStocks(sortType: string, count: number, startPage = 1): Promise<Stock[]> {
   const all: Stock[] = [];
   const pageSize = 50;
-  const pages = Math.ceil(count / pageSize);
+  const pages = Math.ceil(count / pageSize) + startPage - 1;
 
-  for (let page = 1; page <= pages; page++) {
+  for (let page = startPage; page <= pages; page++) {
     const url = `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ?page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
     const res = await fetch(url, {
       headers: { "User-Agent": UA, "Accept": "application/json" },
@@ -79,9 +79,9 @@ async function fetchKosdaqStocks(sortType: string, count: number): Promise<Stock
       // SPAC 필터
       if (SPAC_KEYWORDS.some((kw) => new RegExp(kw, "i").test(name))) continue;
 
-      const marketCapRaw = s.marketValue ? Number(s.marketValue) : 0;
-      // 시총 1000억 이상 제외
-      if (marketCapRaw >= 100_000_000_000) continue;
+      const marketCapRaw = s.marketValue ? Number(String(s.marketValue).replace(/,/g, "")) : 0;
+      // 시총 5000억 이상 제외 (한계기업 타겟팅)
+      if (marketCapRaw >= 5000) continue;
 
       const changePercent = s.fluctuationsRatio ? parseFloat(s.fluctuationsRatio) : 0;
       const changeAbs = s.compareToPreviousClosePrice || "";
@@ -98,7 +98,7 @@ async function fetchKosdaqStocks(sortType: string, count: number): Promise<Stock
         volume: s.accumulatedTradingVolume
           ? Number(s.accumulatedTradingVolume).toLocaleString()
           : undefined,
-        marketCap: marketCapRaw ? (marketCapRaw / 1e8).toFixed(0) + "억" : undefined,
+        marketCap: marketCapRaw ? (marketCapRaw).toFixed(0) + "억" : undefined,
         marketCapRaw,
       });
 
@@ -163,6 +163,7 @@ function detectAnomaliesFromDart(disclosures: any[]): {
   hasPurposeAddition: boolean; purposeDetail?: string;
   hasLawsuit: boolean; lawsuitDetail?: string;
   hasCB: boolean; cbCount: number;
+  hasCapitalChange: boolean;
 } {
   const result = {
     hasNameChange: false, nameChangeDetail: undefined as string | undefined,
@@ -170,34 +171,33 @@ function detectAnomaliesFromDart(disclosures: any[]): {
     hasPurposeAddition: false, purposeDetail: undefined as string | undefined,
     hasLawsuit: false, lawsuitDetail: undefined as string | undefined,
     hasCB: false, cbCount: 0,
+    hasCapitalChange: false,
   };
 
   for (const d of disclosures) {
     const title = d.reportName || "";
 
-    // 사명 변경
     if (/상호변경|사명변경|회사명\s*변경|명칭변경/.test(title)) {
       result.hasNameChange = true;
       result.nameChangeDetail = title;
     }
-    // 최대주주 변경
-    if (/최대주주변경|최대주주\s*변경|경영권\s*양수|경영권\s*인수/.test(title)) {
+    if (/최대주주변경|최대주주\s*변경|경영권\s*양수|경영권\s*인수|대주주/.test(title)) {
       result.hasMajorHolderChange = true;
       result.holderChangeDetail = title;
     }
-    // 사업목적 추가
-    if (/사업목적\s*추가|사업다각화|신규사업/.test(title)) {
+    if (/사업목적\s*추가|사업다각화|신규사업|정관변경/.test(title)) {
       result.hasPurposeAddition = true;
       result.purposeDetail = title;
     }
-    // 소송/경영권 분쟁
-    if (/소송|분쟁|경영권|주주총회소집허가|의결권|가처분/.test(title)) {
+    if (/소송|분쟁|경영권|주주총회소집허가|가처분|주주제안|의결권/.test(title)) {
       result.hasLawsuit = true;
       result.lawsuitDetail = title;
     }
-    // CB/BW 발행
-    if (/전환사채|신주인수권부사채|CB|BW|사채권/.test(title)) {
+    if (/전환사채|신주인수권|CB|BW|사채권|사채/.test(title)) {
       result.cbCount++;
+    }
+    if (/유상증자|무상증자|유무상증자|주식병합|액면분할|감자/.test(title)) {
+      result.hasCapitalChange = true;
     }
   }
 
@@ -209,71 +209,44 @@ function computeFlags(
   stock: Stock,
   dbEvents: any[],
   dbFilings: any[],
-  dartData: any = {}
+  dartFlags: any = {}
 ): AnomalyFlags {
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-  const recentEvents = dbEvents.filter(
-    (e) => new Date(e.occurredAt) >= oneYearAgo
-  );
-  const recentFilings = dbFilings.filter(
-    (f) => new Date(f.filedAt) >= oneYearAgo
+  const recentEvents = dbEvents.filter((e) => new Date(e.occurredAt) >= oneYearAgo);
+  const recentFilings = dbFilings.filter((f) => new Date(f.filedAt) >= oneYearAgo);
+
+  // DB + DART API 병합
+  const hasNameChange = dartFlags.hasNameChange || recentEvents.some((e) => e.eventType === "NAME_CHANGE");
+  const hasMajorHolderChange = dartFlags.hasMajorHolderChange || recentFilings.some((f) => f.filingType === "MAJORITY_HOLDER_CHANGE");
+  const hasPurposeAddition = dartFlags.hasPurposeAddition || recentEvents.some((e) => e.eventType === "PURPOSE_ADDITION");
+  const hasLawsuit = dartFlags.hasLawsuit || recentFilings.some((f) => f.title?.includes("소송") || f.title?.includes("분쟁"));
+  const cbCount = Math.max(
+    dartFlags.cbCount || 0,
+    recentFilings.filter((f) => ["CB_ISSUANCE","BW_ISSUANCE","CB_REFIX_DOWN","CB_SELL"].includes(f.filingType)).length
   );
 
-  const hasNameChange = recentEvents.some(
-    (e) => e.eventType === "NAME_CHANGE"
-  );
-  const hasMajorHolderChange = recentFilings.some(
-    (f) => f.filingType === "MAJORITY_HOLDER_CHANGE"
-  );
-  const hasPurposeAddition = recentEvents.some(
-    (e) => e.eventType === "PURPOSE_ADDITION"
-  ) || recentFilings.some((f) => f.filingType === "PURPOSE_ADDITION");
-  const hasLawsuit = recentFilings.some(
-    (f) =>
-      f.filingType === "LAWSUIT" ||
-      f.filingType === "MANAGEMENT_DISPUTE" ||
-      f.title?.includes("소송") ||
-      f.title?.includes("분쟁") ||
-      f.title?.includes("경영권")
-  );
-  const cbFilings = recentFilings.filter(
-    (f) =>
-      ["CB_ISSUANCE", "BW_ISSUANCE", "CB_REFIX_DOWN", "CB_SELL"].includes(
-        f.filingType
-      )
-  );
-
-  // 변동성 점수 계산
   let score = 0;
   if (hasNameChange) score += 25;
   if (hasMajorHolderChange) score += 20;
   if (hasPurposeAddition) score += 15;
   if (hasLawsuit) score += 25;
-  if (cbFilings.length >= 2) score += 15;
-  else if (cbFilings.length === 1) score += 5;
+  if (dartFlags.hasCapitalChange) score += 10;
+  if (cbCount >= 2) score += 15;
+  else if (cbCount >= 1) score += 5;
 
   return {
     hasNameChange,
-    nameChangeDetail: recentEvents.find((e) => e.eventType === "NAME_CHANGE")?.detail,
+    nameChangeDetail: dartFlags.nameChangeDetail || recentEvents.find((e) => e.eventType === "NAME_CHANGE")?.detail,
     hasMajorHolderChange,
-    holderChangeDetail: recentFilings.find(
-      (f) => f.filingType === "MAJORITY_HOLDER_CHANGE"
-    )?.summary,
+    holderChangeDetail: dartFlags.holderChangeDetail || recentFilings.find((f) => f.filingType === "MAJORITY_HOLDER_CHANGE")?.summary,
     hasPurposeAddition,
-    purposeDetail:
-      recentEvents.find((e) => e.eventType === "PURPOSE_ADDITION")?.detail ||
-      recentFilings.find((f) => f.filingType === "PURPOSE_ADDITION")?.summary,
+    purposeDetail: dartFlags.purposeDetail || recentEvents.find((e) => e.eventType === "PURPOSE_ADDITION")?.detail,
     hasLawsuit,
-    lawsuitDetail: recentFilings.find(
-      (f) =>
-        f.filingType === "LAWSUIT" ||
-        f.title?.includes("소송") ||
-        f.title?.includes("분쟁")
-    )?.summary,
-    hasCB: cbFilings.length > 0,
-    cbCount: cbFilings.length,
+    lawsuitDetail: dartFlags.lawsuitDetail || recentFilings.find((f) => f.title?.includes("소송") || f.title?.includes("분쟁"))?.summary,
+    hasCB: cbCount > 0,
+    cbCount,
     volatilityScore: score,
   };
 }
@@ -283,14 +256,16 @@ async function main() {
 
   // 1. Naver에서 주식 데이터 추출
   console.log("1/4 Naver Finance API → 상승 종목 + 인기 종목 + 거래량 상위 추출...");
-  const [gainers, marketCapRank, volumeRank] = await Promise.all([
+  const [gainers, volumeRank] = await Promise.all([
     fetchKosdaqStocks("FLUCTUATION_RATE", 100),
-    fetchKosdaqStocks("MARKET_VALUE", 100),
     fetchKosdaqStocks("ACCUMULATED_TRADING_VOLUME", 100),
   ]);
 
-  console.log(`   상승 종목: ${gainers.length}개 (SPAC·시총1000억+ 제외)`);
-  console.log(`   인기 종목: ${marketCapRank.length}개`);
+  // 시총 하위권 100개 (30페이지부터 = 1500위권부터)
+  const marketCapRank = await fetchKosdaqStocks("MARKET_VALUE", 100, 30);
+
+  console.log(`   상승 종목: ${gainers.length}개`);
+  console.log(`   시총 하위: ${marketCapRank.length}개`);
   console.log(`   거래량 상위: ${volumeRank.length}개`);
 
   // 2. DART API + DB 검색
@@ -314,7 +289,7 @@ async function main() {
     seen.add(stock.code);
 
     let dartDisclosures: any[] = [];
-    if (DART_API_KEY && dartCalls < 30) {
+    if (DART_API_KEY) {
       dartDisclosures = await searchDartDisclosures(stock.code);
       dartCalls++;
     }
@@ -379,7 +354,7 @@ async function main() {
           "회사명 변경 + 사업목적 추가 + 소송/경영권 분쟁 → 주가 변동성 증가",
         filters: {
           excludedSPACs: true,
-          maxMarketCap: "1,000억원",
+          maxMarketCap: "5,000억원",
         },
         summary: {
           volatilityScoreGt0: reports.filter((r) => r.flags.volatilityScore > 0).length,

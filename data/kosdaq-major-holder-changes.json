@@ -1,1 +1,108 @@
-[]
+[
+  {
+    "rank": 11,
+    "name": "메이슨캐피탈",
+    "code": "021880",
+    "price": "136",
+    "change": "+0 (+0%)",
+    "changePercent": 0,
+    "volume": "NaN",
+    "marketCap": "289억",
+    "marketCapRaw": 289,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": true,
+      "lawsuitDetail": "소송등의제기ㆍ신청(일정금액이상의청구)              ",
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 55
+    }
+  },
+  {
+    "rank": 13,
+    "name": "디모아",
+    "code": "016670",
+    "price": "2,820",
+    "change": "+40 (+1.44%)",
+    "changePercent": 1.44,
+    "volume": "404",
+    "marketCap": "287억",
+    "marketCapRaw": 287,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 15,
+      "volatilityScore": 45
+    }
+  },
+  {
+    "rank": 15,
+    "name": "모아라이프플러스",
+    "code": "142760",
+    "price": "677",
+    "change": "-3 (-0.44%)",
+    "changePercent": -0.44,
+    "volume": "NaN",
+    "marketCap": "285억",
+    "marketCapRaw": 285,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경을수반하는주식담보제공계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 25,
+      "volatilityScore": 45
+    }
+  },
+  {
+    "rank": 14,
+    "name": "제놀루션",
+    "code": "225220",
+    "price": "1,493",
+    "change": "-2 (-0.13%)",
+    "changePercent": -0.13,
+    "volume": "NaN",
+    "marketCap": "287억",
+    "marketCapRaw": 287,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경을수반하는주식양수도계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 20
+    }
+  },
+  {
+    "rank": 17,
+    "name": "엠브레인",
+    "code": "169330",
+    "price": "1,550",
+    "change": "-23 (-1.46%)",
+    "changePercent": -1.46,
+    "volume": "NaN",
+    "marketCap": "284억",
+    "marketCapRaw": 284,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 20
+    }
+  }
+]
