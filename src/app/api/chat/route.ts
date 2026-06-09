@@ -54,11 +54,6 @@ export async function POST(req: NextRequest) {
   const bgnDe = monthsAgo(period);
   const endDe = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
-  // 0. 회사명 직접 검색 (DART API)
-  const dartKey = getDartKey();
-  const bgnDe = monthsAgo(period);
-  const endDe = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-
   // 질문에서 회사명 찾기 (공시 요약, 최근 공시 등)
   const isCompanyQuery = /공시.*요약|최근.*공시|공시.*알려줘|공시.*찾아/.test(query);
 
