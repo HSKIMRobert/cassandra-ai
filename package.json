@@ -17,6 +17,7 @@
     "deploy:setup": "node scripts/deploy-setup.js",
     "extract-kb": "tsx scripts/build-knowledge-base.ts",
     "daily": "tsx scripts/daily-sync.ts",
+    "logs": "node scripts/view-logs.js",
     "extract-dart": "tsx scripts/extract-dart-events.ts"
   },
   "prisma": {
