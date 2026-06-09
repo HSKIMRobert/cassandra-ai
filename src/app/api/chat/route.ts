@@ -9,7 +9,7 @@ const DART_BASE = "https://opendart.fss.or.kr/api";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function getDartKey() { return process.env.DART_API_KEY || ""; }
-function monthsAgo(m: number) { const d = new Date(); d.setMonth(d.getMonth() - m); return d.toISOString().slice(0, 10).replace(/-/g, ""); }
+function monthsAgo(m: number) { const d = new Date(); d.setMonth(d.getMonth() - m); d.setDate(d.getDate() + 1); return d.toISOString().slice(0, 10).replace(/-/g, ""); }
 
 // DART 기업 매핑 + 지식베이스 (시작 시 1회 로드)
 let dartCorps: any[] = [];
