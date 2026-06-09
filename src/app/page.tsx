@@ -122,7 +122,7 @@ export default function HomePage() {
             onClick={() => doSearch(query, true)}
             className="h-14 px-4 rounded-xl bg-[var(--warning)]/20 border border-[var(--warning)]/30 text-[var(--warning)] text-xs hover:bg-[var(--warning)]/30 transition-colors shrink-0"
           >
-            72시간 경과<br />새로고침
+             72시간 경과<br />추가 검색?
           </button>
         )}
         {cacheAge !== null && !cacheStale && (
