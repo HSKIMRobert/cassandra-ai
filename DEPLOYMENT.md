@@ -43,6 +43,18 @@ https://cassandra-ai.vercel.app  (기본)
 → 커스텀 도메인 추가 가능 ($10~15/년)
 ```
 
+## 자동화
+
+### GitHub Actions (무료)
+`.github/workflows/daily-sync.yml` 이 매일 09:00 / 18:00 KST에 자동 실행됩니다.
+GitHub Secrets에 `DATABASE_URL`과 `DART_API_KEY` 설정 필요.
+
+```bash
+# GitHub → Settings → Secrets → Actions
+DATABASE_URL=postgresql://...
+DART_API_KEY=...
+```
+
 ---
 
 ## 아키텍처 개요
