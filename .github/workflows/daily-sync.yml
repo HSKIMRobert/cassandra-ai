@@ -9,6 +9,9 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DART_API_KEY: ${{ secrets.DART_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,6 +19,10 @@ jobs:
           node-version: 22
       - run: npm install
       - run: npx prisma generate
+      - name: Debug env
+        run: |
+          echo "DATABASE_URL length: ${#DATABASE_URL}"
+          echo "DART_API_KEY length: ${#DART_API_KEY}"
       - name: Run daily sync
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
