@@ -26,6 +26,7 @@ export default function HomePage() {
   const [cacheAge, setCacheAge] = useState<number | null>(null);
   const [cacheStale, setCacheStale] = useState(false);
   const [disclosureSummary, setDisclosureSummary] = useState<any[] | null>(null);
+  const [personResults, setPersonResults] = useState<any[] | null>(null);
   const [selectedNode, setSelectedNode] = useState<NodeDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [knowledgePopup, setKnowledgePopup] = useState<any>(null);
@@ -34,6 +35,8 @@ export default function HomePage() {
     if (!q.trim()) {
       setGraphData(null);
       setSelectedNode(null);
+      setPersonResults(null);
+      setDisclosureSummary(null);
       setCacheAge(null);
       setCacheStale(false);
       return;
@@ -46,6 +49,12 @@ export default function HomePage() {
     setGraphData(graphRes);
     if (graphRes.filings) setDisclosureSummary(graphRes.filings);
     else setDisclosureSummary(null);
+
+    // 인물 검색 결과
+    const searchRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`).then((r) => r.json());
+    if (searchRes.persons?.length > 0) setPersonResults(searchRes.persons);
+    else setPersonResults(null);
+    if (searchRes.knowledge?.length > 0) setKnowledgePopup(searchRes.knowledge[0]);
 
     // 지식베이스 별도 확인
     const searchRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`).then((r) => r.json());
@@ -169,7 +178,30 @@ export default function HomePage() {
             <NodeDetailPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
           )}
         </div>
-      </div>
+          </div>
+
+          {/* 인물 검색 결과 */}
+          {personResults && personResults.length > 0 && (
+            <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+              <div className="px-4 py-2 border-b border-[var(--border)] text-xs font-semibold">
+                👤 인물 검색 결과 ({personResults.length}명)
+              </div>
+              <div className="grid gap-2 p-3 md:grid-cols-2">
+                {personResults.map((p: any, i: number) => (
+                  <a key={i} href={`/person/${p.personUid}`} className="p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">{p.name}</span>
+                      {p.flags?.includes('stock_celebrity') && <span className="px-1.5 py-0.5 rounded text-[9px] bg-[var(--danger)]/10 text-[var(--danger-glow)]">주식셀럽</span>}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1 text-[10px] text-[var(--text-muted)]">
+                      <span>{p._count?.corpRelations || 0}개 회사</span>
+                      {p.birthDate && <span>· {p.birthDate}</span>}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 공시 분석 */}
           {disclosureSummary && disclosureSummary.length > 0 && (
