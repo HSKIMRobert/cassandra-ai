@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   const endDe = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
   // 질문에서 인물명/회사명 추출
-  const namePattern = /[가-힣]{2,4}/g;
+  const namePattern = /[가-힣]{2,}/g;
   const rawNames: string[] = query.match(namePattern) || [];
   const excludeWords = ["찾아줘", "분석", "관련", "추가", "알려줘", "검색", "변경", "최근", "법인", "회사", "기업", "공시", "요약"];
   const names = [...new Set(rawNames)].filter((n) => !excludeWords.includes(n));
