@@ -103,19 +103,21 @@ export async function POST(req: NextRequest) {
           else categories["기타"] = (categories["기타"] || 0) + 1;
         }
 
-        companyResults.push({
-          personName: "회사",
-          companyName: corp.name,
-          corpCode: corp.corp_code,
-          stockCode: corp.stock_code,
-          role: `${period}개월 공시 ${disclosures.length}건`,
-          totalDisclosures: disclosures.length,
-          categories,
-          dartDisclosures: disclosures.slice(0, 10).map((item: any) => ({
-            title: item.report_nm, date: item.rcept_dt, rceptNo: item.rcept_no,
-          })),
-          dbFilings: [],
-        });
+        if (disclosures.length > 0) {
+          companyResults.push({
+            personName: "회사",
+            companyName: corp.name,
+            corpCode: corp.corp_code,
+            stockCode: corp.stock_code,
+            role: `${period}개월 공시 ${disclosures.length}건`,
+            totalDisclosures: disclosures.length,
+            categories,
+            dartDisclosures: disclosures.slice(0, 10).map((item: any) => ({
+              title: item.report_nm, date: item.rcept_dt, rceptNo: item.rcept_no,
+            })),
+            dbFilings: [],
+          });
+        }
       }
     }
 
