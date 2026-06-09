@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Search, Loader2, Building2, User, Landmark, AlertTriangle, TrendingDown, ShieldAlert, ExternalLink, X, Pin } from "lucide-react";
 import dynamic from "next/dynamic";
 import TrendingSearches from "@/components/TrendingSearches";
+import PersonSearchRank from "@/components/PersonSearchRank";
 import PinboardPanel from "@/components/PinboardPanel";
 import VoteWidget from "@/components/VoteWidget";
 import ChatPanel from "@/components/ChatPanel";
@@ -144,6 +145,7 @@ export default function HomePage() {
         {/* 왼쪽 사이드바: 실검 랭킹 + 핀보드 */}
         <div className="lg:col-span-1 space-y-4">
           <TrendingSearches onSelect={(q) => { setQuery(q); doSearch(q); }} />
+          <PersonSearchRank onSelect={(q) => { setQuery(q); doSearch(q); }} />
           <PinboardPanel />
         </div>
 
