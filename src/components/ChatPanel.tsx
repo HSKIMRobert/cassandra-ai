@@ -48,18 +48,23 @@ export default function ChatPanel() {
         setMessages((prev) => [...prev, { role: "bot", content: `❌ ${data.error}` }]);
       } else {
         const { results, summary } = data;
-        if (results.length === 0) {
-          setMessages((prev) => [...prev, { role: "bot", content: `'${query}'에 대한 결과를 찾지 못했습니다. 다른 이름이나 회사명으로 검색해보세요.` }]);
+        const knowledge = summary.knowledge;
+
+        let botContent = "";
+        if (results.length === 0 && !knowledge) {
+          botContent = `'${query}'에 대한 결과를 찾지 못했습니다. 다른 이름이나 회사명으로 검색해보세요.`;
         } else {
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "bot",
-              content: `${summary.foundCompanies}개 회사에서 ${summary.totalDisclosures}건의 공시를 발견했습니다 (${summary.period} 기준)`,
-              data: { results, summary },
-            },
-          ]);
+          const parts: string[] = [];
+          if (results.length > 0) {
+            parts.push(`${summary.foundCompanies}개 회사에서 ${summary.totalDisclosures}건의 공시를 발견했습니다 (${summary.period} 기준)`);
+          }
+          botContent = parts.join("\n");
         }
+
+        setMessages((prev) => [
+          ...prev,
+          { role: "bot", content: botContent, data: { results, summary, knowledge } },
+        ]);
       }
     } catch {
       setMessages((prev) => [...prev, { role: "bot", content: "서버 오류가 발생했습니다." }]);
@@ -123,6 +128,34 @@ export default function ChatPanel() {
                 </div>
               )}
             </div>
+
+            {/* 지식베이스 컨텍스트 */}
+            {msg.data?.knowledge && msg.data.knowledge.length > 0 && (
+              <div className="mt-2 ml-8 space-y-2">
+                {msg.data.knowledge.map((kb: any, ki: number) => (
+                  <div key={ki} className="p-3 rounded-lg bg-[var(--danger)]/5 border border-[var(--danger)]/20">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--danger-glow)]" />
+                      <span className="text-xs font-bold text-[var(--danger-glow)]">{kb.name}</span>
+                      {kb.flags?.map((f: string) => (
+                        <span key={f} className="px-1 py-0.5 rounded text-[9px] bg-[var(--danger)]/10 text-[var(--danger-glow)]">{f}</span>
+                      ))}
+                    </div>
+                    <p className="text-xs leading-relaxed text-[var(--text)]">{kb.context}</p>
+                    {kb.news?.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {kb.news.map((n: any, ni: number) => (
+                          <a key={ni} href={n.url} target="_blank" rel="noopener noreferrer"
+                            className="block text-xs text-[var(--accent-glow)] hover:underline">
+                            📰 {n.title}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* 결과 카드 */}
             {msg.data?.results && (

@@ -283,12 +283,18 @@ export async function POST(req: NextRequest) {
   // 4. DART API로 이름 검색 (DART list.json에서는 회사명 검색만 가능)
   // 이미 충분한 결과가 있으므로 생략
 
+  // 5. 지식베이스 검색
+  const kbMatches = knowledgeBase.filter((kb: any) =>
+    names.some((n) => kb.name.includes(n) || kb.aliases?.some((a: string) => a.includes(n)))
+  );
+
   const summary = {
     query,
     period: `${period}개월`,
     foundPersons: [...new Set(results.map((r) => r.personName))].length,
     foundCompanies: results.length,
     totalDisclosures: results.reduce((sum, r) => sum + r.totalDisclosures, 0),
+    knowledge: kbMatches.length > 0 ? kbMatches : undefined,
     searchedAt: new Date().toISOString(),
   };
 
