@@ -13,6 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "setup": "node scripts/setup-key.js",
+    "deploy:setup": "node scripts/deploy-setup.js",
     "extract": "tsx scripts/extract-kosdaq.ts",
     "extract-dart": "tsx scripts/extract-dart-events.ts"
   },
