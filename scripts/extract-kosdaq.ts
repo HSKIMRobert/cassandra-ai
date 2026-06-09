@@ -110,45 +110,49 @@ async function fetchKosdaqStocks(sortType: string, count: number): Promise<Stock
   return all;
 }
 
-// DART API: 회사명으로 공시 검색
-async function searchDartDisclosures(corpName: string): Promise<any[]> {
+// DART corp_code 매핑 로드
+let dartCorpMap: Map<string, string> = new Map();
+try {
+  const mapPath = path.join(__dirname, "..", "data", "dart-corp-codes.json");
+  if (fs.existsSync(mapPath)) {
+    const mapData: { corp_code: string; name: string; stock_code: string }[] =
+      JSON.parse(fs.readFileSync(mapPath, "utf-8"));
+    for (const item of mapData) dartCorpMap.set(item.stock_code, item.corp_code);
+  }
+} catch {}
+
+// DART API: stock_code → corp_code → 12개월 공시 검색
+async function searchDartDisclosures(stockCode: string): Promise<any[]> {
   if (!DART_API_KEY) return [];
+  const corpCode = dartCorpMap.get(stockCode);
+  if (!corpCode) return [];
 
   const today = new Date();
   const oneYearAgo = new Date(today);
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
   const bgnDe = oneYearAgo.toISOString().slice(0, 10).replace(/-/g, "");
   const endDe = today.toISOString().slice(0, 10).replace(/-/g, "");
 
-  // 관심 공시 유형만 검색 (B: 주요사항보고, F: 외부감사, I: 거래소공시)
   const results: any[] = [];
-
   for (const pblntfTy of ["B", "F", "I"]) {
     try {
-      const url = `${DART_BASE}/list.json?crtfc_key=${DART_API_KEY}&bgn_de=${bgnDe}&end_de=${endDe}&pblntf_ty=${pblntfTy}&corp_cls=K&page_count=50`;
+      const url = `${DART_BASE}/list.json?crtfc_key=${DART_API_KEY}&corp_code=${corpCode}&bgn_de=${bgnDe}&end_de=${endDe}&pblntf_ty=${pblntfTy}&page_count=100`;
       const res = await fetch(url);
       const data = await res.json();
-
       if (data.status === "000" && data.list) {
         for (const item of data.list) {
-          // 회사명 부분 매칭
-          if (item.corp_name && item.corp_name.includes(corpName)) {
-            results.push({
-              corpName: item.corp_name,
-              reportName: item.report_nm,
-              rceptNo: item.rcept_no,
-              date: item.rcept_dt,
-              type: pblntfTy,
-            });
-          }
+          results.push({
+            corpName: item.corp_name,
+            reportName: item.report_nm,
+            rceptNo: item.rcept_no,
+            date: item.rcept_dt,
+            type: pblntfTy,
+          });
         }
       }
     } catch {}
-    // rate limit 방지
     await new Promise((r) => setTimeout(r, 100));
   }
-
   return results;
 }
 
@@ -311,7 +315,7 @@ async function main() {
 
     let dartDisclosures: any[] = [];
     if (DART_API_KEY && dartCalls < 30) {
-      dartDisclosures = await searchDartDisclosures(stock.name);
+      dartDisclosures = await searchDartDisclosures(stock.code);
       dartCalls++;
     }
 
