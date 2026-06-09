@@ -141,16 +141,16 @@ export default function HomePage() {
       </div>
 
       {/* 실시간 검색어 + 메인 콘텐츠 */}
-      <div className="grid gap-6 lg:grid-cols-4">
-        {/* 왼쪽 사이드바: 실검 랭킹 + 핀보드 */}
+      <div className="grid gap-6 lg:grid-cols-5">
+        {/* 왼쪽 사이드바 */}
         <div className="lg:col-span-1 space-y-4">
           <TrendingSearches onSelect={(q) => { setQuery(q); doSearch(q); }} />
           <PersonSearchRank onSelect={(q) => { setQuery(q); doSearch(q); }} />
           <PinboardPanel />
         </div>
 
-        {/* 중앙: 그래프 + 분석 */}
-        <div className="lg:col-span-2 space-y-4">
+        {/* 중앙: 그래프 + 공시 */}
+        <div className="lg:col-span-3 space-y-4">
           {/* 그래프 */}
           <div className="relative rounded-xl border border-[var(--border)] overflow-hidden">
             {graphData && graphData.nodes.length > 0 ? (
@@ -209,7 +209,7 @@ export default function HomePage() {
 
         </div>
 
-        {/* 오른쪽: DART 챗봇 */}
+        {/* 우측: DART 챗봇 */}
         <div className="lg:col-span-1">
           <ChatPanel />
         </div>
