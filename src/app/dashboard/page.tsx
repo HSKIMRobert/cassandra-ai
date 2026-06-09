@@ -140,6 +140,9 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">코스닥 주가 영향 검토 시그널</h1>
+          <p className="text-[10px] text-[var(--text-muted)] mt-0.5 leading-relaxed">
+            Toss Securities API × DART OpenAPI × LLM — 투자 리스크 모니터링 툴
+          </p>
           <p className="text-xs text-[var(--text-muted)] mt-0.5">
             시총 5,000억 미만 100종목 · DART 실공시 분석 · SPAC 제외
           </p>

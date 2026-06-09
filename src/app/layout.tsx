@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CASSANDRA AI — LLM-Powered Distressed Company Disclosure Intelligence",
-  description: "DART 공시 기반 한계기업 관계망 추적 및 이상 탐지 시스템",
+  title: "CASSANDRA AI — Toss × DART × LLM 투자 리스크 모니터링",
+  description: "코스닥 시장 공시·거래 데이터 분석, 이상 징후 탐지, 관계망 분석 시스템",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </span>
               <span className="text-xs text-[var(--text-muted)] hidden sm:inline">
                 AI
+              </span>
+              <span className="hidden lg:inline text-[10px] text-[var(--text-muted)] ml-2 pl-2 border-l border-[var(--border)]">
+                Toss × DART × LLM 리스크 모니터링
               </span>
             </a>
             <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
