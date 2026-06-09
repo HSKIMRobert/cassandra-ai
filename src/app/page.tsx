@@ -56,9 +56,6 @@ export default function HomePage() {
     else setPersonResults(null);
     if (searchRes.knowledge?.length > 0) setKnowledgePopup(searchRes.knowledge[0]);
 
-    // 지식베이스 별도 확인
-    const searchRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`).then((r) => r.json());
-    if (searchRes.knowledge?.length > 0) setKnowledgePopup(searchRes.knowledge[0]);
     if (graphRes.cached) {
       setCacheAge(graphRes.cacheAge || 0);
       setCacheStale(graphRes.cacheStale || false);
