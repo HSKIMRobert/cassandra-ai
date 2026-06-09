@@ -46,6 +46,7 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState<Record<string, StockItem[]>>({});
   const [dartSections, setDartSections] = useState<Record<string, any>>({});
   const [dartCounts, setDartCounts] = useState<Record<string, number>>({});
+  const [dailyReport, setDailyReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -56,12 +57,14 @@ export default function DashboardPage() {
   useEffect(() => {
     Promise.all([
       fetch("/api/kosdaq-data?file=kosdaq-anomaly-report").then((r) => r.json()),
+      fetch("/api/kosdaq-data?file=daily-report").then((r) => r.json()).catch(() => null),
       ...CATEGORIES.map((c) => fetch(`/api/kosdaq-data?file=kosdaq-${c.key}`).then((r) => r.json())),
       ...DART_SECTIONS.map((d) => fetch(`/api/kosdaq-data?file=${d.file}`).then((r) => r.json())),
-    ]).then(([report, ...rest]) => {
+    ]).then(([report, daily, ...rest]) => {
       const catData = rest.slice(0, CATEGORIES.length);
       const dartData = rest.slice(CATEGORIES.length);
       setAllStocks(report.stocks || []);
+      setDailyReport(daily);
       const catMap: Record<string, StockItem[]> = {};
       CATEGORIES.forEach((c, i) => { catMap[c.key] = Array.isArray(catData[i]) ? catData[i] : []; });
       setCategories(catMap);
@@ -148,6 +151,52 @@ export default function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* 일일 고위험 리포트 */}
+      {dailyReport?.highRisk?.length > 0 && (
+        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+            <span className="text-sm font-bold">⚠️ 일일 고위험 시그널 (npm run daily)</span>
+            <span className="text-[10px] text-[var(--text-muted)]">
+              {dailyReport.generatedAt ? new Date(dailyReport.generatedAt).toLocaleString("ko-KR") : ""}
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-[var(--border)] text-[var(--text-muted)]">
+                  <th className="text-left px-4 py-2">기업</th>
+                  <th className="text-center px-2 py-2">점수</th>
+                  <th className="text-left px-2 py-2">신호</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {dailyReport.highRisk.slice(0, 10).map((r: any, i: number) => (
+                  <tr key={i} className="hover:bg-[var(--border)]/20">
+                    <td className="px-4 py-2.5">
+                      <a href={`/?q=${encodeURIComponent(r.name)}`} className="font-medium hover:text-[var(--accent-glow)]">{r.name}</a>
+                    </td>
+                    <td className="px-2 py-2.5 text-center">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                        r.riskScore >= 70 ? 'bg-[var(--danger)]/20 text-[var(--danger-glow)]' :
+                        r.riskScore >= 40 ? 'bg-[var(--warning)]/20 text-[var(--warning)]' :
+                        'bg-[var(--accent)]/10 text-[var(--accent-glow)]'
+                      }`}>{r.riskScore}</span>
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <div className="flex flex-wrap gap-1">
+                        {r.signals?.map((s: any, j: number) => (
+                          <span key={j} className="px-1.5 py-0.5 rounded text-[9px] bg-[var(--border)]">{s.rule} {s.count}건</span>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

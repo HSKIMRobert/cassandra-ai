@@ -10,6 +10,7 @@ const ALLOWED_FILES = new Set([
   "kosdaq-lawsuits", "kosdaq-cb-issuances", "kosdaq-high-volatility",
   "kosdaq-purpose-additions",
   "dart-nameChanges-12m", "dart-majorHolderChanges-12m", "dart-purposeAdditions-12m", "dart-lawsuits-12m",
+  "daily-report",
 ]);
 
 export async function GET(req: NextRequest) {
