@@ -34,9 +34,18 @@ const CATEGORIES = [
   { key: "high-volatility", label: "고변동성 (≥30)", icon: <AlertTriangle className="w-4 h-4" />, color: "border-l-[#ff4444]" },
 ];
 
+const DART_SECTIONS = [
+  { key: "dart-nameChanges-12m", label: "DART 사명변경", file: "dart-nameChanges-12m" },
+  { key: "dart-majorHolderChanges-12m", label: "DART 대주주변경", file: "dart-majorHolderChanges-12m" },
+  { key: "dart-purposeAdditions-12m", label: "DART 사업목적추가", file: "dart-purposeAdditions-12m" },
+  { key: "dart-lawsuits-12m", label: "DART 소송/분쟁", file: "dart-lawsuits-12m" },
+];
+
 export default function DashboardPage() {
   const [allStocks, setAllStocks] = useState<StockItem[]>([]);
   const [categories, setCategories] = useState<Record<string, StockItem[]>>({});
+  const [dartSections, setDartSections] = useState<Record<string, any>>({});
+  const [dartCounts, setDartCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -44,16 +53,25 @@ export default function DashboardPage() {
   useEffect(() => {
     Promise.all([
       fetch("/api/kosdaq-data?file=kosdaq-anomaly-report").then((r) => r.json()),
-      ...CATEGORIES.map((c) =>
-        fetch(`/api/kosdaq-data?file=kosdaq-${c.key}`).then((r) => r.json())
-      ),
-    ]).then(([report, ...catData]) => {
+      ...CATEGORIES.map((c) => fetch(`/api/kosdaq-data?file=kosdaq-${c.key}`).then((r) => r.json())),
+      ...DART_SECTIONS.map((d) => fetch(`/api/kosdaq-data?file=${d.file}`).then((r) => r.json())),
+    ]).then(([report, ...rest]) => {
+      const catData = rest.slice(0, CATEGORIES.length);
+      const dartData = rest.slice(CATEGORIES.length);
       setAllStocks(report.stocks || []);
       const catMap: Record<string, StockItem[]> = {};
-      CATEGORIES.forEach((c, i) => {
-        catMap[c.key] = Array.isArray(catData[i]) ? catData[i] : [];
-      });
+      CATEGORIES.forEach((c, i) => { catMap[c.key] = Array.isArray(catData[i]) ? catData[i] : []; });
       setCategories(catMap);
+
+      const dartMap: Record<string, any> = {};
+      const counts: Record<string, number> = {};
+      DART_SECTIONS.forEach((d, i) => {
+        const data = dartData[i];
+        dartMap[d.key] = data;
+        counts[d.key] = data?.events || data?.data?.length || 0;
+      });
+      setDartSections(dartMap);
+      setDartCounts(counts);
       setLoading(false);
     });
   }, []);
@@ -101,6 +119,43 @@ export default function DashboardPage() {
           </button>
         ))}
       </div>
+
+      {/* DART 실공시 데이터 섹션 */}
+      {Object.values(dartCounts).some((c) => c > 0) && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold flex items-center gap-2">
+            📋 DART 12개월 실공시 데이터
+            <span className="text-[10px] text-[var(--text-muted)] font-normal">(LLM 학습용)</span>
+          </h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            {DART_SECTIONS.map((ds) => {
+              const data = dartSections[ds.key];
+              const events = data?.data || data?.events ? (data.data || []) : [];
+              if (!events || events.length === 0) return null;
+              return (
+                <div key={ds.key} className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+                  <div className="px-4 py-2 border-b border-[var(--border)] flex items-center justify-between">
+                    <span className="text-xs font-semibold">{ds.label}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{events.length}건</span>
+                  </div>
+                  <div className="max-h-[250px] overflow-y-auto divide-y divide-[var(--border)]">
+                    {events.slice(0, 30).map((e: any, i: number) => (
+                      <div key={i} className="px-4 py-2 text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[var(--accent-glow)] font-medium">{e.companyName}</span>
+                          <span className="text-[var(--text-muted)]">{e.date?.slice(0,4)}.{e.date?.slice(4,6)}.{e.date?.slice(6,8)}</span>
+                        </div>
+                        <p className="text-[var(--text-muted)] truncate mt-0.5">{e.reportName}</p>
+                        {e.marketCap && <span className="text-[10px] text-[var(--text-muted)]">{e.marketCap}억</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* 검색 + 탭 */}
       <div className="flex items-center gap-3">
