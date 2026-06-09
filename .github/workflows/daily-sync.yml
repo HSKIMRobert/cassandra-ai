@@ -5,16 +5,17 @@ on:
     paths:
       - ".github/workflows/daily-sync.yml"
   schedule:
-    - cron: "0 0 * * *"   # 매일 09:00 KST (UTC 00:00)
-    - cron: "0 9 * * *"   # 매일 18:00 KST (UTC 09:00)
-  workflow_dispatch:       # 수동 실행도 가능
+    - cron: "0 0 * * *"
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+    inputs:
+      dart_key:
+        description: "DART API Key"
+        required: false
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DART_API_KEY: ${{ secrets.DART_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,15 +23,13 @@ jobs:
           node-version: 22
       - run: npm install
       - run: npx prisma generate
-      - name: Debug env
-        run: |
-          if [ -z "$DATABASE_URL" ]; then echo "DATABASE_URL is EMPTY"; else echo "DATABASE_URL is SET (length: ${#DATABASE_URL})"; fi
-          if [ -z "$DART_API_KEY" ]; then echo "DART_API_KEY is EMPTY"; else echo "DART_API_KEY is SET (length: ${#DART_API_KEY})"; fi
       - name: Run daily sync
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DART_API_KEY: ${{ secrets.DART_API_KEY }}
-        run: npx tsx scripts/daily-sync.ts
+        run: |
+          echo "DB: ${#DATABASE_URL} chars, DART: ${#DART_API_KEY} chars"
+          npx tsx scripts/daily-sync.ts
       - name: Commit updated data
         run: |
           git config user.name "github-actions"
