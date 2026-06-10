@@ -119,6 +119,24 @@ async function main() {
           },
         }).catch(() => {});
         saved++;
+
+        // Corp 생성 + 관계 연결
+        if (item.corp_code) {
+          const corp = await prisma.corp.upsert({
+            where: { corpCode: item.corp_code },
+            update: { companyName: item.corp_name || "", stockCode: item.stock_code },
+            create: { corpCode: item.corp_code, stockCode: item.stock_code, companyName: item.corp_name || "", market: "KOSDAQ" },
+          }).catch(() => null);
+          if (corp) {
+            await prisma.corpPersonRelation.create({
+              data: {
+                personId: (await prisma.person.findUnique({ where: { personUid } }))?.id || "unknown",
+                corpId: corp.id, role, since: eventDate,
+                description: `${info.name} (${role}, DART ${item.rcept_no})`,
+              },
+            }).catch(() => {});
+          }
+        }
       }
     }
 

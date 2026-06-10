@@ -1,0 +1,106 @@
+{
+  "type": "person",
+  "query": "오종원",
+  "period": 12,
+  "generatedAt": "2026-06-10T14:25:06.504Z",
+  "resultCount": 3,
+  "results": {
+    "persons": [
+      {
+        "type": "DB",
+        "name": "오종원",
+        "personUid": "P-REAL-001",
+        "birthDate": "1972.03.29",
+        "flags": [
+          "stock_celebrity",
+          "manipulation_suspect"
+        ],
+        "bio": "전 (주)사이월드제트 CFO, 현 (주)인트로메딕 상무이사, CBI CB 발행 관여",
+        "companies": [
+          {
+            "companyName": "CBI",
+            "corpCode": "01329001",
+            "role": "CEO",
+            "description": "CBI 대표이사, CB 발행 주도"
+          },
+          {
+            "companyName": "인트로메딕",
+            "corpCode": "15084001",
+            "role": "INSIDER",
+            "description": "인트로메딕 CB 인수 관여 (SPC 통해)"
+          }
+        ],
+        "sameNameCount": 2,
+        "sameNameNote": "1972.03.29 — 전 사이월드제트 CFO, 현 인트로메딕 상무이사. CBI CB 발행 관여. 블랙리스트 등록됨"
+      },
+      {
+        "type": "DB",
+        "name": "오종원",
+        "personUid": "P-REAL-001B",
+        "birthDate": "1985.08.10",
+        "flags": [],
+        "bio": "(주)테크솔루션 개발이사 — 동명이인, CBI/인트로메딕과 무관",
+        "companies": [],
+        "sameNameCount": 2,
+        "sameNameNote": "1972.03.29 — 전 사이월드제트 CFO, 현 인트로메딕 상무이사. CBI CB 발행 관여. 블랙리스트 등록됨"
+      }
+    ],
+    "filings": [
+      {
+        "companyName": "CBI",
+        "filings": [
+          {
+            "title": "임원변경 (대표이사 오종원 선임)",
+            "date": "2021-03-15",
+            "type": "DIRECTOR_CHANGE"
+          }
+        ],
+        "totalFilings": 1
+      }
+    ],
+    "ranking": [
+      {
+        "query": "신승수",
+        "count": 10,
+        "lastSearched": "2026-06-10T13:00:33.936Z"
+      },
+      {
+        "query": "김준범",
+        "count": 8,
+        "lastSearched": "2026-06-09T15:00:00.000Z"
+      },
+      {
+        "query": "오종원",
+        "count": 5,
+        "lastSearched": "2026-06-10T14:25:06.402Z"
+      },
+      {
+        "query": "배상윤",
+        "count": 4,
+        "lastSearched": "2026-06-09T14:30:00.000Z"
+      },
+      {
+        "query": "이준민",
+        "count": 2,
+        "lastSearched": "2026-06-09T10:00:00.000Z"
+      },
+      {
+        "query": "박정규",
+        "count": 2,
+        "lastSearched": "2026-06-09T11:00:00.000Z"
+      },
+      {
+        "query": "안상현",
+        "count": 2,
+        "lastSearched": "2026-06-09T13:00:00.000Z"
+      },
+      {
+        "query": "홍길동",
+        "count": 1,
+        "lastSearched": "2026-06-10T13:02:48.837Z"
+      }
+    ],
+    "totalResults": 3,
+    "canScrape": false
+  }
+}
