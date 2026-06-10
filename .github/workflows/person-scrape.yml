@@ -3,32 +3,20 @@ name: Person Search Scraper
 on:
   workflow_dispatch:
     inputs:
-      name:
-        description: "검색할 인물명"
-        required: true
-      period:
-        description: "검색 기간(개월)"
-        required: false
-        default: "12"
+      name: { description: "검색할 인물명", required: true }
+      period: { description: "검색 기간(개월)", required: false, default: "12" }
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    permissions:
-      contents: write
+    permissions: { contents: write }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm install
-      - name: Install Chromium deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser libnss3 libnspr4 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64
-      - run: npm install puppeteer
-      - run: npx prisma generate
+      - name: Install Chromium
+        run: npx puppeteer browsers install chrome
       - name: Scrape DART
         run: node scripts/scrape-person.js "${{ inputs.name }}" "${{ inputs.period }}"
       - name: Commit results
