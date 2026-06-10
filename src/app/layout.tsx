@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
+import UsageBanner from "@/components/UsageBanner";
 
 export const metadata: Metadata = {
   title: "CASSANDRA AI — Toss × DART × LLM 투자 리스크 모니터링",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <body>
         <Header />
+        <UsageBanner />
         <main className="max-w-7xl mx-auto px-4 py-6">
           {children}
         </main>

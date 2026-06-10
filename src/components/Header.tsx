@@ -7,6 +7,7 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [usageWarning, setUsageWarning] = useState(false);
 
   const checkAuth = useCallback(() => {
     setLoggedIn(document.cookie.includes("session="));
