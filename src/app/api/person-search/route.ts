@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
     }
   }
   const dedupedResults = [...deduped.values()];
+  let filingList: any[] = [];
 
   // 1.5 PersonHistory에서도 검색 (이력 데이터)
   if (dedupedResults.length === 0) {
