@@ -30,6 +30,21 @@ export default function PersonSearchPage() {
     setScraping(false);
   };
 
+  const handleScrape = async () => {
+    setScraping(true);
+    try {
+      await fetch("https://api.github.com/repos/gameworkerkim/cassandra-ai/actions/workflows/person-scrape.yml/dispatches", {
+        method: "POST",
+        headers: { "Accept": "application/vnd.github+json" },
+        body: JSON.stringify({ ref: "main", inputs: { name: name.trim(), period: String(period) } }),
+      });
+    } catch {}
+    setTimeout(async () => {
+      setResults(await fetch("/api/person-search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: name.trim(), period, scrape: true }) }).then(r => r.json()));
+      setScraping(false);
+    }, 60000);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -83,17 +98,17 @@ export default function PersonSearchPage() {
               <p className="text-xs text-[var(--warning)] mb-2">
                 DB 캐시(541개사)에서 결과가 없습니다
               </p>
-              <button
-                onClick={() => handleSearch(true)}
-                disabled={scraping}
-                className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-medium hover:opacity-90 disabled:opacity-50"
-              >
-                {scraping ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> GitHub Actions로 검색 요청 중...</span>
-                ) : (
-                  "추가로 확장 검색할까요? (GitHub Actions에서 DART 웹사이트 검색)"
-                )}
-              </button>
+                <button
+                  onClick={handleScrape}
+                  disabled={scraping}
+                  className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-medium hover:opacity-90 disabled:opacity-50"
+                >
+                  {scraping ? (
+                    <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> DART 공시에서 추가 검색 중...</span>
+                  ) : (
+                    "DART 공시에서 추가 검색합니다"
+                  )}
+                </button>
             </div>
           )}
 

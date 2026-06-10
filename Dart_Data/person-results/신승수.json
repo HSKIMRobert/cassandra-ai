@@ -1,0 +1,223 @@
+{
+  "type": "person",
+  "query": "신승수",
+  "period": 12,
+  "generatedAt": "2026-06-10T13:00:33.942Z",
+  "resultCount": 8,
+  "results": {
+    "persons": [
+      {
+        "type": "DB",
+        "name": "신승수",
+        "personUid": "P-REAL-002B",
+        "birthDate": "1974.01.08",
+        "flags": [
+          "suspicious",
+          "possible_same_person_P-REAL-002"
+        ],
+        "bio": "스틱인베스트먼트 계열사임원 (대량보유 보고) — 신승수(1973.02.06)와 동명이인 가능성 있음",
+        "companies": [
+          {
+            "companyName": "스틱인베스트먼트",
+            "corpCode": "STKIN001",
+            "role": "INSIDER",
+            "description": "계열사임원, 대량보유 보고 (생년월일 1974.01.08)"
+          }
+        ],
+        "sameNameCount": 2,
+        "sameNameNote": "P-REAL-002: 1973.02.06 (이엠앤아이·CBI·제이케이시냅스 등) / P-REAL-002B: 1974.01.08 (스틱인베스트먼트) — 생년월일 공시 불일치, 동일인 가능성 검토 필요"
+      },
+      {
+        "type": "DB",
+        "name": "신승수",
+        "personUid": "P-REAL-002",
+        "birthDate": "1973.02.06",
+        "flags": [
+          "stock_celebrity",
+          "manipulation_suspect"
+        ],
+        "bio": "이엠앤아이 사내이사(소수주주 측), 전 CBI 사내이사, 제이케이시냅스 사내이사·CB 매수, 티쓰리 기타비상무이사, CG인바이츠 공동대표, 헬스커넥트 사내이사, 스틱인베스트먼트 계열사임원 — 다수 코스닥 기업 등기임원 겸직 및 CB 투자",
+        "companies": [
+          {
+            "companyName": "CBI",
+            "corpCode": "01329001",
+            "role": "DIRECTOR",
+            "description": "CBI 사내이사 (2021-2024)"
+          },
+          {
+            "companyName": "인트로메딕",
+            "corpCode": "15084001",
+            "role": "LARGEST_HOLDER",
+            "description": "인트로메딕 최대주주 변경 관여"
+          },
+          {
+            "companyName": "이엠앤아이",
+            "corpCode": "EMNI0001",
+            "role": "DIRECTOR",
+            "description": "사내이사 (소수주주 측 제안, 3.50% 지분 보유)"
+          },
+          {
+            "companyName": "이엠앤아이",
+            "corpCode": "EMNI0001",
+            "role": "LARGEST_HOLDER",
+            "description": "주주 (746,688주, 3.50%)"
+          },
+          {
+            "companyName": "제이케이시냅스",
+            "corpCode": "JKSYN001",
+            "role": "DIRECTOR",
+            "description": "사내이사 (2024.08 임시주총 선임)"
+          },
+          {
+            "companyName": "티쓰리",
+            "corpCode": "T3COR001",
+            "role": "DIRECTOR",
+            "description": "기타비상무이사 (2023.03 정기주총 선임, ~2024 사임)"
+          },
+          {
+            "companyName": "CG인바이츠",
+            "corpCode": "CGINV001",
+            "role": "CEO",
+            "description": "공동대표이사 (2023.04 선임)"
+          },
+          {
+            "companyName": "헬스커넥트",
+            "corpCode": "HLCON001",
+            "role": "DIRECTOR",
+            "description": "사내이사 (2026.03 정기주총 선임)"
+          },
+          {
+            "companyName": "코이엠앤아이",
+            "corpCode": "KOEM001",
+            "role": "INSIDER",
+            "description": "경영권 분쟁 소송 원고(신청인), 주주총회소집허가 신청"
+          }
+        ],
+        "sameNameCount": 2,
+        "sameNameNote": "P-REAL-002: 1973.02.06 (이엠앤아이·CBI·제이케이시냅스 등) / P-REAL-002B: 1974.01.08 (스틱인베스트먼트) — 생년월일 공시 불일치, 동일인 가능성 검토 필요"
+      }
+    ],
+    "filings": [
+      {
+        "companyName": "이엠앤아이",
+        "filings": [
+          {
+            "title": "임시주주총회 결과 — 신승수 선임안 미결",
+            "date": "2026-06-04",
+            "type": "SHAREHOLDER_MEETING_RESULT"
+          },
+          {
+            "title": "의결권대리행사권유 — 사내이사 신승수 선임",
+            "date": "2026-05-04",
+            "type": "PROXY_SOLICIT"
+          },
+          {
+            "title": "분기보고서 — 신승수 3.50% 지분",
+            "date": "2025-05-15",
+            "type": "EQUITY_DISCLOSURE"
+          }
+        ],
+        "totalFilings": 3
+      },
+      {
+        "companyName": "헬스커넥트",
+        "filings": [
+          {
+            "title": "정기주총 결과 — 사내이사 신승수 선임",
+            "date": "2026-03-26",
+            "type": "DIRECTOR_CHANGE"
+          }
+        ],
+        "totalFilings": 1
+      },
+      {
+        "companyName": "스틱인베스트먼트",
+        "filings": [
+          {
+            "title": "임원·주요주주 소유주식 변동 — 신승수",
+            "date": "2025-07-21",
+            "type": "EQUITY_DISCLOSURE"
+          },
+          {
+            "title": "대량보유 상황보고 — 신승수 포함",
+            "date": "2025-07-21",
+            "type": "MASS_HOLDING"
+          }
+        ],
+        "totalFilings": 2
+      },
+      {
+        "companyName": "제이케이시냅스",
+        "filings": [
+          {
+            "title": "임시주주총회 결과 — 사내이사 신승수 선임",
+            "date": "2024-08-05",
+            "type": "DIRECTOR_CHANGE"
+          }
+        ],
+        "totalFilings": 1
+      },
+      {
+        "companyName": "CBI",
+        "filings": [
+          {
+            "title": "임원변경 (신승수 사임)",
+            "date": "2024-06-30",
+            "type": "DIRECTOR_CHANGE"
+          }
+        ],
+        "totalFilings": 1
+      },
+      {
+        "companyName": "CG인바이츠",
+        "filings": [
+          {
+            "title": "대표이사 변경 — 신승수 공동대표 선임",
+            "date": "2023-04-01",
+            "type": "DIRECTOR_CHANGE"
+          }
+        ],
+        "totalFilings": 1
+      }
+    ],
+    "ranking": [
+      {
+        "query": "신승수",
+        "count": 10,
+        "lastSearched": "2026-06-10T13:00:33.936Z"
+      },
+      {
+        "query": "김준범",
+        "count": 8,
+        "lastSearched": "2026-06-09T15:00:00.000Z"
+      },
+      {
+        "query": "배상윤",
+        "count": 4,
+        "lastSearched": "2026-06-09T14:30:00.000Z"
+      },
+      {
+        "query": "오종원",
+        "count": 3,
+        "lastSearched": "2026-06-09T12:00:00.000Z"
+      },
+      {
+        "query": "이준민",
+        "count": 2,
+        "lastSearched": "2026-06-09T10:00:00.000Z"
+      },
+      {
+        "query": "박정규",
+        "count": 2,
+        "lastSearched": "2026-06-09T11:00:00.000Z"
+      },
+      {
+        "query": "안상현",
+        "count": 2,
+        "lastSearched": "2026-06-09T13:00:00.000Z"
+      }
+    ],
+    "totalResults": 8,
+    "canScrape": false
+  }
+}
