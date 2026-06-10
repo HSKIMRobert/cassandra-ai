@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, User, Clock, FileText, Loader2, AlertTriangle } from "lucide-react";
+import { Search, User, Clock, FileText, Loader2 } from "lucide-react";
 
 const PERIODS = [
   { label: "1년", months: 12 },
@@ -108,20 +108,37 @@ export default function PersonSearchPage() {
 
           {results.canScrape && (
             <div className="p-4 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20 text-center">
-              <p className="text-xs text-[var(--warning)] mb-2">
-                DB 캐시(541개사)에서 결과가 없습니다
+              <p className="text-xs text-[var(--warning)] mb-3">
+                DB 캐시에 없는 인물입니다. DART 공시통합검색에서 직접 찾아볼까요?
               </p>
-                <button
-                  onClick={handleScrape}
-                  disabled={scraping}
-                  className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-medium hover:opacity-90 disabled:opacity-50"
-                >
-                  {scraping ? (
-                    <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> DART 공시에서 추가 검색 중...</span>
-                  ) : (
-                    "DART 공시에서 추가 검색합니다"
-                  )}
-                </button>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-xs text-[var(--text-muted)]">검색 기간:</span>
+                {PERIODS.map((p) => (
+                  <button
+                    key={p.months}
+                    onClick={() => setPeriod(p.months)}
+                    disabled={scraping}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      period === p.months
+                        ? "bg-[var(--accent)] text-white"
+                        : "bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)]"
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={handleScrape}
+                disabled={scraping}
+                className="mt-3 px-6 py-2.5 rounded-lg bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90 disabled:opacity-50"
+              >
+                {scraping ? (
+                  <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> DART 웹사이트 검색 중 (약 1~2분 소요)...</span>
+                ) : (
+                  `DART 공시통합검색에서 ${PERIODS.find(p => p.months === period)?.label}간 찾기`
+                )}
+              </button>
             </div>
           )}
 
@@ -190,10 +207,8 @@ export default function PersonSearchPage() {
       )}
 
       {!results && !loading && (
-        <div className="p-4 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20 text-xs text-[var(--warning)]">
-          <AlertTriangle className="w-3 h-3 inline mr-1" />
-          DART OpenAPI는 인물명 검색을 지원하지 않습니다. DB에 캐싱된 공시(2,630건)와 DART 실시간(3개월) 기준으로 검색합니다.
-          장기 검색은 <a href="https://dart.fss.or.kr/dsab007/main.do" target="_blank" className="underline">DART 공시통합검색</a> 을 이용하세요.
+        <div className="p-4 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-xs text-[var(--text-muted)] text-center">
+          인물명을 입력하고 검색 버튼을 클릭하세요
         </div>
       )}
     </div>
