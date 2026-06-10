@@ -1,9 +1,8 @@
 /**
  * DART 웹사이트 인물명 검색 (Puppeteer)
  * OpenAPI 미지원 → dsab007 본문 검색 스크래핑
+ * ※ GitHub Actions 전용, Vercel 서버리스에서는 실행 불가
  */
-
-import puppeteer from "puppeteer";
 
 export interface DartPersonResult {
   companyName: string;
@@ -19,7 +18,9 @@ export async function searchDartPerson(
   endDate: string,
   maxResults = 20
 ): Promise<DartPersonResult[]> {
-  const browser = await puppeteer.launch({
+  // GitHub Actions에서만 puppeteer 사용 가능
+  const puppeteer = await import("puppeteer");
+  const browser = await puppeteer.default.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
   });
