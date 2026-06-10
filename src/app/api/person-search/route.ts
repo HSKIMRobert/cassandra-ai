@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { toJSON } from "@/lib/serialize";
+import { getCache, setCache } from "@/lib/redis-cache";
 import fs from "fs";
 import path from "path";
 
@@ -20,6 +21,11 @@ function saveRanking(ranking: any[]) {
 export async function POST(req: NextRequest) {
   const { name, period = 12 } = await req.json();
   if (!name?.trim()) return NextResponse.json({ error: "이름을 입력하세요" }, { status: 400 });
+
+  // 캐시 확인
+  const cacheKey = `person:${name.trim()}:${period}`;
+  const cached = await getCache(cacheKey);
+  if (cached) return NextResponse.json(toJSON({ ...cached.data, cached: true }));
 
   const results: any[] = [];
 
@@ -101,6 +107,31 @@ export async function POST(req: NextRequest) {
     filings: r.filings.slice(0, 5),
   }));
 
+  // 2.5 결과 부족 시 Puppeteer DART 스크래핑
+  if (dedupedResults.length === 0 && filingList.length === 0) {
+    try {
+      const { searchDartPerson } = await import("@/lib/dart-scraper");
+      const today = new Date();
+      const start = new Date(today.getFullYear() - Math.floor(period / 12), today.getMonth(), today.getDate())
+        .toISOString().slice(0, 10).replace(/-/g, "");
+      const end = today.toISOString().slice(0, 10).replace(/-/g, "");
+
+      const scraped = await searchDartPerson(name.trim(), start, end, 20);
+      const grouped = new Map<string, any[]>();
+      for (const item of scraped) {
+        const key = item.companyName || "알수없음";
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key)!.push(item);
+      }
+      for (const [company, items] of grouped) {
+        filingList.push({
+          companyName: company, totalFilings: items.length, source: "DART 스크래핑",
+          filings: items.map((item) => ({ title: item.reportName, date: item.date, rceptNo: item.rceptNo })),
+        });
+      }
+    } catch {}
+  }
+
   // 3. 랭킹 업데이트
   const ranking = loadRanking();
   const existing = ranking.find((r) => r.query === name.trim());
@@ -113,12 +144,15 @@ export async function POST(req: NextRequest) {
   ranking.sort((a, b) => b.count - a.count);
   saveRanking(ranking.slice(0, 20));
 
-  return NextResponse.json(toJSON({
+  const result = {
     persons: dedupedResults,
     filings: filingList,
     ranking: ranking.slice(0, 10),
-    totalResults: results.length + filingList.length,
-  }));
+    totalResults: dedupedResults.length + filingList.length,
+  };
+
+  await setCache(cacheKey, result);
+  return NextResponse.json(toJSON(result));
 }
 
 export async function GET() {
