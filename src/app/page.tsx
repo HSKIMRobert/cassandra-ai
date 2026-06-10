@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Search, Loader2, Building2, User, Landmark, AlertTriangle, TrendingDown, ShieldAlert, ExternalLink, X, Pin } from "lucide-react";
 import dynamic from "next/dynamic";
 import TrendingSearches from "@/components/TrendingSearches";
@@ -31,6 +31,8 @@ export default function HomePage() {
   const [selectedNode, setSelectedNode] = useState<NodeDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [knowledgePopup, setKnowledgePopup] = useState<any>(null);
+  const [searchTimeout, setSearchTimeout] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   const doSearch = useCallback(async (q: string, force = false) => {
     if (!q.trim()) {
@@ -44,25 +46,45 @@ export default function HomePage() {
     }
     setLoading(true);
     setSelectedNode(null);
-    const params = new URLSearchParams({ q });
-    if (force) params.set("refresh", "1");
-    const graphRes = await fetch(`/api/graph?${params}`).then((r) => r.json());
-    setGraphData(graphRes);
-    if (graphRes.filings) setDisclosureSummary(graphRes.filings);
-    else setDisclosureSummary(null);
+    setSearchTimeout(false);
 
-    // 인물 검색 결과
-    const searchRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`).then((r) => r.json());
-    if (searchRes.persons?.length > 0) setPersonResults(searchRes.persons);
-    else setPersonResults(null);
-    if (searchRes.knowledge?.length > 0) setKnowledgePopup(searchRes.knowledge[0]);
+    // 이전 검색 취소
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-    if (graphRes.cached) {
-      setCacheAge(graphRes.cacheAge || 0);
-      setCacheStale(graphRes.cacheStale || false);
-    } else { setCacheAge(null); setCacheStale(false); }
-    setLoading(false);
+    // 5초 타임아웃
+    const timeoutId = setTimeout(() => setSearchTimeout(true), 5000);
+
+    try {
+      const params = new URLSearchParams({ q });
+      if (force) params.set("refresh", "1");
+      const graphRes = await fetch(`/api/graph?${params}`, { signal: controller.signal }).then((r) => r.json());
+      setGraphData(graphRes);
+      if (graphRes.filings) setDisclosureSummary(graphRes.filings);
+      else setDisclosureSummary(null);
+
+      const searchRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal: controller.signal }).then((r) => r.json());
+      if (searchRes.persons?.length > 0) setPersonResults(searchRes.persons);
+      else setPersonResults(null);
+      if (searchRes.knowledge?.length > 0) setKnowledgePopup(searchRes.knowledge[0]);
+
+      if (graphRes.cached) { setCacheAge(graphRes.cacheAge || 0); setCacheStale(graphRes.cacheStale || false); }
+      else { setCacheAge(null); setCacheStale(false); }
+    } catch (err: any) {
+      if (err.name === "AbortError") return; // 사용자 취소
+    } finally {
+      clearTimeout(timeoutId);
+      setLoading(false);
+      setSearchTimeout(false);
+    }
   }, []);
+
+  const cancelSearch = () => {
+    if (abortRef.current) abortRef.current.abort();
+    setLoading(false);
+    setSearchTimeout(false);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => doSearch(query), 300);
@@ -139,6 +161,25 @@ export default function HomePage() {
           <span className="text-[10px] text-[var(--text-muted)] self-center">{cacheAge}분 전 캐시</span>
         )}
       </div>
+
+      {/* 검색 지연 팝업 */}
+      {searchTimeout && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+          <div className="bg-[var(--bg)] border border-[var(--border)] rounded-xl p-6 shadow-2xl max-w-sm mx-4 text-center space-y-4">
+            <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-glow)] mx-auto" />
+            <p className="text-sm font-medium">검색이 지연 중입니다</p>
+            <p className="text-xs text-[var(--text-muted)]">더 진행할까요?</p>
+            <div className="flex gap-2 justify-center">
+              <button onClick={cancelSearch} className="px-4 py-2 rounded-lg bg-[var(--danger)]/20 border border-[var(--danger)]/30 text-[var(--danger-glow)] text-xs font-medium hover:bg-[var(--danger)]/30">
+                취소
+              </button>
+              <button onClick={() => setSearchTimeout(false)} className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-medium hover:opacity-90">
+                계속 진행
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 실시간 검색어 + 메인 콘텐츠 */}
       <div className="grid gap-6 lg:grid-cols-4">
