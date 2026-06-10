@@ -18,6 +18,7 @@
     "extract-kb": "tsx scripts/build-knowledge-base.ts",
     "daily": "tsx scripts/daily-sync.ts",
     "person-sync": "tsx scripts/sync-person-history.ts",
+    "elestock-sync": "tsx scripts/sync-elestock.ts",
     "logs": "node scripts/view-logs.js",
     "extract-dart": "tsx scripts/extract-dart-events.ts"
   },

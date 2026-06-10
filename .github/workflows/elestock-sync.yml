@@ -1,0 +1,29 @@
+name: Weekly ElesStock Sync
+
+on:
+  schedule:
+    - cron: "30 1 * * 1"  # 매주 월요일 10:30 KST
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install && npx prisma generate
+      - name: Sync elestock
+        run: npx tsx scripts/sync-elestock.ts
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
+          DART_API_KEY: ${{ vars.DART_API_KEY }}
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add Dart_Data/
+          git diff --staged --quiet || git commit -m "chore: elestock sync (batch rotation)"
+          git push
