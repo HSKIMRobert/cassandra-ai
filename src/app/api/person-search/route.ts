@@ -43,11 +43,35 @@ export async function POST(req: NextRequest) {
     results.push({
       type: "DB",
       name: person.name,
+      personUid: person.personUid,
       birthDate: person.birthDate,
       flags: person.flags,
       bio: person.bio,
       companies: corpList,
     });
+  }
+
+  // 동명이인 중복 제거 (name + birthDate 기준)
+  const deduped = new Map<string, any>();
+  for (const r of results) {
+    const key = `${r.name}_${r.birthDate || "unknown"}`;
+    if (deduped.has(key)) {
+      const existing = deduped.get(key);
+      existing.companies = [...existing.companies, ...r.companies];
+      existing.flags = [...new Set([...(existing.flags || []), ...(r.flags || [])])];
+    } else {
+      deduped.set(key, { ...r });
+    }
+  }
+  const dedupedResults = [...deduped.values()];
+
+  // 동명이인 그룹 정보 추가
+  for (const r of dedupedResults) {
+    const group = await prisma.sameNameGroup.findFirst({ where: { name: r.name } });
+    if (group) {
+      r.sameNameCount = group.personIds.length;
+      r.sameNameNote = group.note;
+    }
   }
 
   // 2. DB 공시에서 이름 검색
@@ -90,7 +114,7 @@ export async function POST(req: NextRequest) {
   saveRanking(ranking.slice(0, 20));
 
   return NextResponse.json(toJSON({
-    persons: results,
+    persons: dedupedResults,
     filings: filingList,
     ranking: ranking.slice(0, 10),
     totalResults: results.length + filingList.length,

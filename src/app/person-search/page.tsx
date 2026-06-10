@@ -88,9 +88,12 @@ export default function PersonSearchPage() {
                 <div key={i} className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{p.name}</span>
-                    {p.birthDate && <span className="text-xs text-[var(--text-muted)]">{p.birthDate}</span>}
+                    {p.birthDate && <span className="text-xs text-[var(--text-muted)] font-mono">{p.birthDate}</span>}
                     {p.flags?.includes("stock_celebrity") && (
                       <span className="px-1.5 py-0.5 rounded text-[9px] bg-[var(--danger)]/10 text-[var(--danger-glow)]">주식셀럽</span>
+                    )}
+                    {p.sameNameCount > 1 && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] bg-[var(--warning)]/10 text-[var(--warning)]">동명이인 {p.sameNameCount}명</span>
                     )}
                   </div>
                   {p.bio && <p className="text-xs text-[var(--text-muted)] mt-1">{p.bio}</p>}
