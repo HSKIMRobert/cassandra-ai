@@ -178,6 +178,7 @@ model BoardPost {
   targetCorp   String? // 제보 대상 회사명
   targetPerson String? // 제보 대상 인물명
   status      String   @default("PENDING") // PENDING | REVIEWED | RESOLVED
+  analysis    String?  // AI 분석 결과
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
