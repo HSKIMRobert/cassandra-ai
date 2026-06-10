@@ -9,6 +9,9 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      DART_API_KEY: ${{ vars.DART_API_KEY }}
     permissions: { contents: write }
     steps:
       - uses: actions/checkout@v4
