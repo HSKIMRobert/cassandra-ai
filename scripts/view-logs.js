@@ -5,10 +5,30 @@ async function main() {
   const p = new PrismaClient();
   const args = process.argv.slice(2);
   const limit = parseInt(args[0]) || 20;
+  const isStats = args.includes("--search-stats");
+  const isCleanup = args.includes("--cleanup");
 
+  if (isCleanup) {
+    const old = await p.searchCache.findMany({
+      where: { lastSearched: { lt: new Date(Date.now() - 100 * 86400000) } },
+    });
+    for (const c of old) {
+      try {
+        const fp = require("path").join(process.cwd(), c.githubPath);
+        if (require("fs").existsSync(fp)) require("fs").unlinkSync(fp);
+      } catch {}
+    }
+    if (old.length > 0) {
+      await p.searchCache.deleteMany({ where: { id: { in: old.map(e => e.id) } } });
+    }
+    console.log(`  ✅ ${old.length}건 정리 완료\n`);
+    await p.$disconnect();
+    return;
+  }
+
+  // 로그인 기록
   const logs = await p.loginHistory.findMany({
-    orderBy: { createdAt: "desc" },
-    take: limit,
+    orderBy: { createdAt: "desc" }, take: limit,
     include: { user: { select: { name: true } } },
   });
 
@@ -25,7 +45,6 @@ async function main() {
     console.log(`  ${time} | ${email} | ${status}   | ${ip} | ${ua}`);
   }
 
-  // 통계
   const total = await p.loginHistory.count();
   const success = await p.loginHistory.count({ where: { success: true } });
   const fail = total - success;
@@ -34,7 +53,25 @@ async function main() {
   });
   console.log(`\n  총 ${total}건 (성공 ${success}, 실패 ${fail}) | 오늘 ${today}건\n`);
 
-  // 페이지뷰 통계도 표시
+  // 검색 통계
+  if (isStats) {
+    const stats = {
+      todayTotal: await p.searchLog.count({ where: { createdAt: { gte: new Date(new Date().setHours(0,0,0,0)) } } }),
+      todayPerson: await p.searchCache.count({ where: { type: "person", lastSearched: { gte: new Date(new Date().setHours(0,0,0,0)) } } }),
+      totalCached: await p.searchCache.count(),
+      totalPersons: await p.person.count(),
+      oldEntries: await p.searchCache.count({ where: { lastSearched: { lt: new Date(Date.now() - 100 * 86400000) } } }),
+    };
+    console.log("  📊 검색 통계");
+    console.log(`  오늘 검색: ${stats.todayTotal}건`);
+    console.log(`  오늘 인명 검색: ${stats.todayPerson}건`);
+    console.log(`  캐시된 검색어: ${stats.totalCached}건`);
+    console.log(`  등록 인물: ${stats.totalPersons}명`);
+    console.log(`  100일 이상 미검색: ${stats.oldEntries}건`);
+    if (stats.oldEntries > 0) console.log(`  → 정리: npm run logs --cleanup\n`);
+  }
+
+  // 페이지뷰 통계
   const pv = await p.pageView.count();
   const pvToday = await p.pageView.count({ where: { createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } } });
   const topPages = await p.pageView.groupBy({ by: ["path"], _count: { path: true }, orderBy: { _count: { path: "desc" } }, take: 5 });
@@ -46,38 +83,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
-// 검색 통계 추가
-if (process.argv.includes("--search-stats")) {
-  const stats = {
-    todayTotal: await p.searchLog.count({ where: { createdAt: { gte: new Date(new Date().setHours(0,0,0,0)) } } }),
-    todayPerson: await p.searchCache.count({ where: { type: "person", lastSearched: { gte: new Date(new Date().setHours(0,0,0,0)) } } }),
-    totalCached: await p.searchCache.count(),
-    totalPersons: await p.person.count(),
-    oldEntries: await p.searchCache.count({ where: { lastSearched: { lt: new Date(Date.now() - 100 * 86400000) } } }),
-  };
-  console.log("\n  📊 검색 통계");
-  console.log(`  오늘 검색: ${stats.todayTotal}건`);
-  console.log(`  오늘 인명 검색: ${stats.todayPerson}건`);
-  console.log(`  캐시된 검색어: ${stats.totalCached}건`);
-  console.log(`  등록 인물: ${stats.totalPersons}명`);
-  console.log(`  100일 이상 미검색: ${stats.oldEntries}건`);
-  if (stats.oldEntries > 0) console.log(`  → 정리: npm run logs --cleanup\n`);
-}
-
-// 100일 이상 미검색 데이터 정리
-if (process.argv.includes("--cleanup")) {
-  const old = await p.searchCache.findMany({
-    where: { lastSearched: { lt: new Date(Date.now() - 100 * 86400000) } },
-  });
-  for (const c of old) {
-    try {
-      const fp = require("path").join(process.cwd(), c.githubPath);
-      if (require("fs").existsSync(fp)) require("fs").unlinkSync(fp);
-    } catch {}
-  }
-  if (old.length > 0) {
-    await p.searchCache.deleteMany({ where: { id: { in: old.map(e => e.id) } } });
-  }
-  console.log(`  ✅ ${old.length}건 정리 완료\n`);
-}
