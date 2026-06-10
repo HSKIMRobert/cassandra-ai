@@ -144,6 +144,31 @@ export async function POST(req: NextRequest) {
   ranking.sort((a, b) => b.count - a.count);
   saveRanking(ranking.slice(0, 20));
 
+  // 빈도 3회 이상 → DB + JSON 영구 저장
+  const rankEntry = ranking.find((r) => r.query === name.trim());
+  if (rankEntry && rankEntry.count >= 3) {
+    try {
+      const persistPath = path.join(process.cwd(), "Dart_Data", "person-results", `${name.trim()}.json`);
+      fs.mkdirSync(path.dirname(persistPath), { recursive: true });
+      fs.writeFileSync(persistPath, JSON.stringify({
+        name: name.trim(),
+        searchCount: rankEntry.count,
+        lastSearched: rankEntry.lastSearched,
+        results: { persons: dedupedResults, filings: filingList },
+      }, null, 2), "utf-8");
+
+      // DB에도 저장
+      const existingPerson = dedupedResults[0];
+      if (existingPerson?.name) {
+        await prisma.person.upsert({
+          where: { personUid: `P-SEARCH-${name.trim()}` },
+          update: { name: name.trim(), flags: { push: "frequent_search" } },
+          create: { personUid: `P-SEARCH-${name.trim()}`, name: name.trim(), flags: ["frequent_search"] },
+        });
+      }
+    } catch {}
+  }
+
   const result = {
     persons: dedupedResults,
     filings: filingList,
