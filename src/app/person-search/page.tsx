@@ -89,9 +89,9 @@ export default function PersonSearchPage() {
                 className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-medium hover:opacity-90 disabled:opacity-50"
               >
                 {scraping ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> DART 웹사이트 검색 중...</span>
+                  <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> GitHub Actions로 검색 요청 중...</span>
                 ) : (
-                  "추가로 확장 검색할까요? (DART 웹사이트 직접 검색)"
+                  "추가로 확장 검색할까요? (GitHub Actions에서 DART 웹사이트 검색)"
                 )}
               </button>
             </div>

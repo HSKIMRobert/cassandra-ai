@@ -1,0 +1,33 @@
+name: Person Search Scraper
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "검색할 인물명"
+        required: true
+      period:
+        description: "검색 기간(개월)"
+        required: false
+        default: "12"
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npx prisma generate
+      - name: Scrape DART
+        run: node scripts/scrape-person.js "${{ inputs.name }}" "${{ inputs.period }}"
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add Dart_Data/person-results/
+          git diff --staged --quiet || git commit -m "chore: person scrape ${{ inputs.name }}"
+          git push
