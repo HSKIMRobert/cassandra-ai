@@ -88,7 +88,7 @@ export default function PersonSearchPage() {
           ))}
         </div>
         <button
-          onClick={handleSearch}
+          onClick={() => handleSearch()}
           disabled={loading}
           className="h-12 px-6 rounded-xl bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90 disabled:opacity-50"
         >
