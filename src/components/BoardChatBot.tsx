@@ -16,22 +16,23 @@ export default function BoardChatBot() {
   }, []);
 
   const handleSubmit = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
     setLoading(true);
     setMessage("");
     try {
-      await fetch("/api/batch", {
+      const res = await fetch("/api/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetName: input.trim(), targetType: "CORP" }),
       });
-      setMessage(`✅ '${input.trim()}' 분석 요청이 게시판에 등록되었습니다.`);
-      setQueueCount(prev => prev + 1);
-      setInput("");
-      // 결과 목록 새로고침
-      fetch("/api/batch?type=done").then(r => r.json()).then(d => setResults(d.jobs || []));
+      if (res.ok) {
+        setMessage(`✅ '${input.trim()}' 분석 요청이 게시판에 등록되었습니다.`);
+        setQueueCount(prev => prev + 1);
+        setInput("");
+        fetch("/api/batch?type=done").then(r => r.json()).then(d => setResults(d.jobs || []));
+      }
     } catch {
-      setMessage("❌ 등록 실패. 다시 시도해주세요.");
+      setMessage("❌ 등록 실패");
     }
     setLoading(false);
     setTimeout(() => setMessage(""), 5000);
@@ -57,7 +58,7 @@ export default function BoardChatBot() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
             placeholder="분석을 원하는 기업, 개인을 입력하세요"
             className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs text-[var(--text)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
           />
