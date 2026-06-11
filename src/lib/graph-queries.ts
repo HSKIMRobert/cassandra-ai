@@ -69,11 +69,14 @@ export async function buildClusterGraph(query: string): Promise<GraphData> {
       const addedPersons = new Set<string>();
       for (const ph of personHistories) {
         if (addedPersons.has(ph.name)) continue;
+        // 이미 그래프에 있는 인물인지 확인
+        const existingPersonNode = [...nodes.values()].find(n => n.data.type === "person" && n.data.label === ph.name);
+        const personNodeId = existingPersonNode ? existingPersonNode.data.id : `person-history-${ph.personUid}`;
+        
+        if (!existingPersonNode) {
+          nodes.set(personNodeId, { data: { id: personNodeId, label: ph.name, type: "person" } });
+        }
         addedPersons.add(ph.name);
-        const personNodeId = `person-history-${ph.personUid}`;
-        nodes.set(personNodeId, {
-          data: { id: personNodeId, label: ph.name, type: "person" },
-        });
         edges.push({
           data: { id: `ph-${ph.personUid}-${corp.id}`, source: personNodeId, target: `corp-${corp.id}`, label: ph.role, type: "person_corp" },
         });
