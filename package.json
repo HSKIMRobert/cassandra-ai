@@ -20,6 +20,7 @@
     "person-sync": "tsx scripts/sync-person-history.ts",
     "elestock-sync": "tsx scripts/sync-elestock.ts",
     "logs": "node scripts/view-logs.js",
+    "test-graph": "tsx scripts/test-graph.ts",
     "extract-dart": "tsx scripts/extract-dart-events.ts"
   },
   "prisma": {

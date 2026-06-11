@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-11T01:17:13.533Z",
+  "generatedAt": "2026-06-11T02:31:20.374Z",
   "period": {
-    "from": "20260604",
+    "from": "20260603",
     "to": "20260611"
   },
-  "totalCompanies": 45,
-  "totalDisclosures": 75,
+  "totalCompanies": 48,
+  "totalDisclosures": 78,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -788,6 +788,22 @@
       ]
     },
     {
+      "stockCode": "015590",
+      "corpCode": "00108746",
+      "name": "DKME",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260611",
+          "rceptNo": "20260611800236",
+          "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "070300",
       "corpCode": "00683007",
       "name": "엑스큐어",
@@ -994,6 +1010,22 @@
       ]
     },
     {
+      "stockCode": "101930",
+      "corpCode": "00482426",
+      "name": "인화정공",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260611",
+          "rceptNo": "20260611900213",
+          "title": "수시공시의무관련사항(공정공시)              (주주가치 제고를 위한 중장기 주주환원 정책 안내)",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "001080",
       "corpCode": "00120872",
       "name": "만호제강",
@@ -1167,6 +1199,22 @@
           "date": "20260608",
           "rceptNo": "20260608900257",
           "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "017000",
+      "corpCode": "00136925",
+      "name": "신원종합개발",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260611",
+          "rceptNo": "20260611900224",
+          "title": "[기재정정]단일판매ㆍ공급계약체결(자율공시)              ",
           "type": "I"
         }
       ]
