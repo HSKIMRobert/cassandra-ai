@@ -46,8 +46,18 @@ async function main() {
 
   // DART 기업 매핑 로드
   const dartCorps: any[] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", "dart-corp-codes.json"), "utf-8"));
-  const SPAC = ["스팩", "SPAC", "기업인수목적"];
-  const targets = dartCorps.filter((c: any) => !SPAC.some((kw) => c.name.includes(kw)));
+  // DB에 있는 기업 + 시총 하위권 우선 (활성 기업)
+  let targets;
+  try {
+    const { PrismaClient } = require("@prisma/client");
+    const prisma = new PrismaClient();
+    const dbCorps = await prisma.corp.findMany({ select: { corpCode: true, stockCode: true, companyName: true } });
+    const dbCorpCodes = new Set(dbCorps.map((c: any) => c.corpCode));
+    targets = dartCorps.filter((c: any) => dbCorpCodes.has(c.corp_code));
+    await prisma.$disconnect();
+  } catch {
+    targets = dartCorps.filter((c: any) => !SPAC.some((kw) => c.name.includes(kw))).slice(-500);
+  }
 
   const allPersons: PersonEntry[] = [];
   const seen = new Set<string>();
