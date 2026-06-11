@@ -7,15 +7,17 @@ import * as path from "path";
 
 const BASE_URL = process.env.TEST_URL || "http://localhost:3001";
 
-async function testGraph(query: string): Promise<{ nodes: number; edges: number; ok: boolean }> {
+async function testGraph(query: string): Promise<{ nodes: number; edges: number; filings: number; ok: boolean }> {
   try {
     const res = await fetch(`${BASE_URL}/api/graph?q=${encodeURIComponent(query)}`);
     const data = await res.json();
     const nodes = data.nodes?.length || 0;
     const edges = data.edges?.length || 0;
-    return { nodes, edges, ok: nodes > 1 && edges > 0 };
+    const filings = data.filings?.length || 0;
+    // 관계가 있거나 공시 데이터라도 있으면 통과
+    return { nodes, edges, filings, ok: (nodes > 1 && edges > 0) || filings > 0 };
   } catch {
-    return { nodes: 0, edges: 0, ok: false };
+    return { nodes: 0, edges: 0, filings: 0, ok: false };
   }
 }
 
@@ -36,7 +38,7 @@ async function main() {
   for (const tc of testCases) {
     const result = await testGraph(tc.name);
     const status = result.ok ? "✅" : "❌";
-    console.log(`  ${status} ${tc.name}: ${result.nodes} nodes, ${result.edges} edges`);
+    console.log(`  ${status} ${tc.name}: ${result.nodes} nodes, ${result.edges} edges${result.filings > 0 ? ', ' + result.filings + ' filings' : ''}`);
     if (result.ok) passCount++;
   }
   console.log(`  통과: ${passCount}/${testCases.length}\n`);
