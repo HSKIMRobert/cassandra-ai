@@ -1,6 +1,35 @@
-# CASSANDRA AI — 작업 로드맵
+# CASSANDRA AI — 작업 로드맵 & 히스토리
 
-## 완료 (v0.7.0)
+## v1.0.0 (2026-06-13) — 퀀트 대시보드 정식 출시
+
+### 퀀트 대시보드
+- [x] `/quant` 비로그인 페이지 (ARDS-X · AMQS · ARDS)
+- [x] Naver Finance 실시간 NASDAQ 6종목 시그널
+- [x] 섹터별 공포·탐욕 지수 (Yahoo Finance × 10 ETF × 5시그널)
+- [x] MU(마이크론) → SK하이닉스 예측 (크로스마켓 회귀, 71% 적중)
+- [x] 14일 백테스트 리스트 (적중/미적중 + 차이 금액)
+- [x] TypeScript 퀀트 포팅 (`lib/quant-calc.ts`, `lib/sector-fear-greed.ts`, `lib/mu-hynix-predict.ts`)
+- [x] Redis 10분 캐시 + 새로고침 강제 갱신
+- [x] 백테스트 방법론 (`docs/QUANT_BACKTEST.md`)
+- [x] 차트 툴팁 가시성 개선 (어두운 배경)
+- [x] MuHynixPrediction DB 모델 + GitHub JSON 저장
+- [x] 퀀트 원본 보기 팝업 (ARDS-X, AMQS, ARDS, MU-Hynix)
+
+### 보안 강화
+- [x] 페이지뷰 Redis 캐시 + Prisma(Neon DB) 영구 저장
+- [x] Path Traversal 취약점 패치 (person-search 2건)
+- [x] 전체 코드 XSS/SQL Injection 감사 통과
+- [x] API 키·비밀번호 gitignored 검증 완료
+
+### 문서화
+- [x] README v2 — 스크린샷 3장 + 소셜 포스팅
+- [x] SERVICE_FLOW — 퀀트 + 페이지뷰 플로우
+- [x] SOCIAL_POSTS.md — LinkedIn·Facebook·X 포스트
+- [x] ROADMAP 히스토리 정리
+
+---
+
+## v0.7.0 (2026-06-11) — 관계망 + 인물 검색
 
 - [x] 관계망 그래프 (Cytoscape.js) + 통합 검색
 - [x] 실시간 검색어 순위 (24시간)
@@ -30,26 +59,9 @@
 - [x] 중복 노드/관계 정리 (528건 관계, 8개사 중복)
 - [x] 관계망 테스트: 90% 통과 (100개 대시보드 기업)
 - [x] 사용 설명서 (USER_GUIDE.md)
+- [x] Upstash Redis 연동 (검색·그래프·챗봇)
 
-### 퀀트 대시보드 (2026-06-13)
-- [x] `/quant` 비로그인 페이지 (ARDS-X · AMQS · ARDS)
-- [x] Naver Finance 실시간 데이터 연동
-- [x] 시장 게이지 (공포·중립·과열) + 개별 종목 시그널
-- [x] TypeScript 퀀트 포팅 (`lib/quant-calc.ts`)
-- [x] Redis 10분 캐시 + 새로고침 강제 갱신
-- [x] 백테스트 방법론 (`docs/QUANT_BACKTEST.md`)
-- [x] 섹터별 공포·탐욕 지수 (Yahoo Finance × 10 ETF × 5시그널)
-
-### 보안 강화 (2026-06-13)
-- [x] 페이지뷰 Redis 캐시 + Prisma(Neon DB) 영구 저장
-- [x] Path Traversal 취약점 패치 (person-search 2건)
-- [x] 전체 코드 XSS/SQL Injection 감사 통과
-- [x] API 키·비밀번호 gitignored 검증 완료
-
-### 인프라
-- [x] Upstash Redis 연동 (검색·그래프·챗봇·페이지뷰·퀀트)
-- [ ] CDN 캐싱 레이어
-- [ ] OCI Always Free 크롤러 서버
+---
 
 ## 진행 중
 
@@ -63,6 +75,16 @@
 - [ ] Claude Fable 5 이상 패턴 분석
 - [ ] 다중 LLM 앙상블 → 신호 발화
 - [ ] 주식셀럽 → 시스템 프롬프트 주입
+
+### 퀀트 고도화
+- [ ] Yahoo Finance 15분 지연 → 실시간 대체
+- [ ] Toss Securities API 연동
+- [ ] MU-Hynix 경량 LSTM 예측
+- [ ] ARDS 자동 리밸런싱 GitHub Actions
+
+### 인프라
+- [ ] CDN 캐싱 레이어
+- [ ] OCI Always Free 크롤러 서버
 
 ### 보안
 - [ ] Board 비밀번호 SHA-256 → bcrypt 마이그레이션

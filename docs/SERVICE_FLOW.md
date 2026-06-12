@@ -104,10 +104,28 @@ Naver Finance API (m.stock.naver.com)
   [ARDS-X] NASDAQ Top 100 시장 국면 판단 (0~3)
   [AMQS] AI 반도체 모멘텀 — M7 7종목 집중
   [ARDS] AMQS-M7 대칭 헤지 + 안전자산
-  [백테스트] docs/QUANT_BACKTEST.md
+  [MU-Hynix] 마이크론 종가 → 하이닉스 시가 예측 (크로스마켓 회귀)
+  [백테스트] 14일 적중/미적중 리스트 (DB + GitHub JSON)
+  [백테스트 방법론] docs/QUANT_BACKTEST.md
 ```
 
-## 6. 페이지뷰 추적
+## 6. MU → 하이닉스 예측
+
+```
+Yahoo Finance (MU + 000660.KS)
+  │
+  ├─ MU 20일 수익률 → β(베타) 계산
+  ├─ Hynix 20일 수익률 → R² 계산
+  └─ MU_등락률 × |β| → 하이닉스 예측 시가
+        │
+        ▼
+  [예측] Hynix_시가 = Hynix_전일종가 × (1 + |β| × MU_등락률)
+  [저장] Prisma DB → [14일 백테스트]
+  [저장] GitHub Dart_Data/prediction/mu-hynix-predictions.json
+  [캐시] Redis 10분 TTL
+```
+
+## 7. 페이지뷰 추적
 
 ```
 사용자 방문 → POST /api/pageview → Prisma(Neon DB) 저장
