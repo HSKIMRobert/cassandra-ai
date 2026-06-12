@@ -16,13 +16,14 @@ const regimeData = [
   { date: "06/07", regime: 2 }, { date: "06/09", regime: 2 }, { date: "06/11", regime: 3 },
 ];
 
-// ARDS-X 개별 종목 평가
+// ARDS-X 개별 종목 평가 (NASDAQ Top 100 기반)
 const regimeStocks = [
-  { name: "에코프로비엠", score: 85, signal: "매수", color: "#22c55e" },
-  { name: "알테오젠", score: 72, signal: "매수", color: "#22c55e" },
-  { name: "에코프로", score: 65, signal: "관망", color: "#f59e0b" },
-  { name: "레인보우로보틱스", score: 55, signal: "관망", color: "#f59e0b" },
-  { name: "주성엔지니어링", score: 35, signal: "매도", color: "#ef4444" },
+  { name: "엔비디아", score: 92, signal: "매수", color: "#22c55e" },
+  { name: "애플", score: 85, signal: "매수", color: "#22c55e" },
+  { name: "마이크로소프트", score: 78, signal: "매수", color: "#22c55e" },
+  { name: "테슬라", score: 65, signal: "관망", color: "#f59e0b" },
+  { name: "메타", score: 55, signal: "관망", color: "#f59e0b" },
+  { name: "아마존", score: 42, signal: "매도", color: "#ef4444" },
 ];
 
 const momentumData = [
@@ -53,6 +54,7 @@ export default function QuantDashboard() {
   const [visitors, setVisitors] = useState({ today: 0, total: 0 });
   const [copied, setCopied] = useState(false);
   const [updatedAt, setUpdatedAt] = useState("");
+  const [quantPopup, setQuantPopup] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/pageview").then(r => r.json()).then(d => {
@@ -139,9 +141,12 @@ export default function QuantDashboard() {
           </div>
 
           <p className="text-[10px] text-[var(--text-muted)] mt-2 leading-relaxed">
-            <strong>ARDS-X</strong>는 변동성·거래량·모멘텀을 결합하여 시장 국면을 4단계(하락/횡보/상승/급등)로 분류합니다.
+            <strong>ARDS-X</strong>는 NASDAQ Top 100의 변동성·거래량·모멘텀을 결합하여 시장 국면을 4단계로 분류합니다.
             상승 국면에서는 공격적 비중, 하락 국면에서는 현금 비중을 늘리는 전략을 제안합니다.
           </p>
+          <button onClick={() => setQuantPopup("ardsx")} className="mt-2 text-[10px] text-[var(--accent-glow)] hover:underline">
+            📂 퀀트 원본 보기 (GitHub)
+          </button>
         </div>
 
         {/* 3. AMQS / AMQS-M7 */}
@@ -176,8 +181,10 @@ export default function QuantDashboard() {
           <p className="text-[10px] text-[var(--text-muted)] mt-2 leading-relaxed">
             <strong>AMQS (AI Momentum Quant Strategy)</strong>는 AI·반도체 섹터의 모멘텀을 추종하는 전략입니다.
             AMQS-M7은 상위 7개 종목(엔비디아·TSMC·SK하이닉스·삼성전자·ASML·AMD·퀄컴)에 집중 투자합니다.
-            모멘텀이 상승할 때 비중을 확대하고, 하락할 때 축소합니다.
           </p>
+          <button onClick={() => setQuantPopup("amqs")} className="mt-2 text-[10px] text-[var(--accent-glow)] hover:underline">
+            📂 퀀트 원본 보기 (GitHub)
+          </button>
         </div>
 
         {/* 4. ARDS 헤지 */}
@@ -215,11 +222,62 @@ export default function QuantDashboard() {
 
           <p className="text-[10px] text-[var(--text-muted)] mt-2 leading-relaxed">
             <strong>ARDS (AI Risk Diversification Strategy)</strong>는 AMQS-M7에 대한 대칭 헤지 전략입니다.
-            시장 하락 국면에서 KOSDAQ150 인버스와 국고채로 포트폴리오를 방어합니다.
             비중은 Median + 15% Cap으로 관리되어 과도한 레버리지를 방지합니다.
           </p>
+          <button onClick={() => setQuantPopup("ards")} className="mt-2 text-[10px] text-[var(--accent-glow)] hover:underline">
+            📂 퀀트 원본 보기 (GitHub)
+          </button>
         </div>
       </div>
+
+      {/* 퀀트 원본 팝업 */}
+      {quantPopup && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setQuantPopup(null)}>
+          <div className="w-full max-w-2xl max-h-[80vh] rounded-xl bg-[var(--bg)] border border-[var(--border)] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-lg">
+                {quantPopup === "ardsx" ? "ARDS-X Regime Classifier" : quantPopup === "amqs" ? "AMQS / AMQS-M7" : "ARDS 헤지 전략"}
+              </h3>
+              <button onClick={() => setQuantPopup(null)} className="p-1 rounded hover:bg-[var(--border)]">✕</button>
+            </div>
+            <div className="space-y-3 text-sm text-[var(--text-muted)]">
+              <p>📂 원본 퀀트 전략은 GitHub에서 확인하세요:</p>
+              <a href="https://github.com/gameworkerkim/vibe-investing/tree/main/01.Trading%20Strategy" target="_blank" className="text-[var(--accent-glow)] hover:underline block">
+                github.com/gameworkerkim/vibe-investing/tree/main/01.Trading Strategy
+              </a>
+              <div className="bg-[var(--surface)] rounded-lg p-4 text-xs font-mono whitespace-pre-wrap">
+                {quantPopup === "ardsx" && `# ARDS-X Regime Classifier
+# NASDAQ Top 100 기반 시장 국면 판단
+
+Regime 0: 하락 → 현금 비중 80% +
+Regime 1: 횡보 → 현금 50% + 롱 50%
+Regime 2: 상승 → 롱 80% + 현금 20%
+Regime 3: 급등 → 롱 100% (트레일링 스탑)
+
+지표: VIX, MA20/60, RSI(14), Volume SMA`}
+                {quantPopup === "amqs" && `# AMQS (AI Momentum Quant Strategy)
+# AI·반도체 섹터 모멘텀 추종
+
+AMQS-M7 구성: NVDA, TSMC, SK Hynix, Samsung, ASML, AMD, QCOM
+리밸런싱: 월 1회 (매월 1일)
+비중: 동일가중 (Equal Weight) → 모멘텀 가중
+진입: 20일 모멘텀 > 5% → 매수
+청산: 20일 모멘텀 < -5% → 매도`}
+                {quantPopup === "ards" && `# ARDS (AI Risk Diversification Strategy)
+# AMQS-M7 대칭 헤지 전략
+
+Long: AMQS-M7 (65%)
+Hedge: KOSDAQ150 Inverse (25%)
+Safe: 국고채 10년 (10%)
+
+헤지 트리거: ARDS-X Regime = 0 (하락)
+비중 캡: Median + 15% (과도한 레버리지 방지)
+리밸런싱: 주 1회 (매주 월요일)`}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 친구 추천 */}
       <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4 text-center">
