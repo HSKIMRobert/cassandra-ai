@@ -56,6 +56,7 @@ async function main() {
     targets = dartCorps.filter((c: any) => dbCorpCodes.has(c.corp_code));
     await prisma.$disconnect();
   } catch {
+    const SPAC = ["스팩", "SPAC", "기업인수목적"];
     targets = dartCorps.filter((c: any) => !SPAC.some((kw) => c.name.includes(kw))).slice(-500);
   }
 
