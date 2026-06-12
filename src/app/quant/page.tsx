@@ -78,6 +78,7 @@ export default function QuantDashboard() {
   const [gaugeData, setGaugeData] = useState(fallbackGauge);
   const [regimeStocks, setRegimeStocks] = useState<{ name: string; score: number; signal: string; color: string }[]>([]);
   const [cacheInfo, setCacheInfo] = useState("");
+  const [sectorData, setSectorData] = useState<{ marketAvg: number; marketStatus: string; sectors: any[] } | null>(null);
 
   const hookMessages = [
     "🚀 AI가 찾은 이번 주 유망 종목은?",
@@ -137,6 +138,10 @@ export default function QuantDashboard() {
     const shuffled = [...hookMessages].sort(() => Math.random() - 0.5);
     setHookMsg(shuffled.slice(0, count).join("\n"));
     fetchQuantData(false);
+    // 섹터 공포·탐욕 지수
+    fetch("/api/sector-fear-greed").then(r => r.json()).then(d => {
+      if (d.sectors?.length) setSectorData(d);
+    }).catch(() => {});
   }, []);
 
   const shareText = `📊 CASSANDRA AI — 퀀트 대시보드\n\nAI×퀀트로 분석하는 코스닥 시장\nARS-X·AMQS·ARDS 전략\n\nhttps://dart-monitor-pi.vercel.app/quant`;
@@ -189,6 +194,37 @@ export default function QuantDashboard() {
             <strong>시장 심리 지수</strong>는 Naver Finance의 KOSDAQ 등락 종목 비율로 산출합니다. 10분 단위 Redis 캐시.
           </p>
         </div>
+
+        {/* 섹터별 공포·탐욕 지수 (full-width) */}
+        {sectorData && sectorData.sectors.length > 0 && (
+          <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4 lg:col-span-2">
+            <h2 className="text-sm font-bold flex items-center gap-2 mb-3">
+              <span className="text-lg">{sectorData.marketAvg < 40 ? "🔥" : sectorData.marketAvg < 50 ? "😨" : sectorData.marketAvg < 60 ? "😐" : sectorData.marketAvg < 80 ? "😈" : "🤑"}</span>
+              섹터별 공포·탐욕 지수
+              <span className={`ml-1 text-[11px] ${sectorData.marketAvg < 40 ? "text-[#ef4444]" : sectorData.marketAvg < 60 ? "text-[var(--text-muted)]" : "text-[#22c55e]"}`}>
+                (시장 평균 {sectorData.marketAvg} — {sectorData.marketStatus})
+              </span>
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5">
+              {sectorData.sectors.map((s: any) => (
+                <div key={s.ticker} className="rounded bg-[var(--bg)] p-1.5 text-center">
+                  <div className="text-[10px] font-semibold truncate" title={s.name}>{s.name}</div>
+                  <div className="text-[9px] text-[var(--text-muted)]">{s.ticker}</div>
+                  <div className="mt-1 h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
+                    <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(0, s.score)}%`, backgroundColor: s.color }} />
+                  </div>
+                  <div className="text-[11px] font-bold mt-0.5" style={{ color: s.color }}>
+                    {s.score >= 0 ? s.score.toFixed(0) : "N/A"}
+                  </div>
+                  <div className="text-[9px] text-[var(--text-muted)]">{s.emoji} {s.status}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[9px] text-[var(--text-muted)] mt-2 leading-relaxed text-right">
+              데이터: Yahoo Finance · 10분 Redis 캐시 · 미국 장 마감 기준
+            </p>
+          </div>
+        )}
 
         {/* 2. ARDS-X Regime Classifier */}
         <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
