@@ -127,6 +127,8 @@ export default function QuantDashboard() {
   }, []);
 
   useEffect(() => {
+    // 방문 기록 + 통계 조회
+    fetch("/api/pageview", { method: "POST", body: JSON.stringify({ path: "/quant" }) }).catch(() => {});
     fetch("/api/pageview").then(r => r.json()).then(d => {
       setVisitors({ today: d.today || 0, total: d.total || 0 });
     }).catch(() => {});
