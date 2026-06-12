@@ -132,7 +132,10 @@ export default function QuantDashboard() {
             <LineChart data={regimeData}>
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#888" }} />
               <YAxis domain={[0, 4]} tick={{ fontSize: 10, fill: "#888" }} />
-              <Tooltip />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#1a1a2e", border: "1px solid #333", borderRadius: 6, color: "#fff", fontSize: 12 }}
+                labelStyle={{ color: "#fff", fontWeight: 600 }}
+              />
               <Line type="monotone" dataKey="regime" stroke="#6c5ce7" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -147,7 +150,17 @@ export default function QuantDashboard() {
               <BarChart data={regimeStocks} layout="vertical" margin={{ left: 90 }}>
                 <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 10, fill: "#888" }} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#e4e4f0" }} width={85} />
-                <Tooltip />
+                 <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1a1a2e",
+                    border: "1px solid #333",
+                    borderRadius: 6,
+                    color: "#fff",
+                    fontSize: 12,
+                  }}
+                  formatter={(value: number, name: string) => [`${value}점`, "스코어"]}
+                  labelStyle={{ color: "#fff", fontWeight: 600 }}
+                />
                 <Bar dataKey="score" radius={[0, 4, 4, 0]}>
                   {regimeStocks.map((s, i) => <Cell key={i} fill={s.color} />)}
                 </Bar>
@@ -171,7 +184,10 @@ export default function QuantDashboard() {
             <LineChart data={momentumData}>
               <XAxis dataKey="date" tick={{ fontSize: 9, fill: "#888" }} />
               <YAxis domain={[95, 130]} tick={{ fontSize: 9, fill: "#888" }} />
-              <Tooltip />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#1a1a2e", border: "1px solid #333", borderRadius: 6, color: "#fff", fontSize: 11 }}
+                labelStyle={{ color: "#fff", fontWeight: 600 }}
+              />
               <Line type="monotone" dataKey="amqs" stroke="#6c5ce7" strokeWidth={2} dot={false} name="AMQS" />
               <Line type="monotone" dataKey="m7" stroke="#22c55e" strokeWidth={2} dot={false} name="M7" />
             </LineChart>
