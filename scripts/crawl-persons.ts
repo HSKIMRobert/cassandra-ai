@@ -106,7 +106,7 @@ async function main() {
             const birthMatch = title.match(/(\d{6}|\d{4}\.\d{2}\.\d{2})/);
             if (birthMatch) {
               birthDate = birthMatch[1].replace(/\./g, "");
-              if (birthDate.length === 8) birthDate = birthDate.slice(2); // YYYYMMDD → YYMMDD
+              if (birthDate && birthDate.length === 8) birthDate = birthDate.slice(2);
             }
 
             for (const name of personNames) {
