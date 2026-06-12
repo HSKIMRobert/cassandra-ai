@@ -38,6 +38,7 @@
 - [x] TypeScript 퀀트 포팅 (`lib/quant-calc.ts`)
 - [x] Redis 10분 캐시 + 새로고침 강제 갱신
 - [x] 백테스트 방법론 (`docs/QUANT_BACKTEST.md`)
+- [x] 섹터별 공포·탐욕 지수 (Yahoo Finance × 10 ETF × 5시그널)
 
 ### 보안 강화 (2026-06-13)
 - [x] 페이지뷰 Redis 캐시 + Prisma(Neon DB) 영구 저장
