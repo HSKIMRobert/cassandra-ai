@@ -55,12 +55,27 @@ export default function QuantDashboard() {
   const [copied, setCopied] = useState(false);
   const [updatedAt, setUpdatedAt] = useState("");
   const [quantPopup, setQuantPopup] = useState<string | null>(null);
+  const [hookMsg, setHookMsg] = useState("");
+
+  const hookMessages = [
+    "🚀 AI가 찾은 이번 주 유망 종목은?",
+    "📉 하락장에서도 수익 내는 퀀트 전략",
+    "🤖 LLM이 분석하는 시장 심리, 지금은?",
+    "💡 개미털기 당하기 전에 확인하세요",
+    "🔥 NASDAQ Top 100, AI가 보는 국면은?",
+    "⚡ 엔비디아·테슬라·애플 — 퀀트 시그널",
+    "🎯 이번 달 AMQS-M7 수익률 공개",
+  ];
 
   useEffect(() => {
     fetch("/api/pageview").then(r => r.json()).then(d => {
       setVisitors({ today: d.today || 0, total: d.total || 0 });
     }).catch(() => {});
     setUpdatedAt(new Date().toLocaleString("ko-KR"));
+    // 랜덤 후킹 메시지 (2~5개)
+    const count = 2 + Math.floor(Math.random() * 4); // 2~5
+    const shuffled = [...hookMessages].sort(() => Math.random() - 0.5);
+    setHookMsg(shuffled.slice(0, count).join("\n"));
   }, []);
 
   const shareText = `📊 CASSANDRA AI — 퀀트 대시보드\n\nAI×퀀트로 분석하는 코스닥 시장\nARS-X·AMQS·ARDS 전략\n\nhttps://dart-monitor-pi.vercel.app/quant`;
@@ -71,8 +86,8 @@ export default function QuantDashboard() {
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Awesome LLM Quant Scripts Dashboard</h1>
-          <p className="text-xs text-[var(--text-muted)] mt-1">AI × 퀀트 × DART 공시 기반 코스닥 시장 분석</p>
+          <h1 className="text-2xl font-bold">📊 CASSANDRA AI — 퀀트 대시보드</h1>
+          <p className="text-xs text-[var(--text-muted)] mt-1">AI × 퀀트 × 미국 주식 × DART 공시 기반 코스닥 시장 분석</p>
         </div>
         <div className="text-right">
           <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
