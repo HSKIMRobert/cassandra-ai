@@ -332,3 +332,19 @@ model PersonHistory {
   @@index([name, birthDate])
   @@index([companyName])
 }
+
+// ─── MU → 하이닉스 예측 ───
+model MuHynixPrediction {
+  id                     String   @id @default(uuid())
+  muCurrentPrice         Float
+  muChangePct            Float
+  hynixPrevClose         Float
+  hynixPredictedOpen     Float
+  hynixPredictedChangePct Float
+  beta                   Float    // 상관계수
+  r2                     Float    // 결정계수
+  dataPoints             Int      // 데이터 포인트 수
+  createdAt              DateTime @default(now())
+
+  @@index([createdAt])
+}

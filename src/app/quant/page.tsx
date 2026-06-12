@@ -1,18 +1,12 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { TrendingUp, TrendingDown, Share2, Copy, Eye, ExternalLink, AlertTriangle, BarChart3, Activity, Clock, RefreshCw } from "lucide-react";
+import { TrendingUp, TrendingDown, Share2, Copy, Eye, ExternalLink, AlertTriangle, BarChart3, Clock, RefreshCw } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
 const TOOLTIP_STYLE = { backgroundColor: "#1a1a2e", border: "1px solid #333", borderRadius: 6, color: "#fff", fontSize: 12 };
 
 // ─── 더미 데이터 (fallback) ───
-const fallbackGauge = [
-  { name: "공포", value: 35, color: "#ef4444" },
-  { name: "중립", value: 40, color: "#f59e0b" },
-  { name: "과열", value: 25, color: "#22c55e" },
-];
-
 const regimeData = [
   { date: "06/01", regime: 2 }, { date: "06/03", regime: 2 }, { date: "06/05", regime: 1 },
   { date: "06/07", regime: 2 }, { date: "06/09", regime: 2 }, { date: "06/11", regime: 3 },
@@ -75,10 +69,10 @@ export default function QuantDashboard() {
   const [error, setError] = useState("");
 
   // 실시간 데이터
-  const [gaugeData, setGaugeData] = useState(fallbackGauge);
   const [regimeStocks, setRegimeStocks] = useState<{ name: string; score: number; signal: string; color: string }[]>([]);
   const [cacheInfo, setCacheInfo] = useState("");
   const [sectorData, setSectorData] = useState<{ marketAvg: number; marketStatus: string; sectors: any[] } | null>(null);
+  const [muHynixData, setMuHynixData] = useState<{ prediction: any; backtest: any } | null>(null);
 
   const hookMessages = [
     "🚀 AI가 찾은 이번 주 유망 종목은?",
@@ -98,13 +92,6 @@ export default function QuantDashboard() {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: QuantResponse = await res.json();
-
-      const g = data.marketGauge;
-      setGaugeData([
-        { name: "공포", value: g.fear, color: "#ef4444" },
-        { name: "중립", value: g.neutral, color: "#f59e0b" },
-        { name: "과열", value: g.greed, color: "#22c55e" },
-      ]);
 
       if (data.stocks?.length) {
         setRegimeStocks(buildRegimeStocks(data.stocks));
@@ -142,6 +129,10 @@ export default function QuantDashboard() {
     fetch("/api/sector-fear-greed").then(r => r.json()).then(d => {
       if (d.sectors?.length) setSectorData(d);
     }).catch(() => {});
+    // MU → 하이닉스 예측
+    fetch("/api/mu-hynix").then(r => r.json()).then(d => {
+      if (d.prediction || d.backtest) setMuHynixData(d);
+    }).catch(() => {});
   }, []);
 
   const shareText = `📊 CASSANDRA AI — 퀀트 대시보드\n\nAI×퀀트로 분석하는 코스닥 시장\nARS-X·AMQS·ARDS 전략\n\nhttps://dart-monitor-pi.vercel.app/quant`;
@@ -176,57 +167,116 @@ export default function QuantDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* 1. 시장 게이지 */}
+        {/* 1. 섹터별 공포·탐욕 지수 (시장 게이지 대체) */}
         <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
-          <h2 className="text-sm font-bold flex items-center gap-2 mb-3"><Activity className="w-4 h-4 text-[var(--warning)]" /> 시장 게이지</h2>
-          {error && <p className="text-red-400 text-[10px] mb-2">⚠ {error}</p>}
-          <div className="flex items-center gap-0 h-8 rounded-full overflow-hidden">
-            {gaugeData.map((g) => (
-              <div key={g.name} className="h-full flex items-center justify-center text-[10px] font-bold text-white" style={{ width: `${g.value}%`, backgroundColor: g.color }}>
-                {g.value > 20 ? g.name : ""}
+          <h2 className="text-sm font-bold flex items-center gap-2 mb-3">
+            <span className="text-lg">{sectorData ? (sectorData.marketAvg < 40 ? "🔥" : sectorData.marketAvg < 50 ? "😨" : sectorData.marketAvg < 60 ? "😐" : sectorData.marketAvg < 80 ? "😈" : "🤑") : "📊"}</span>
+            섹터별 공포·탐욕 지수
+            {sectorData && (
+              <span className={`ml-1 text-[11px] ${sectorData.marketAvg < 40 ? "text-[#ef4444]" : sectorData.marketAvg < 60 ? "text-[var(--text-muted)]" : "text-[#22c55e]"}`}>
+                (평균 {sectorData.marketAvg} — {sectorData.marketStatus})
+              </span>
+            )}
+          </h2>
+          {sectorData && sectorData.sectors.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 gap-2">
+                {sectorData.sectors.map((s: any) => (
+                  <div key={s.ticker} className="rounded bg-[var(--bg)] p-2 flex items-center gap-2">
+                    <div className="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: s.color + "20", color: s.color }}>
+                      {s.ticker}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] font-semibold truncate">{s.name}</div>
+                      <div className="mt-0.5 h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
+                        <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(0, s.score)}%`, backgroundColor: s.color }} />
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs font-bold" style={{ color: s.color }}>{s.score >= 0 ? s.score.toFixed(0) : "N/A"}</div>
+                      <div className="text-[9px] text-[var(--text-muted)]">{s.emoji} {s.status}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="flex justify-between mt-2 text-[10px] text-[var(--text-muted)]">
-            <span>🔴 공포</span><span>🟡 중립</span><span>🟢 과열</span>
-          </div>
-          <p className="text-[10px] text-[var(--text-muted)] mt-3 leading-relaxed">
-            <strong>시장 심리 지수</strong>는 Naver Finance의 KOSDAQ 등락 종목 비율로 산출합니다. 10분 단위 Redis 캐시.
-          </p>
+              <p className="text-[9px] text-[var(--text-muted)] mt-2 text-right">
+                Yahoo Finance · 10분 Redis 캐시 · 미국 장 마감 기준
+              </p>
+            </>
+          ) : (
+            <p className="text-[10px] text-[var(--text-muted)]">로딩 중...</p>
+          )}
+          <details className="mt-2 text-[9px] text-[var(--text-muted)]">
+            <summary className="cursor-pointer hover:text-[var(--text)]">방법론</summary>
+            <p className="mt-1">RSI(14)·MA20·변동성비율·섹터모멘텀vsSPY·거래량서지의 5개 시그널을 가중평균하여 0(공포)~100(탐욕) 점수 산출</p>
+          </details>
         </div>
 
-        {/* 섹터별 공포·탐욕 지수 (full-width) */}
-        {sectorData && sectorData.sectors.length > 0 && (
-          <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4 lg:col-span-2">
-            <h2 className="text-sm font-bold flex items-center gap-2 mb-3">
-              <span className="text-lg">{sectorData.marketAvg < 40 ? "🔥" : sectorData.marketAvg < 50 ? "😨" : sectorData.marketAvg < 60 ? "😐" : sectorData.marketAvg < 80 ? "😈" : "🤑"}</span>
-              섹터별 공포·탐욕 지수
-              <span className={`ml-1 text-[11px] ${sectorData.marketAvg < 40 ? "text-[#ef4444]" : sectorData.marketAvg < 60 ? "text-[var(--text-muted)]" : "text-[#22c55e]"}`}>
-                (시장 평균 {sectorData.marketAvg} — {sectorData.marketStatus})
-              </span>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5">
-              {sectorData.sectors.map((s: any) => (
-                <div key={s.ticker} className="rounded bg-[var(--bg)] p-1.5 text-center">
-                  <div className="text-[10px] font-semibold truncate" title={s.name}>{s.name}</div>
-                  <div className="text-[9px] text-[var(--text-muted)]">{s.ticker}</div>
-                  <div className="mt-1 h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
-                    <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(0, s.score)}%`, backgroundColor: s.color }} />
+        {/* 2. MU → 하이닉스 예측 */}
+        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
+          <h2 className="text-sm font-bold flex items-center gap-2 mb-3">
+            <span className="text-lg">🔮</span> MU(마이크론) → 하이닉스 예측
+            <span className="text-[9px] text-[var(--text-muted)] ml-1">미국장 종가 → 한국장 시가 예측</span>
+          </h2>
+          {muHynixData?.prediction ? (
+            <>
+              <div className="grid grid-cols-2 gap-3 text-[10px]">
+                <div className="rounded bg-[var(--bg)] p-2">
+                  <div className="text-[var(--text-muted)]">마이크론 (MU)</div>
+                  <div className="text-lg font-bold mt-1">${muHynixData.prediction.muCurrentPrice}</div>
+                  <div className={muHynixData.prediction.muChangePct >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}>
+                    {muHynixData.prediction.muChangePct >= 0 ? "▲" : "▼"} {Math.abs(muHynixData.prediction.muChangePct)}%
                   </div>
-                  <div className="text-[11px] font-bold mt-0.5" style={{ color: s.color }}>
-                    {s.score >= 0 ? s.score.toFixed(0) : "N/A"}
-                  </div>
-                  <div className="text-[9px] text-[var(--text-muted)]">{s.emoji} {s.status}</div>
                 </div>
-              ))}
-            </div>
-            <p className="text-[9px] text-[var(--text-muted)] mt-2 leading-relaxed text-right">
-              데이터: Yahoo Finance · 10분 Redis 캐시 · 미국 장 마감 기준
-            </p>
-          </div>
-        )}
+                <div className="rounded bg-[var(--bg)] p-2">
+                  <div className="text-[var(--text-muted)]">하이닉스 예측 시가 (000660)</div>
+                  <div className="text-lg font-bold mt-1">₩{muHynixData.prediction.hynixPredictedOpen.toLocaleString()}</div>
+                  <div className={muHynixData.prediction.hynixPredictedChangePct >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}>
+                    {muHynixData.prediction.hynixSignal} {muHynixData.prediction.hynixPredictedChangePct >= 0 ? "▲" : "▼"} {Math.abs(muHynixData.prediction.hynixPredictedChangePct)}%
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3 mt-2 text-[9px] text-[var(--text-muted)]">
+                <span>β(베타): {muHynixData.prediction.beta}</span>
+                <span>R²: {muHynixData.prediction.r2}</span>
+                <span>n={muHynixData.prediction.dataPoints}</span>
+              </div>
+            </>
+          ) : (
+            <p className="text-[10px] text-[var(--text-muted)]">로딩 중...</p>
+          )}
+          <details className="mt-2 text-[9px] text-[var(--text-muted)]">
+            <summary className="cursor-pointer hover:text-[var(--text)]">14일 백테스트</summary>
+            {(() => {
+              const bt = muHynixData?.backtest;
+              if (!bt || !bt.items?.length) return <p className="mt-1">데이터 쌓이는 중...</p>;
+              return (
+              <div className="mt-1 space-y-0.5">
+                <div className="flex justify-between text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-0.5">
+                  <span className="w-16">날짜</span><span className="w-10">MU</span><span className="w-12">예측</span><span className="w-12">실제</span><span className="w-10">차이</span><span className="w-8">적중</span>
+                </div>
+                {bt.items.map((b: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center text-[9px]">
+                    <span className="w-16">{b.date?.slice(5)}</span>
+                    <span className={`w-10 ${b.muChangePct >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}`}>{b.muChangePct}%</span>
+                    <span className="w-12">₩{b.hynixPredicted?.toLocaleString()}</span>
+                    <span className="w-12">{b.hynixActual ? `₩${b.hynixActual.toLocaleString()}` : "-"}</span>
+                    <span className={`w-10 ${b.diffWon >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}`}>{b.diffWon != null ? `${b.diffWon >= 0 ? "+" : ""}${b.diffWon}원` : "-"}</span>
+                    <span className={`w-8 text-center font-bold ${b.hit === true ? "text-[#22c55e]" : b.hit === false ? "text-[#ef4444]" : "text-[var(--text-muted)]"}`}>
+                      {b.hit === true ? "✓" : b.hit === false ? "✗" : "-"}
+                    </span>
+                  </div>
+                ))}
+                <div className="border-t border-[var(--border)] pt-0.5 mt-0.5 flex justify-between text-[9px]">
+                  <span>적중률: {bt.accuracy}%</span>
+                  <span>{bt.totalHits}/{bt.totalEvaluated}</span>
+                </div>
+              </div>
+            )})()}
+          </details>
+        </div>
 
-        {/* 2. ARDS-X Regime Classifier */}
+        {/* 3. ARDS-X Regime Classifier */}
         <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
           <h2 className="text-sm font-bold flex items-center gap-2 mb-3"><BarChart3 className="w-4 h-4 text-[var(--accent-glow)]" /> 시장 국면 판단 (ARDS-X)</h2>
           <ResponsiveContainer width="100%" height={100}>
