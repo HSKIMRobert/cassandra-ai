@@ -1,0 +1,42 @@
+[
+  {
+    "generatedAt": "2026-06-12T16:36:36.974Z",
+    "muPrice": 992.6,
+    "muChangePct": -0.33,
+    "hynixPrevClose": 2101000,
+    "hynixPredicted": 2101292.53,
+    "hynixPredictedChangePct": 0.01,
+    "beta": -0.042,
+    "r2": 0
+  },
+  {
+    "generatedAt": "2026-06-12T16:36:42.470Z",
+    "muPrice": 993.66,
+    "muChangePct": -0.22,
+    "hynixPrevClose": 2101000,
+    "hynixPredicted": 2101196.97,
+    "hynixPredictedChangePct": 0.01,
+    "beta": -0.042,
+    "r2": 0
+  },
+  {
+    "generatedAt": "2026-06-12T16:37:47.597Z",
+    "muPrice": 992.84,
+    "muChangePct": -0.3,
+    "hynixPrevClose": 2101000,
+    "hynixPredicted": 2101270.83,
+    "hynixPredictedChangePct": 0.01,
+    "beta": -0.042,
+    "r2": 0
+  },
+  {
+    "generatedAt": "2026-06-12T16:38:48.184Z",
+    "muPrice": 993.52,
+    "muChangePct": -0.24,
+    "hynixPrevClose": 2101000,
+    "hynixPredicted": 2101210,
+    "hynixPredictedChangePct": 0.01,
+    "beta": -0.042,
+    "r2": 0
+  }
+]

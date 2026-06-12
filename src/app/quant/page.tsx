@@ -274,6 +274,9 @@ export default function QuantDashboard() {
               </div>
             )})()}
           </details>
+          <button onClick={() => setQuantPopup("muhynix")} className="mt-2 text-[10px] text-[var(--accent-glow)] hover:underline">
+            📂 퀀트 원본 보기 (GitHub)
+          </button>
         </div>
 
         {/* 3. ARDS-X Regime Classifier */}
@@ -409,7 +412,7 @@ export default function QuantDashboard() {
           <div className="w-full max-w-2xl max-h-[80vh] rounded-xl bg-[var(--bg)] border border-[var(--border)] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-lg">
-                {quantPopup === "ardsx" ? "ARDS-X Regime Classifier" : quantPopup === "amqs" ? "AMQS / AMQS-M7" : "ARDS 헤지 전략"}
+                {quantPopup === "ardsx" ? "ARDS-X Regime Classifier" : quantPopup === "amqs" ? "AMQS / AMQS-M7" : quantPopup === "ards" ? "ARDS 헤지 전략" : "MU → 하이닉스 예측"}
               </h3>
               <button onClick={() => setQuantPopup(null)} className="p-1 rounded hover:bg-[var(--border)]">✕</button>
             </div>
@@ -422,6 +425,7 @@ export default function QuantDashboard() {
                 {quantPopup === "ardsx" && `# ARDS-X Regime Classifier\n# NASDAQ Top 100 기반 시장 국면 판단\n\nRegime 0: 하락 → 현금 비중 80% +\nRegime 1: 횡보 → 현금 50% + 롱 50%\nRegime 2: 상승 → 롱 80% + 현금 20%\nRegime 3: 급등 → 롱 100% (트레일링 스탑)\n\n지표: VIX, MA20/60, RSI(14), Volume SMA`}
                 {quantPopup === "amqs" && `# AMQS (AI Momentum Quant Strategy)\n# AI·반도체 섹터 모멘텀 추종\n\nAMQS-M7 구성: NVDA, TSMC, SK Hynix, Samsung, ASML, AMD, QCOM\n리밸런싱: 월 1회 (매월 1일)\n비중: 동일가중 (Equal Weight) → 모멘텀 가중\n진입: 20일 모멘텀 > 5% → 매수\n청산: 20일 모멘텀 < -5% → 매도`}
                 {quantPopup === "ards" && `# ARDS (AI Risk Diversification Strategy)\n# AMQS-M7 대칭 헤지 전략\n\nLong: AMQS-M7 (65%)\nHedge: KOSDAQ150 Inverse (25%)\nSafe: 국고채 10년 (10%)\n\n헤지 트리거: ARDS-X Regime = 0 (하락)\n비중 캡: Median + 15% (과도한 레버리지 방지)\n리밸런싱: 주 1회 (매주 월요일)`}
+                {quantPopup === "muhynix" && `# MU → 하이닉스 예측 (Cross-Market)\n# 미국장 마이크론 → 한국장 하이닉스 시가 예측\n\nHynix_predicted = Hynix_close * (1 + β * MU_pctChange)\nβ: 선형 회귀 베타 (20일 롤링)\n시그널: MU ±1% 이상 → 하이닉스 상승/하락 예측\n\n데이터: Yahoo Finance\n저장: PostgreSQL + GitHub Dart_Data/prediction/`}
               </div>
             </div>
           </div>

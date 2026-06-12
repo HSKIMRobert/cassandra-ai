@@ -341,9 +341,10 @@ model MuHynixPrediction {
   hynixPrevClose         Float
   hynixPredictedOpen     Float
   hynixPredictedChangePct Float
-  beta                   Float    // 상관계수
-  r2                     Float    // 결정계수
-  dataPoints             Int      // 데이터 포인트 수
+  hynixActualClose       Float?   // 백테스트용 실제 종가
+  beta                   Float
+  r2                     Float
+  dataPoints             Int
   createdAt              DateTime @default(now())
 
   @@index([createdAt])

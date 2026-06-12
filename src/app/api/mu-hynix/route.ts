@@ -67,29 +67,15 @@ async function getBacktest(current: any, force: boolean) {
     try {
         // DB에서 최근 예측 조회
         const predictions = await prisma.muHynixPrediction.findMany({
+            where: { hynixActualClose: { not: null } },
             orderBy: { createdAt: "desc" },
             take: 14,
         });
 
-        // Yahoo Finance에서 하이닉스 현재가 가져오기
-        const hynixRes = await fetch(
-            `https://query1.finance.yahoo.com/v8/finance/chart/000660.KS?range=14d&interval=1d`,
-            { headers: { "User-Agent": UA } }
-        ).catch(() => null);
-
-        let hynixActual: number[] = [];
-        if (hynixRes?.ok) {
-            const json = await hynixRes.json();
-            const r = json.chart?.result?.[0];
-            if (r) {
-                hynixActual = r.indicators.quote[0].close?.filter((v: unknown): v is number => v !== null) || [];
-            }
-        }
-
-        const backtest = predictions.map((p, i) => {
-            const actualClose = hynixActual[hynixActual.length - 1 - i] || null;
+        const backtest = predictions.map((p) => {
+            const actualClose = p.hynixActualClose;
             const hit = actualClose !== null
-                ? (p.hynixPredictedOpen - p.hynixPrevClose) * (actualClose - p.hynixPrevClose) >= 0 // 방향 일치
+                ? (p.hynixPredictedOpen - p.hynixPrevClose) * (actualClose - p.hynixPrevClose) >= 0
                 : null;
             return {
                 date: p.createdAt.toISOString().slice(0, 10),
