@@ -64,6 +64,97 @@ export function hourBranch(hour: number): number {
     return HOUR_BRANCH[hour % 24];
 }
 
+// ─── 년주(年柱) ───
+// 입춘(2/4) 기준으로 년주 변경
+function yearPillar(year: number): [number, number] {
+    const stem = (year - 4) % 10;
+    const branch = (year - 4) % 12;
+    return [stem, branch];
+}
+
+// ─── 월주(月柱) ───
+// 월지는 입춘(1월)부터 시작. 0=인, 1=묘, ... 11=축
+// 월간: (년간 * 2 + 월) % 10
+function monthPillar(yearStem: number, month: number): [number, number] {
+    // month: 0=1월, 1=2월, ...
+    // 월지: (month + 2) % 12 (입춘=인=2, 경칩=묘=3, ...)
+    const mBranch = (month + 2) % 12;
+    const mStem = (yearStem * 2 + month) % 10;
+    return [mStem, mBranch];
+}
+
+// ─── 시주(時柱) ───
+// 시지: 2시간 단위 (자=0, 축=1, ...)
+// 시간: (일간 * 2 + 시지) % 10
+function timePillar(dayStem: number, hour: number): [number, number] {
+    const tBranch = HOUR_BRANCH[hour % 24];
+    // 시간 인덱스: 자=0, 축=1, ... (시지와 동일)
+    const timeIdx = Math.floor(((hour + 1) % 24) / 2);
+    const tStem = (dayStem * 2 + timeIdx) % 10;
+    return [tStem, tBranch];
+}
+
+// ─── 4주 완전 계산 ───
+export interface FourPillars {
+    year: { stem: number; branch: number; stemKr: string; branchKr: string; stemHj: string; branchHj: string; label: string; element: string };
+    month: { stem: number; branch: number; stemKr: string; branchKr: string; stemHj: string; branchHj: string; label: string; element: string };
+    day: { stem: number; branch: number; stemKr: string; branchKr: string; stemHj: string; branchHj: string; label: string; element: string };
+    time: { stem: number; branch: number; stemKr: string; branchKr: string; stemHj: string; branchHj: string; label: string; element: string } | null;
+}
+
+export function calculateFourPillars(birthDate: string, birthHour: number | null): FourPillars {
+    const d = new Date(birthDate);
+    const year = d.getFullYear();
+    const month = d.getMonth(); // 0-based
+
+    // 년주
+    const [yStem, yBranch] = yearPillar(year);
+
+    // 월주 (년간 기준)
+    const [mStem, mBranch] = monthPillar(yStem, month);
+
+    // 일주
+    const [dStem, dBranch] = dayPillar(d, birthHour ?? undefined);
+
+    // 시주
+    let tPillar: FourPillars["time"] = null;
+    if (birthHour !== null) {
+        const [tStem, tBranch] = timePillar(dStem, birthHour);
+        tPillar = {
+            stem: tStem, branch: tBranch,
+            stemKr: STEMS_KR[tStem], branchKr: BRANCHES_KR[tBranch],
+            stemHj: STEMS_HJ[tStem], branchHj: BRANCHES_HJ[tBranch],
+            label: `${STEMS_KR[tStem]}${BRANCHES_KR[tBranch]}(${STEMS_HJ[tStem]}${BRANCHES_HJ[tBranch]})`,
+            element: STEM_ELEMENT[tStem],
+        };
+    }
+
+    return {
+        year: {
+            stem: yStem, branch: yBranch,
+            stemKr: STEMS_KR[yStem], branchKr: BRANCHES_KR[yBranch],
+            stemHj: STEMS_HJ[yStem], branchHj: BRANCHES_HJ[yBranch],
+            label: `${STEMS_KR[yStem]}${BRANCHES_KR[yBranch]}(${STEMS_HJ[yStem]}${BRANCHES_HJ[yBranch]})`,
+            element: STEM_ELEMENT[yStem],
+        },
+        month: {
+            stem: mStem, branch: mBranch,
+            stemKr: STEMS_KR[mStem], branchKr: BRANCHES_KR[mBranch],
+            stemHj: STEMS_HJ[mStem], branchHj: BRANCHES_HJ[mBranch],
+            label: `${STEMS_KR[mStem]}${BRANCHES_KR[mBranch]}(${STEMS_HJ[mStem]}${BRANCHES_HJ[mBranch]})`,
+            element: STEM_ELEMENT[mStem],
+        },
+        day: {
+            stem: dStem, branch: dBranch,
+            stemKr: STEMS_KR[dStem], branchKr: BRANCHES_KR[dBranch],
+            stemHj: STEMS_HJ[dStem], branchHj: BRANCHES_HJ[dBranch],
+            label: `${STEMS_KR[dStem]}${BRANCHES_KR[dBranch]}(${STEMS_HJ[dStem]}${BRANCHES_HJ[dBranch]})`,
+            element: STEM_ELEMENT[dStem],
+        },
+        time: tPillar,
+    };
+}
+
 // ─── 오행 관계 ───
 export function relationBetween(todayEl: string, myEl: string): Relation {
     if (todayEl === myEl) return "bi";
@@ -353,6 +444,46 @@ export function monthlyFortune(profile: SajuProfile): {
     const trendLabel = trend === "up" ? "📈 상승 곡선 — 후반으로 갈수록 운세가 좋아집니다"
         : trend === "down" ? "📉 하락 곡선 — 초반에 집중하고 후반은 방어적으로"
         : "➡️ 안정적 흐름 — 큰 변동 없이 유지됩니다";
+
+    return { average, bestDay: maxDay, worstDay: minDay, trend, trendLabel };
+}
+
+// ─── 주간 운세 (7일) ───
+export function weeklyFortune(profile: SajuProfile): {
+    average: Record<FortuneKey, number>;
+    bestDay: string;
+    worstDay: string;
+    trend: "up" | "down" | "flat";
+    trendLabel: string;
+} {
+    const scores: Record<FortuneKey, number[]> = { wealth:[], business:[], study:[], love:[], health:[] };
+    let maxDay = "", minDay = "";
+    let maxScore = 0, minScore = 100;
+
+    const start = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(start.getTime() + i * 86400000);
+        const [stem, branch] = dayPillarIndex(d);
+        const todayEl = STEM_ELEMENT[stem];
+        const todayBr = BRANCH_ELEMENT[branch];
+        const rel = relationBetween(todayEl, profile.myElement);
+        const fs = fortuneScores(rel, profile.dayBranchElement, todayBr);
+        const avg = Object.values(fs).reduce((a, b) => a + b, 0) / 5;
+        if (avg > maxScore) { maxScore = avg; maxDay = d.toISOString().slice(0, 10); }
+        if (avg < minScore) { minScore = avg; minDay = d.toISOString().slice(0, 10); }
+        for (const k of FORTUNE_KEYS) scores[k].push(fs[k]);
+    }
+
+    const average = {} as Record<FortuneKey, number>;
+    for (const k of FORTUNE_KEYS) {
+        average[k] = Math.round(scores[k].reduce((a, b) => a + b, 0) / scores[k].length);
+    }
+
+    const mid = Math.round(scores.wealth.slice(0,3).reduce((a,b)=>a+b,0)/3);
+    const late = Math.round(scores.wealth.slice(3).reduce((a,b)=>a+b,0)/4);
+    const diff = late - mid;
+    const trend = diff > 3 ? "up" : diff < -3 ? "down" : "flat";
+    const trendLabel = trend === "up" ? "📈 주 후반 상승세" : trend === "down" ? "📉 주 후반 하락세" : "➡️ 안정적 흐름";
 
     return { average, bestDay: maxDay, worstDay: minDay, trend, trendLabel };
 }

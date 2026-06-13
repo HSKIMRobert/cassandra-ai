@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCache, setCache } from "@/lib/redis-cache";
 import { prisma } from "@/lib/prisma";
-import { buildProfile, todayFor, summaryLines, FORTUNE_KEYS, FORTUNE_KR, getPersonality, monthlyFortune, yearlyFortune } from "@/lib/saju-engine";
+import { buildProfile, todayFor, summaryLines, FORTUNE_KEYS, FORTUNE_KR, getPersonality, monthlyFortune, weeklyFortune, yearlyFortune, calculateFourPillars } from "@/lib/saju-engine";
 
 export async function POST(req: NextRequest) {
     try {
@@ -46,6 +46,8 @@ export async function POST(req: NextRequest) {
         const today = todayFor(profile);
         const summary = summaryLines(profile, today);
         const personality = getPersonality(profile.iljuLabel);
+        const fourPillars = calculateFourPillars(birthDate, hour);
+        const weekly = weeklyFortune(profile);
         const monthly = monthlyFortune(profile);
         const yearly = yearlyFortune(profile, nickname);
 
@@ -76,6 +78,8 @@ export async function POST(req: NextRequest) {
             nickname: nickname || "",
             fromCache: false,
             personality,
+            fourPillars,
+            weekly,
             monthly,
             yearly,
         };

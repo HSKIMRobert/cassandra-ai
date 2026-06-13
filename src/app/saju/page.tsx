@@ -339,6 +339,26 @@ export default function SajuPage() {
                         </div>
                     </div>
 
+                    {/* 4주 (년월일시) */}
+                    {result.fourPillars && (
+                        <div className="grid grid-cols-4 gap-2 text-center bg-[var(--bg)] rounded p-2">
+                            {(["year","month","day","time"] as const).map(k => {
+                                const p = result.fourPillars[k];
+                                const label = {year:"년주",month:"월주",day:"일주",time:"시주"}[k];
+                                if (!p) return null;
+                                return (
+                                    <div key={k}>
+                                        <div className="text-[9px] text-[var(--text-muted)]">{label}</div>
+                                        <div className="text-xs font-bold">{p.label}</div>
+                                        <div className="text-[9px]" style={{color: ({"wood":"#22c55e","fire":"#ef4444","earth":"#f59e0b","metal":"#888","water":"#3b82f6"} as any)[p.element]}}>
+                                            {({"wood":"목","fire":"화","earth":"토","metal":"금","water":"수"} as any)[p.element]}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
                     {/* 5운 — 폰트 확대 */}
                     <div className="grid grid-cols-5 gap-2">
                         {fortuneKeys.map((key, i) => (
@@ -383,6 +403,28 @@ export default function SajuPage() {
                             <div className="flex justify-between text-[10px] text-[var(--text-muted)]">
                                 <span>📆 베스트: {result.monthly.bestDay}</span>
                                 <span>⚠ 워스트: {result.monthly.worstDay}</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 주간 운세 */}
+                    {result.weekly && (
+                        <div className="bg-[var(--bg)] rounded p-3 space-y-2">
+                            <h4 className="text-xs font-semibold text-[#22c55e]">📆 이번 주 운세 (7일)</h4>
+                            <div className="grid grid-cols-5 gap-1 text-center">
+                                {(["재물","사업","학업","연애","건강"] as const).map((k, i) => (
+                                    <div key={k}>
+                                        <div className="text-[10px] text-[var(--text-muted)]">{k}</div>
+                                        <div className="text-sm font-bold" style={{color:["#f59e0b","#22c55e","#6c5ce7","#ec4899","#3b82f6"][i]}}>
+                                            {result.weekly.average?.[({"재물":"wealth","사업":"business","학업":"study","연애":"love","건강":"health"} as any)[k]] ?? "-"}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="text-xs text-center">{result.weekly.trendLabel}</p>
+                            <div className="flex justify-between text-[10px] text-[var(--text-muted)]">
+                                <span>📆 베스트: {result.weekly.bestDay}</span>
+                                <span>⚠ 워스트: {result.weekly.worstDay}</span>
                             </div>
                         </div>
                     )}
