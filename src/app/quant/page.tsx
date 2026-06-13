@@ -425,35 +425,31 @@ export default function QuantDashboard() {
               <>
                 {/* 데일리 상승 Top10 */}
                 <div className="text-[10px] mb-2">
-                  <div className="flex justify-between text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-1">
-                    <span className="w-12">티커</span><span className="flex-1">종목명</span><span className="w-12 text-right">등락률</span><span className="w-8 text-right">이유</span>
-                  </div>
+                  <div className="text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-1">🟢 데일리 상승 Top 10</div>
                   {nasdaqMovers.daily.gainers.map((s: any, i: number) => (
                     <details key={i} className="group">
-                      <summary className="flex justify-between items-center py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5">
-                        <span className="w-12 font-semibold">{s.ticker}</span>
-                        <span className="flex-1 truncate">{s.name}</span>
-                        <span className="w-12 text-right font-bold text-[#22c55e]">+{s.changePct}%</span>
-                        <span className="w-8 text-center text-[9px] text-[var(--text-muted)]">▼</span>
+                      <summary className="flex items-center gap-1 py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5 text-[10px]">
+                        <span className="font-semibold min-w-[44px]">{s.ticker}</span>
+                        <span className="truncate min-w-0">{s.name}</span>
+                        <span className="font-bold text-[#22c55e] shrink-0">+{s.changePct}%</span>
+                        <span className="text-[9px] text-[var(--text-muted)] shrink-0">▾</span>
                       </summary>
-                      <p className="text-[9px] text-[var(--text-muted)] pl-0.5 pb-0.5">💡 {s.reason}</p>
+                      <p className="text-[9px] text-[var(--text-muted)] pl-1 pb-0.5 ml-[48px]">💡 {s.reason}</p>
                     </details>
                   ))}
                 </div>
                 {/* 데일리 하락 Top10 */}
                 <div className="text-[10px]">
-                  <div className="flex justify-between text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-1">
-                    <span className="w-12">티커</span><span className="flex-1">종목명</span><span className="w-12 text-right">등락률</span><span className="w-8 text-right">이유</span>
-                  </div>
+                  <div className="text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-1">🔴 데일리 하락 Top 10</div>
                   {nasdaqMovers.daily.losers.map((s: any, i: number) => (
                     <details key={i} className="group">
-                      <summary className="flex justify-between items-center py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5">
-                        <span className="w-12 font-semibold">{s.ticker}</span>
-                        <span className="flex-1 truncate">{s.name}</span>
-                        <span className="w-12 text-right font-bold text-[#ef4444]">{s.changePct}%</span>
-                        <span className="w-8 text-center text-[9px] text-[var(--text-muted)]">▼</span>
+                      <summary className="flex items-center gap-1 py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5 text-[10px]">
+                        <span className="font-semibold min-w-[44px]">{s.ticker}</span>
+                        <span className="truncate min-w-0">{s.name}</span>
+                        <span className="font-bold text-[#ef4444] shrink-0">{s.changePct}%</span>
+                        <span className="text-[9px] text-[var(--text-muted)] shrink-0">▾</span>
                       </summary>
-                      <p className="text-[9px] text-[var(--text-muted)] pl-0.5 pb-0.5">💡 {s.reason}</p>
+                      <p className="text-[9px] text-[var(--text-muted)] pl-1 pb-0.5 ml-[48px]">💡 {s.reason}</p>
                     </details>
                   ))}
                 </div>
@@ -468,13 +464,13 @@ export default function QuantDashboard() {
                   <div className="text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-1">주간 상승 Top 20 (6/8 — 6/13)</div>
                   {nasdaqMovers.weekly.gainers.map((s: any, i: number) => (
                     <details key={i} className="group">
-                      <summary className="flex justify-between items-center py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5">
-                        <span className="w-10 font-semibold text-[9px]">{s.ticker}</span>
-                        <span className="flex-1 truncate text-[9px]">{s.name}</span>
-                        <span className="w-14 text-right font-bold text-[#22c55e] text-[9px]">+{s.changePct}%</span>
-                        <span className="w-6 text-center text-[8px] text-[var(--text-muted)]">▼</span>
+                      <summary className="flex items-center gap-1 py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5 text-[9px]">
+                        <span className="font-semibold min-w-[40px]">{s.ticker}</span>
+                        <span className="truncate min-w-0">{s.name}</span>
+                        <span className="font-bold text-[#22c55e] shrink-0">+{s.changePct}%</span>
+                        <span className="text-[8px] text-[var(--text-muted)] shrink-0">▾</span>
                       </summary>
-                      <p className="text-[8px] text-[var(--text-muted)] pl-0.5 pb-0.5">💡 {s.reason}</p>
+                      <p className="text-[8px] text-[var(--text-muted)] pl-1 pb-0.5 ml-[44px]">💡 {s.reason}</p>
                     </details>
                   ))}
                 </div>
@@ -483,13 +479,13 @@ export default function QuantDashboard() {
                   <div className="text-[var(--text-muted)] border-b border-[var(--border)] pb-0.5 mb-1">주간 하락 Top 10 (6/8 — 6/13)</div>
                   {nasdaqMovers.weekly.losers.map((s: any, i: number) => (
                     <details key={i} className="group">
-                      <summary className="flex justify-between items-center py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5">
-                        <span className="w-10 font-semibold text-[9px]">{s.ticker}</span>
-                        <span className="flex-1 truncate text-[9px]">{s.name}</span>
-                        <span className="w-14 text-right font-bold text-[#ef4444] text-[9px]">{s.changePct}%</span>
-                        <span className="w-6 text-center text-[8px] text-[var(--text-muted)]">▼</span>
+                      <summary className="flex items-center gap-1 py-0.5 cursor-pointer hover:bg-[var(--bg)] rounded px-0.5 text-[9px]">
+                        <span className="font-semibold min-w-[40px]">{s.ticker}</span>
+                        <span className="truncate min-w-0">{s.name}</span>
+                        <span className="font-bold text-[#ef4444] shrink-0">{s.changePct}%</span>
+                        <span className="text-[8px] text-[var(--text-muted)] shrink-0">▾</span>
                       </summary>
-                      <p className="text-[8px] text-[var(--text-muted)] pl-0.5 pb-0.5">💡 {s.reason}</p>
+                      <p className="text-[8px] text-[var(--text-muted)] pl-1 pb-0.5 ml-[44px]">💡 {s.reason}</p>
                     </details>
                   ))}
                 </div>
