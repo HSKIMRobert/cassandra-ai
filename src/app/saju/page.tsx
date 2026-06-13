@@ -387,6 +387,14 @@ export default function SajuPage() {
                         </div>
                     )}
 
+                    {/* 연간 총운 */}
+                    {result.yearly && (
+                        <div className="bg-gradient-to-r from-[var(--accent)]/10 to-transparent rounded p-3 space-y-1 border border-[var(--accent)]/20">
+                            <h4 className="text-xs font-semibold text-[var(--accent-glow)]">🔮 2026년 {result.yearly.yearLabel} — 올해의 총운</h4>
+                            <p className="text-xs text-[var(--text-muted)] leading-relaxed">{result.yearly.narrative}</p>
+                        </div>
+                    )}
+
                     {/* 주식 채팅 */}
                     <div className="border-t border-[var(--border)] pt-3">
                         <h4 className="text-xs font-semibold mb-2">

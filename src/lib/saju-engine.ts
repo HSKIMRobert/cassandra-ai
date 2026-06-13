@@ -356,3 +356,40 @@ export function monthlyFortune(profile: SajuProfile): {
 
     return { average, bestDay: maxDay, worstDay: minDay, trend, trendLabel };
 }
+
+// ─── 연간 운세 (세운 기반) ───
+// 2026년 = 병오년(丙午) → 천간 2(병), 지지 6(오), 오행 fire
+const YEAR_STEM = 2; // 병(丙) → fire
+const YEAR_ELEMENT = "fire";
+const YEAR_LABEL = "병오년(丙午年)";
+
+export function yearlyFortune(profile: SajuProfile, nickname?: string): {
+    yearLabel: string;
+    yearElement: string;
+    relation: Relation;
+    narrative: string;
+} {
+    const rel = relationBetween(YEAR_ELEMENT, profile.myElement);
+    const meKr = ELEMENT_KR[profile.myElement];
+    const yearKr = ELEMENT_KR[YEAR_ELEMENT];
+    const name = nickname || "당신";
+
+    const narrativeMap: Record<Relation, string> = {
+        geuk_out: `${meKr} 일간인 ${name}에게 2026 ${YEAR_LABEL}은 특별한 해입니다. 올해의 화(火) 기운이 당신을 도와 재물운과 성취운이 강하게 열리는 해예요. 적극적인 투자와 도전이 결실을 맺는 시기입니다. 사업적으로는 새로운 기회가 많이 찾아오며, 과감한 결정이 좋은 결과로 이어질 거예요. 건강은 체력 소모가 클 수 있으니 무리하지 말고 휴식을 챙기세요. 연애운도 활발해져 새로운 인연이나 관계의 진전을 기대할 수 있습니다. 투자 성향은 공격적으로 가져가도 좋지만, 차익 실현 타이밍을 놓치지 않는 게 중요해요. 특히 여름(6-8월)에 큰 기회가 올 거예요. 주의할 점은 너무 욕심을 부리면 역효과가 날 수 있다는 점, 그리고 주변의 조언에 귀 기울이는 지혜가 필요합니다.`,
+
+        saeng_out: `${meKr} 일간인 당신에게 2026 ${YEAR_LABEL}은 당신의 에너지를 밖으로 표현하는 한 해입니다. 새로운 아이디어와 창의적인 도전이 빛을 발하는 시기예요. 투자보다는 자기 계발과 능력 향상에 집중하면 더 큰 결실을 얻을 수 있어요. 사업적으로는 혁신적인 시도를 해보기 좋은 해입니다. 다만 체력 소모가 크니 건강 관리에 특히 신경 써야 해요. 연애운은 솔직한 감정 표현이 통하는 해로, 새로운 만남보다는 기존 관계를 발전시키는 데 유리합니다. 투자는 단기 트레이딩보다는 장기 가치 투자에 적합한 성향이에요.`,
+
+        saeng_in: `${meKr} 일간인 당신에게 2026 ${YEAR_LABEL}은 도움과 지원이 넘치는 한 해입니다. 주변에서 좋은 인연과 기회가 찾아올 거예요. 학업과 자기 계발에 특히 유리한 시기라 새로운 공부나 자격증에 도전해보세요. 재물운은 안정적인 흐름이라 저축과 안전 자산 중심의 투자가 좋습니다. 사업은 멘토나 파트너의 도움으로 성장할 수 있어요. 건강은 회복력이 좋은 해라 컨디션이 전반적으로 양호합니다. 연애는 신뢰를 쌓아가는 안정적인 관계에 유리해요. 주의할 점은 수동적인 태도로 기회를 놓치지 않도록 적극성을 유지하는 것입니다.`,
+
+        bi: `${meKr} 일간인 당신에게 2026 ${YEAR_LABEL}은 동료와의 협력이 중요한 한 해입니다. 혼자보다는 함께할 때 더 큰 힘을 발휘할 수 있어요. 재물운은 큰 변동 없이 안정적으로 흘러가며, 무리한 투자보다는 꾸준한 적립식 투자가 적합합니다. 사업은 파트너십과 네트워킹을 통해 확장하는 게 좋아요. 건강은 평소 루틴을 잘 유지하면 무난하게 지나갈 거예요. 연애운은 친구에서 연인으로 발전할 가능성이 높은 해입니다. 투자 성향은 동종 업종에 분산 투자하는 전략이 잘 맞아요. 경쟁자와의 마찰을 피하고 협력의 기회로 삼는 지혜가 필요합니다.`,
+
+        geuk_in: `${meKr} 일간인 당신에게 2026 ${YEAR_LABEL}은 시험과 도전이 있는 한 해입니다. 압박 속에서도 성장할 수 있는 기회로 삼으세요. 재물운은 다소 보수적으로 가져가야 할 때라 현금 비중을 늘리고 리스크 관리를 철저히 해야 해요. 사업은 내부 점검과 체질 개선에 집중하는 게 좋습니다. 건강은 스트레스 관리가 핵심이니 명상이나 운동으로 긴장을 풀어주세요. 연애는 갈등이 생길 수 있으니 인내심을 가지고 대화하는 게 중요합니다. 직장에서는 승진이나 평가 같은 중요한 관문이 있을 수 있어요. 투자는 방어주·필수소비재처럼 안정적인 종목이 적합하고, 손절선을 반드시 지키는 습관을 들이세요.`,
+    };
+
+    return {
+        yearLabel: YEAR_LABEL,
+        yearElement: yearKr,
+        relation: rel,
+        narrative: narrativeMap[rel],
+    };
+}
