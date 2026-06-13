@@ -91,8 +91,7 @@ async function logSaju(nickname: string | undefined, birthDate: string | undefin
     if (!nickname || !birthDate) return;
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || undefined;
     // 오늘 이미 같은 닉네임+생일로 기록했으면 스킵 (중복 방지)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const kst = new Date(Date.now() + 9*60*60*1000); const today = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate()) - 9*60*60*1000);
     const existing = await prisma.sajuLog.findFirst({
         where: { nickname, birthDate, action: "saju_submit", createdAt: { gte: today } },
     });

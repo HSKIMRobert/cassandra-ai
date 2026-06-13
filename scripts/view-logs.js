@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 const { PrismaClient } = require("@prisma/client");
 
+// KST 오늘 00:00 (UTC 기준)
+function kstToday() {
+    const now = new Date();
+    const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const utc = Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate(), 0, 0, 0, 0);
+    return new Date(utc - 9 * 60 * 60 * 1000);
+}
+
 async function main() {
   const p = new PrismaClient();
   const args = process.argv.slice(2);
@@ -49,7 +57,7 @@ async function main() {
   const success = await p.loginHistory.count({ where: { success: true } });
   const fail = total - success;
   const today = await p.loginHistory.count({
-    where: { createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } },
+    where: { createdAt: { gte: kstToday() } },
   });
   console.log(`\n  총 ${total}건 (성공 ${success}, 실패 ${fail}) | 오늘 ${today}건\n`);
 
@@ -73,11 +81,11 @@ async function main() {
 
   // 페이지뷰 통계
   const pv = await p.pageView.count();
-  const pvToday = await p.pageView.count({ where: { createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } } });
+  const pvToday = await p.pageView.count({ where: { createdAt: { gte: kstToday() } } });
   const topPages = await p.pageView.groupBy({ by: ["path"], _count: { path: true }, orderBy: { _count: { path: "desc" } }, take: 5 });
 
   // 유니크 방문자 (IP 기준)
-  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+  const todayStart = kstToday();
   const [uniqueTotal, uniqueToday] = await Promise.all([
     p.pageView.groupBy({ by: ["ip"], where: { ip: { not: null } } }).then(r => r.length),
     p.pageView.groupBy({ by: ["ip"], where: { ip: { not: null }, createdAt: { gte: todayStart } } }).then(r => r.length),

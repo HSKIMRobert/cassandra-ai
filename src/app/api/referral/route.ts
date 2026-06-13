@@ -15,8 +15,7 @@ export async function POST(req: NextRequest) {
         const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
         // 중복 방지: 같은 IP + refCode + 오늘 = 1회만
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const kst = new Date(Date.now() + 9*60*60*1000); const today = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate()) - 9*60*60*1000);
         const existing = await prisma.referral.findFirst({
             where: { refCode, visitorIp: ip, createdAt: { gte: today } },
         });
@@ -32,8 +31,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     try {
         const refCode = req.nextUrl.searchParams.get("refCode");
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const kst = new Date(Date.now() + 9*60*60*1000); const today = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate()) - 9*60*60*1000);
 
         if (refCode) {
             // 특정 추천인 통계

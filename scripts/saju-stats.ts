@@ -10,8 +10,7 @@ async function main() {
     console.log("🔮 사주 서비스 통계");
     console.log("=".repeat(70));
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const kst = new Date(Date.now() + 9*60*60*1000); const today = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate()) - 9*60*60*1000);
 
     // ─── 1. 사주 입력 통계 (SajuLog 기반) ───
     const [totalSubmit, todaySubmit] = await Promise.all([
