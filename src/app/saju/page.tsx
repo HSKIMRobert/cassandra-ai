@@ -72,6 +72,7 @@ export default function SajuPage() {
     const [visitors, setVisitors] = useState({ today: 0, total: 0 });
     const [copied, setCopied] = useState(false);
     const [nickDup, setNickDup] = useState("");
+    const [refStats, setRefStats] = useState<{ total: number; daily: number } | null>(null);
 
     useEffect(() => {
         // localStorage 캐싱
@@ -96,12 +97,18 @@ export default function SajuPage() {
         const bonus = localStorage.getItem("saju-invite-bonus");
         if (bonus === "true") { setMaxQueries(6); setInviteBonus(true); }
 
-        // URL에서 추천인 코드 파싱
+        // URL에서 추천인 코드 파싱 + 기록
         const urlParams = new URLSearchParams(window.location.search);
         const ref = urlParams.get("ref");
         if (ref) {
-            setInviteInput(ref);
-            applyInviteCode(ref);
+            setInviteInput(ref.toUpperCase());
+            applyInviteCode(ref.toUpperCase());
+            // 레퍼럴 기록
+            fetch("/api/referral", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refCode: ref.toUpperCase() }) }).catch(() => {});
+            // 레퍼럴 통계 조회
+            fetch(`/api/referral?refCode=${encodeURIComponent(ref.toUpperCase())}`).then(r => r.json()).then(d => {
+                if (d.total !== undefined) setRefStats(d);
+            }).catch(() => {});
         }
 
         // 방문자 카운터
@@ -113,11 +120,17 @@ export default function SajuPage() {
 
     const applyInviteCode = (code: string) => {
         if (!code.trim()) return;
+        const uc = code.trim().toUpperCase();
         localStorage.setItem("saju-invite-bonus", "true");
-        localStorage.setItem("saju-inviter", code);
+        localStorage.setItem("saju-inviter", uc);
         setMaxQueries(6);
         setInviteBonus(true);
-        setInviteInput(code);
+        setInviteInput(uc);
+        // 레퍼럴 기록
+        fetch("/api/referral", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refCode: uc }) }).catch(() => {});
+        fetch(`/api/referral?refCode=${encodeURIComponent(uc)}`).then(r => r.json()).then(d => {
+            if (d.total !== undefined) setRefStats(d);
+        }).catch(() => {});
     };
 
     const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -367,6 +380,11 @@ export default function SajuPage() {
                                 </button>
                             </div>
                             <p className="text-[9px] text-[var(--text-muted)] mt-1 text-center">추천인 코드: <strong className="text-[var(--accent-glow)]">{inviteCode}</strong></p>
+                            {refStats && (
+                                <p className="text-[9px] text-[var(--text-muted)] text-center">
+                                    📊 오늘 {refStats.daily}명 · 누적 {refStats.total}명 유입
+                                </p>
+                            )}
                         </div>
                     )}
                 </div>

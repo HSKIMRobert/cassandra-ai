@@ -349,3 +349,14 @@ model MuHynixPrediction {
 
   @@index([createdAt])
 }
+
+// ─── 레퍼럴 추적 ───
+model Referral {
+  id        String   @id @default(uuid())
+  refCode   String   // 추천인 코드
+  visitorIp String?  // 방문자 IP (중복 제거용)
+  createdAt DateTime @default(now())
+
+  @@index([refCode, createdAt])
+  @@index([createdAt])
+}
