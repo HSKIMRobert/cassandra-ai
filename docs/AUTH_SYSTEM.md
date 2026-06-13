@@ -203,9 +203,42 @@ DART_API_KEY=...
 | Expert 승인 지연 | 사용자 이탈 | 자동 도메인 검증 로직 추가 |
 | 추천인 코드 남용 | 품질 저하 | 주간 5회 제한 + CAPTCHA |
 
+## 8. 개발 단계별 계획
+
+### 개발 중 (현재)
+- `email_confirm: true`로 관리자 API(`auth.admin.createUser`) 사용
+- 인증 메일 발송 없이 즉시 로그인 가능
+- 빠른 기능 개발 및 테스트
+
+```typescript
+// 개발 중: Service Role Key로 이메일 인증 스킵
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+await supabase.auth.admin.createUser({
+  email: "test@example.com",
+  password: "password123",
+  email_confirm: true,  // 인증 메일 안 보냄, 바로 로그인 가능
+});
+```
+
+### 개발 완료 후
+1. SMTP 서비스 연결 (Resend 추천 — 월 3,000건 무료)
+2. Supabase → Authentication → Email Templates 커스터마이징
+3. `email_confirm: false`로 전환 (실제 이메일 인증 활성화)
+4. Confirm email: ON
+
+### SMTP 연결 (Resend 예시)
+```bash
+# Supabase 대시보드 → Authentication → Settings → SMTP
+Host: smtp.resend.com
+Port: 465
+User: resend
+Password: re_xxxxx (Resend API Key)
+Sender: CASSANDRA AI <noreply@dart-monitor.xyz>
+```
+
 ---
 
-## 7. 검토 필요 사항
+## 9. 오늘 작업 요약 (2026-06-14)
 
 1. **회사 이메일 인증**: Supabase 자체 기능만으로 회사 도메인 검증이 되는지 확인 필요
    - 대안: 수동 승인 + SMTP 설정으로 커스텀 이메일 발송
@@ -214,3 +247,30 @@ DART_API_KEY=...
    - 대안: `service_role` 키로 Prisma 연결 유지, RLS는 Supabase SDK 전용
    
 3. **무료 티어 한도**: MAU 50,000 + DB 500MB → 현재 2,740 레코드로 충분
+
+---
+
+## 9. 오늘 작업 요약 (2026-06-14)
+
+### 완료
+- [x] Supabase Auth 기능 검토 (Email✅ Google✅ Naver❌ Kakao⚠️)
+- [x] 회원 등급 설계 (일반·Expert·관리자)
+- [x] DB 스키마 설계 (profiles, referral_codes, expert_applications)
+- [x] 4종 인증 시나리오 문서화
+- [x] Supabase 마이그레이션 스크립트 (setup-supabase.sh)
+- [x] SQL 스키마 + RLS 정책 (supabase-schema.sql)
+- [x] Supabase 클라이언트 (server/client)
+- [x] Auth API route (signup·expert-apply)
+- [x] 미들웨어 (JWT + Supabase 병행)
+- [x] 소셜 로그인 설계 문서 (SOCIAL_LOGIN.md)
+- [x] 이메일 인증 개발 프로세스 정립 (email_confirm:true → SMTP → ON)
+
+### 사주 엔진
+- [x] 4주(년월일시) + 십신·대운·지장간·합충·12운성·용신
+- [x] 주간·월간·연간 운세 + 종합 해설
+
+### 진행 대기
+- [ ] SMTP 서비스 결정 (Resend 추천)
+- [ ] Supabase 실제 연동 (Google OAuth 우선)
+- [ ] Expert 승인 관리자 대시보드
+- [ ] 기존 사용자 마이그레이션
