@@ -437,6 +437,68 @@ export default function SajuPage() {
                         </div>
                     )}
 
+                    {/* 고급 사주 분석 (접기) */}
+                    {(result.sipSin || result.hapChung || result.daeUn || result.twelveStages || result.strength || result.yongSin) && (
+                        <details className="text-[10px]">
+                            <summary className="cursor-pointer font-semibold text-[var(--accent-glow)] hover:text-[var(--text)] py-1">
+                                📖 고급 사주 분석 (십신·대운·용신·합충)
+                            </summary>
+                            <div className="mt-2 space-y-2 pl-1">
+                                {/* 십신 */}
+                                {result.sipSin && (
+                                    <div className="bg-[var(--bg)] rounded p-2">
+                                        <span className="font-semibold text-[var(--accent-glow)]">십신(十神):</span>
+                                        <span className="text-[var(--text-muted)]"> {result.sipSin.summary}</span>
+                                    </div>
+                                )}
+                                {/* 신강/신약 + 용신 */}
+                                {result.strength && (
+                                    <div className="bg-[var(--bg)] rounded p-2">
+                                        <span className="font-semibold text-[var(--accent-glow)]">체질:</span>
+                                        <span className="text-[var(--text-muted)]"> {result.strength.level} ({result.strength.detail})</span>
+                                    </div>
+                                )}
+                                {result.yongSin && (
+                                    <div className="bg-[var(--bg)] rounded p-2">
+                                        <span className="font-semibold text-[var(--accent-glow)]">용신:</span>
+                                        <span className="text-[var(--text-muted)]"> {result.yongSin.explanation}</span>
+                                    </div>
+                                )}
+                                {/* 합충형해 */}
+                                {result.hapChung && (
+                                    <div className="bg-[var(--bg)] rounded p-2">
+                                        <span className="font-semibold text-[var(--accent-glow)]">합충형해:</span>
+                                        {result.hapChung.map((p: string, i: number) => (
+                                            <span key={i} className="text-[var(--text-muted)] block text-[9px]">{p}</span>
+                                        ))}
+                                    </div>
+                                )}
+                                {/* 12운성 */}
+                                {result.twelveStages && (
+                                    <div className="bg-[var(--bg)] rounded p-2">
+                                        <span className="font-semibold text-[var(--accent-glow)]">12운성:</span>
+                                        <span className="text-[var(--text-muted)]"> {Object.entries(result.twelveStages).map(([k,v])=>`${k}:${v}`).join(" · ")}</span>
+                                    </div>
+                                )}
+                                {/* 대운 */}
+                                {result.daeUn && result.daeUn.length > 0 && (
+                                    <div className="bg-[var(--bg)] rounded p-2">
+                                        <div className="font-semibold text-[var(--accent-glow)] mb-1">대운(大運):</div>
+                                        <div className="space-y-0.5">
+                                            {result.daeUn.slice(0, 6).map((d: any, i: number) => (
+                                                <div key={i} className="flex justify-between text-[9px]">
+                                                    <span className="text-[var(--text-muted)]">{d.age}</span>
+                                                    <span className="font-semibold">{d.label}</span>
+                                                    <span className="text-[var(--text-muted)]">{d.stage}·{d.sipSin}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </details>
+                    )}
+
                     {/* 주식 채팅 */}
                     <div className="border-t border-[var(--border)] pt-3">
                         <h4 className="text-xs font-semibold mb-2">

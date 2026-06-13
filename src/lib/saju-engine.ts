@@ -524,3 +524,290 @@ export function yearlyFortune(profile: SajuProfile, nickname?: string): {
         narrative: narrativeMap[rel],
     };
 }
+
+// ═══════════════════════════════════════════════════════════
+// 고급 사주 기능 — v1.3.0
+// ═══════════════════════════════════════════════════════════
+
+// ─── 십신(十神) ───
+// 일간(기준) vs 다른 천간의 음양·오행 관계로 결정
+// 비견(比肩): 같은 오행+같은 음양 | 겁재(劫財): 같은 오행+다른 음양
+// 식신(食神): 내가 생하는 오행+같은 음양 | 상관(傷官): 내가 생하는 오행+다른 음양
+// 정재(正財): 내가 극하는 오행+다른 음양 | 편재(偏財): 내가 극하는 오행+같은 음양
+// 정관(正官): 나를 극하는 오행+다른 음양 | 편관(偏官): 나를 극하는 오행+같은 음양
+// 정인(正印): 나를 생하는 오행+다른 음양 | 편인(偏印): 나를 생하는 오행+같은 음양
+
+export type SipSinKey = "비견"|"겁재"|"식신"|"상관"|"정재"|"편재"|"정관"|"편관"|"정인"|"편인";
+
+export function getSipSin(dayStem: number, otherStem: number): SipSinKey {
+    const dayEl = STEM_ELEMENT[dayStem];
+    const otherEl = STEM_ELEMENT[otherStem];
+    const samePol = STEM_POLARITY[dayStem] === STEM_POLARITY[otherStem]; // 같은 음양?
+
+    if (dayEl === otherEl) return samePol ? "비견" : "겁재";                          // same element
+    if (GENERATES[dayEl] === otherEl) return samePol ? "식신" : "상관";               // I generate it
+    if (OVERCOMES[dayEl] === otherEl) return samePol ? "편재" : "정재";               // I overcome it
+    if (OVERCOMES[otherEl] === dayEl) return samePol ? "편관" : "정관";               // it overcomes me
+    if (GENERATES[otherEl] === dayEl) return samePol ? "편인" : "정인";               // it generates me
+    return "비견";
+}
+
+export interface SipSinResult {
+    fourPillars: Record<string, SipSinKey[]>; // year/month/day/time → [주요십신, ...]
+    summary: string;
+}
+
+export function calculateSipSin(fourPillars: ReturnType<typeof calculateFourPillars>): SipSinResult {
+    const dayStem = fourPillars.day.stem;
+    const result: Record<string, SipSinKey[]> = {};
+
+    for (const k of ["year","month","day","time"] as const) {
+        const p = fourPillars[k];
+        if (!p) continue;
+        result[k] = [getSipSin(dayStem, p.stem)];
+        // 지지 기준 십신 (일지와의 관계)
+        if (k === "time" || k === "year" || k === "month") {
+            const branchEl = BRANCH_ELEMENT[p.branch];
+            // 지지 십신 간이 계산
+            if (branchEl === STEM_ELEMENT[dayStem]) result[k].push(SAME_POLARITY_SIPSIN(dayStem, p.stem));
+        }
+    }
+
+    // 요약
+    const all = Object.values(result).flat();
+    const unique = [...new Set(all)];
+    const summary = `일간 ${STEMS_KR[dayStem]}${STEMS_HJ[dayStem]} 기준 십신: ${unique.join("·")}`;
+
+    return { fourPillars: result, summary };
+}
+
+function SAME_POLARITY_SIPSIN(dayStem: number, otherStem: number): SipSinKey {
+    const same = STEM_POLARITY[dayStem] === STEM_POLARITY[otherStem];
+    return same ? "비견" : "겁재";
+}
+
+// ─── 지장간(支藏干) ───
+// 각 지지에는 1-3개의 숨은 천간이 있음 (여기·중기·정기)
+const JIJANGGAN: Record<number, { stems: number[]; elements: string[] }> = {
+    0:  { stems: [9], elements: ["water"] },                                 // 자(子) → 계(癸)
+    1:  { stems: [5,9,6], elements: ["earth","water","metal"] },             // 축(丑) → 기·계·신
+    2:  { stems: [0,2,4], elements: ["wood","fire","earth"] },               // 인(寅) → 갑·병·무
+    3:  { stems: [1], elements: ["wood"] },                                   // 묘(卯) → 을(乙)
+    4:  { stems: [4,1,9], elements: ["earth","wood","water"] },               // 진(辰) → 무·을·계
+    5:  { stems: [2,4,6], elements: ["fire","earth","metal"] },               // 사(巳) → 병·무·경
+    6:  { stems: [3,5], elements: ["fire","earth"] },                          // 오(午) → 정·기
+    7:  { stems: [5,3,1], elements: ["earth","fire","wood"] },                 // 미(未) → 기·정·을
+    8:  { stems: [6,4,8], elements: ["metal","earth","water"] },               // 신(申) → 경·무·임
+    9:  { stems: [7], elements: ["metal"] },                                   // 유(酉) → 신(辛)
+    10: { stems: [4,7,3], elements: ["earth","metal","fire"] },                // 술(戌) → 무·신·정
+    11: { stems: [8,0], elements: ["water","wood"] },                          // 해(亥) → 임·갑
+};
+
+export function getJijanggan(branchIdx: number): { stems: string[]; elements: string[] } {
+    const j = JIJANGGAN[branchIdx] || { stems: [], elements: [] };
+    return {
+        stems: j.stems.map(s => STEMS_KR[s]),
+        elements: j.elements,
+    };
+}
+
+// ─── 합충형해(合沖刑害) ───
+// 육합(六合): 자축·인해·묘술·진유·사신·오미
+const YUKHAP: Record<number, number> = { 0:1,1:0, 2:11,11:2, 3:10,10:3, 4:9,9:4, 5:8,8:5, 6:7,7:6 };
+
+// 충(沖): 자오·축미·인신·묘유·진술·사해 (180도 반대)
+const CHUNG: Record<number, number> = { 0:6,6:0, 1:7,7:1, 2:8,8:2, 3:9,9:3, 4:10,10:4, 5:11,11:5 };
+
+// 형(刑): 지지 간 불화
+const HYUNG: Record<number, number[]> = { 2:[5,2],5:[2,5], 8:[2,8,0],0:[8,0], 1:[10,4,1],10:[1,4],4:[1,10,4], 3:[9,3],9:[3,9], 6:[7,6,11],7:[6,7],11:[6,11] };
+
+// 원진(怨嗔)/파(破): 자유·축오·인사·묘진·신해·술미
+const PA: Record<number, number> = { 0:9,9:0, 1:6,6:1, 2:5,5:2, 3:4,4:3, 8:11,11:8, 10:7,7:10 };
+
+export interface HapChungResult {
+    pairs: string[];  // "년주-월주: 육합" 형식
+}
+
+export function calculateHapChung(fp: ReturnType<typeof calculateFourPillars>): HapChungResult {
+    const pillars = [
+        { name: "년주", branch: fp.year.branch },
+        { name: "월주", branch: fp.month.branch },
+        { name: "일주", branch: fp.day.branch },
+        { name: "시주", branch: fp.time?.branch ?? -1 },
+    ].filter(p => p.branch >= 0);
+
+    const pairs: string[] = [];
+    for (let i = 0; i < pillars.length; i++) {
+        for (let j = i + 1; j < pillars.length; j++) {
+            const a = pillars[i].branch, b = pillars[j].branch;
+            if (YUKHAP[a] === b) pairs.push(`${pillars[i].name}·${pillars[j].name}: 육합(${BRANCHES_KR[a]}${BRANCHES_KR[b]})`);
+            if (CHUNG[a] === b) pairs.push(`⚠ ${pillars[i].name}·${pillars[j].name}: 충(${BRANCHES_KR[a]}${BRANCHES_KR[b]})`);
+            if (PA[a] === b) pairs.push(`${pillars[i].name}·${pillars[j].name}: 파(${BRANCHES_KR[a]}${BRANCHES_KR[b]})`);
+        }
+    }
+    return { pairs: pairs.length > 0 ? pairs : ["특별한 합·충·형·해 없음"] };
+}
+
+// ─── 12운성(十二運星) ───
+// 일간 기준으로 각 지지에서의 생애 주기
+// 순서: 장생·목욕·관대·건록·제왕·쇠·병·사·묘·절·태·양
+const TWELVE_STAGES = ["장생","목욕","관대","건록","제왕","쇠","병","사","묘","절","태","양"];
+
+// 양간(갑병무경임)의 장생 지지: 해(11), 인(2), 인(2), 사(5), 신(8)
+// 음간(을정기신계)의 장생 지지: 오(6), 유(9), 유(9), 자(0), 묘(3)
+const YANG_START: Record<number, number> = { 0:11, 2:2, 4:2, 6:5, 8:8 }; // 갑해,병인,무인,경사,임신
+const YIN_START: Record<number, number> = { 1:6, 3:9, 5:9, 7:0, 9:3 };   // 을오,정유,기유,신자,계묘
+
+export function getTwelveStage(dayStem: number, branch: number): string {
+    const isYang = STEM_POLARITY[dayStem] === "yang";
+    let startBranch: number;
+    if (isYang) {
+        startBranch = YANG_START[dayStem] ?? 11;
+        // 양간: 시계방향(순행)
+        const offset = (branch - startBranch + 12) % 12;
+        return TWELVE_STAGES[offset];
+    } else {
+        startBranch = YIN_START[dayStem] ?? 6;
+        // 음간: 반시계방향(역행)
+        const offset = (startBranch - branch + 12) % 12;
+        return TWELVE_STAGES[offset];
+    }
+}
+
+export interface TwelveResult {
+    pillars: Record<string, string>; // "년주": "장생", ...
+}
+
+export function calculateTwelveStages(fp: ReturnType<typeof calculateFourPillars>): TwelveResult {
+    const dayStem = fp.day.stem;
+    const result: Record<string, string> = {};
+    const names = { year: "년주", month: "월주", day: "일주", time: "시주" };
+    for (const k of ["year","month","day","time"] as const) {
+        const p = fp[k];
+        if (!p) continue;
+        result[names[k]] = getTwelveStage(dayStem, p.branch);
+    }
+    return { pillars: result };
+}
+
+// ─── 신강/신약 판단 ───
+// 간이: 4주의 오행 중 일간과 같은 오행(비겁)+생하는 오행(인성) 개수
+export function calculateStrength(fp: ReturnType<typeof calculateFourPillars>): {
+    level: "신강" | "중간" | "신약";
+    score: number;
+    detail: string;
+} {
+    const dayEl = fp.day.element;
+    const dayStem = fp.day.stem;
+    let support = 0, total = 4;
+
+    for (const k of ["year","month","day","time"] as const) {
+        const p = fp[k];
+        if (!p) { total--; continue; }
+        // 일간과 같은 오행 = 비겁 (+2)
+        if (p.element === dayEl) support += 2;
+        // 일간을 생하는 오행 = 인성 (+1)
+        else if (GENERATES[p.element] === dayEl) support += 1;
+        // 월지 보정 (월령)
+        if (k === "month") {
+            const mBranchEl = BRANCH_ELEMENT[p.branch];
+            if (mBranchEl === dayEl) support += 1;
+            else if (GENERATES[mBranchEl] === dayEl) support += 1;
+        }
+    }
+
+    const ratio = support / (total * 2);
+    const level = ratio > 0.55 ? "신강" : ratio < 0.35 ? "신약" : "중간";
+    const detail = `일간 ${STEMS_KR[dayStem]}${STEMS_HJ[dayStem]}(${ELEMENT_KR[dayEl]}) — 득세 ${support}/${total*2} (${Math.round(ratio*100)}%)`;
+
+    return { level, score: Math.round(ratio * 100), detail };
+}
+
+// ─── 용신/희신/기신 ───
+// 신강 → 용신=극하는(관성)+빼내는(식상)+소모(재성) / 기신=비겁+인성
+// 신약 → 용신=도와주는(인성)+비견 / 기신=극하는+빼내는
+export interface YongSinResult {
+    yongsin: string[];   // 가장 필요한 오행
+    heesin: string[];    // 보조 오행
+    gisin: string[];     // 피해야 할 오행
+    explanation: string;
+}
+
+export function calculateYongSin(fp: ReturnType<typeof calculateFourPillars>): YongSinResult {
+    const { level } = calculateStrength(fp);
+    const dayEl = fp.day.element;
+    const allElements = ["wood","fire","earth","metal","water"];
+
+    if (level === "신강") {
+        // 신강 → 용신: 관성(나를 극)+식상(내가 생)+재성(내가 극함)
+        const overcomeBy = allElements.filter(e => OVERCOMES[e] === dayEl);       // 관성
+        const iGenerate = allElements.filter(e => dayEl === GENERATES[dayEl] ? false : GENERATES[dayEl] === e).filter(Boolean);  // 식상
+        const iOvercome = allElements.filter(e => OVERCOMES[dayEl] === e);        // 재성
+        const yongsin = [...new Set([...overcomeBy, ...iGenerate, ...iOvercome])];
+        const gisin = [dayEl, ...allElements.filter(e => GENERATES[e] === dayEl)]; // 비겁+인성
+        return {
+            yongsin,
+            heesin: allElements.filter(e => !yongsin.includes(e) && !gisin.includes(e)),
+            gisin,
+            explanation: `신강체질 — ${ELEMENT_KR[dayEl]} 기운이 강하므로 용신(부족한 기운)은 ${yongsin.map(e=>ELEMENT_KR[e]).join("·")}입니다.`,
+        };
+    } else if (level === "신약") {
+        // 신약 → 용신: 인성(나를 생)+비겁(같은 오행)
+        const generateMe = allElements.filter(e => GENERATES[e] === dayEl);        // 인성
+        const yongsin = [dayEl, ...generateMe]; // 비겁+인성
+        const gisin = allElements.filter(e => OVERCOMES[e] === dayEl || OVERCOMES[dayEl] === e); // 관성+재성
+        return {
+            yongsin,
+            heesin: allElements.filter(e => !yongsin.includes(e) && !gisin.includes(e)),
+            gisin,
+            explanation: `신약체질 — ${ELEMENT_KR[dayEl]} 기운이 약하므로 용신(도움이 되는 기운)은 ${yongsin.map(e=>ELEMENT_KR[e]).join("·")}입니다.`,
+        };
+    }
+    return {
+        yongsin: ["wood","water"],
+        heesin: ["fire"],
+        gisin: ["metal"],
+        explanation: `중간체질 — 균형이 잘 잡혀 있어 특별한 용신이 필요하지 않습니다.`,
+    };
+}
+
+// ─── 대운(大運) ───
+// 순행/역행 + 10년 주기 = 월주에서 시작
+export interface DaeUnEntry {
+    age: string;        // "0-9세"
+    stem: number; branch: number;
+    label: string;
+    element: string;
+    stage: string;      // 12운성
+    sipSin: SipSinKey;  // 십신
+}
+export function calculateDaeUn(fp: ReturnType<typeof calculateFourPillars>): DaeUnEntry[] {
+    const dayStem = fp.day.stem;
+    const monthStem = fp.month.stem;
+    const monthBranch = fp.month.branch;
+    const isYang = STEM_POLARITY[dayStem] === "yang";
+
+    // 순행/역행 판단
+    const forward = isYang;
+
+    const entries: DaeUnEntry[] = [];
+    let stem = monthStem, branch = monthBranch;
+
+    for (let decade = 0; decade < 8; decade++) {
+        // 다음 대운: 순행 → 천간+1 지지+1, 역행 → 천간-1 지지-1
+        if (decade > 0) {
+            stem = forward ? (stem + 1) % 10 : (stem + 9) % 10;
+            branch = forward ? (branch + 1) % 12 : (branch + 11) % 12;
+        }
+        const startAge = decade * 10;
+        entries.push({
+            age: `${startAge}-${startAge + 9}세`,
+            stem, branch,
+            label: `${STEMS_KR[stem]}${BRANCHES_KR[branch]}(${STEMS_HJ[stem]}${BRANCHES_HJ[branch]})`,
+            element: STEM_ELEMENT[stem],
+            stage: getTwelveStage(dayStem, branch),
+            sipSin: getSipSin(dayStem, stem),
+        });
+    }
+    return entries;
+}

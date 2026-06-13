@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCache, setCache } from "@/lib/redis-cache";
 import { prisma } from "@/lib/prisma";
-import { buildProfile, todayFor, summaryLines, FORTUNE_KEYS, FORTUNE_KR, getPersonality, monthlyFortune, weeklyFortune, yearlyFortune, calculateFourPillars } from "@/lib/saju-engine";
+import { buildProfile, todayFor, summaryLines, FORTUNE_KEYS, FORTUNE_KR, getPersonality, calculateFourPillars, weeklyFortune, monthlyFortune, yearlyFortune, calculateSipSin, calculateHapChung, calculateDaeUn, calculateTwelveStages, calculateStrength, calculateYongSin } from "@/lib/saju-engine";
 
 export async function POST(req: NextRequest) {
     try {
@@ -47,6 +47,12 @@ export async function POST(req: NextRequest) {
         const summary = summaryLines(profile, today);
         const personality = getPersonality(profile.iljuLabel);
         const fourPillars = calculateFourPillars(birthDate, hour);
+        const sipSin = calculateSipSin(fourPillars);
+        const hapChung = calculateHapChung(fourPillars);
+        const daeUn = calculateDaeUn(fourPillars);
+        const twelveStages = calculateTwelveStages(fourPillars);
+        const strength = calculateStrength(fourPillars);
+        const yongSin = calculateYongSin(fourPillars);
         const weekly = weeklyFortune(profile);
         const monthly = monthlyFortune(profile);
         const yearly = yearlyFortune(profile, nickname);
@@ -79,6 +85,12 @@ export async function POST(req: NextRequest) {
             fromCache: false,
             personality,
             fourPillars,
+            sipSin: { summary: sipSin.summary },
+            hapChung: hapChung.pairs,
+            daeUn,
+            twelveStages: twelveStages.pillars,
+            strength: { level: strength.level, detail: strength.detail },
+            yongSin,
             weekly,
             monthly,
             yearly,
