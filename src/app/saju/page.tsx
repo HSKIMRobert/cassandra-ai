@@ -320,6 +320,37 @@ export default function SajuPage() {
                         <p>📌 {result.summary?.investFocus}</p>
                     </div>
 
+                    {/* 성격·특징 */}
+                    {result.personality && (
+                        <div className="bg-[var(--bg)] rounded p-3 space-y-1">
+                            <h4 className="text-xs font-semibold text-[var(--accent-glow)]">🌟 내 사주의 특징</h4>
+                            <p className="text-xs text-[var(--text-muted)]">장점: {result.personality.trait}</p>
+                            <p className="text-xs text-[var(--text-muted)]">단점: {result.personality.weakness}</p>
+                        </div>
+                    )}
+
+                    {/* 월간 운세 + 트렌드 */}
+                    {result.monthly && (
+                        <div className="bg-[var(--bg)] rounded p-3 space-y-2">
+                            <h4 className="text-xs font-semibold text-[var(--accent-glow)]">📅 이번 달 전반적 운세</h4>
+                            <div className="grid grid-cols-5 gap-1 text-center">
+                                {(["재물","사업","학업","연애","건강"] as const).map((k, i) => (
+                                    <div key={k}>
+                                        <div className="text-[10px] text-[var(--text-muted)]">{k}</div>
+                                        <div className="text-sm font-bold" style={{color:["#f59e0b","#22c55e","#6c5ce7","#ec4899","#3b82f6"][i]}}>
+                                            {result.monthly.average?.[({"재물":"wealth","사업":"business","학업":"study","연애":"love","건강":"health"} as any)[k]] ?? "-"}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="text-xs text-center">{result.monthly.trendLabel}</p>
+                            <div className="flex justify-between text-[10px] text-[var(--text-muted)]">
+                                <span>📆 베스트: {result.monthly.bestDay}</span>
+                                <span>⚠ 워스트: {result.monthly.worstDay}</span>
+                            </div>
+                        </div>
+                    )}
+
                     {/* 주식 채팅 */}
                     <div className="border-t border-[var(--border)] pt-3">
                         <h4 className="text-xs font-semibold mb-2">

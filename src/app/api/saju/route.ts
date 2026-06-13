@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCache, setCache } from "@/lib/redis-cache";
 import { prisma } from "@/lib/prisma";
-import { buildProfile, todayFor, summaryLines, FORTUNE_KEYS, FORTUNE_KR } from "@/lib/saju-engine";
+import { buildProfile, todayFor, summaryLines, FORTUNE_KEYS, FORTUNE_KR, getPersonality, monthlyFortune } from "@/lib/saju-engine";
 
 export async function POST(req: NextRequest) {
     try {
@@ -45,6 +45,8 @@ export async function POST(req: NextRequest) {
         const profile = buildProfile(birthDate, hour);
         const today = todayFor(profile);
         const summary = summaryLines(profile, today);
+        const personality = getPersonality(profile.iljuLabel);
+        const monthly = monthlyFortune(profile);
 
         // 활동 로그 기록 (비동기)
         logSaju(nickname, birthDate, req).catch(() => {});
@@ -72,6 +74,8 @@ export async function POST(req: NextRequest) {
             summary,
             nickname: nickname || "",
             fromCache: false,
+            personality,
+            monthly,
         };
 
         // Redis 저장 (24시간 TTL)
