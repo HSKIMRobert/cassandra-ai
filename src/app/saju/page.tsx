@@ -77,6 +77,7 @@ export default function SajuPage() {
     useEffect(() => {
         // localStorage 캐싱
         const cached = localStorage.getItem("saju-profile");
+        const todayStr = new Date().toISOString().slice(0, 10);
         if (cached) {
             try {
                 const p = JSON.parse(cached);
@@ -85,6 +86,10 @@ export default function SajuPage() {
                 if (p.gender) setGender(p.gender);
                 if (p.nickname) { setNickname(p.nickname); setInviteCode(makeRefCode(p.nickname)); }
                 setAgreed(true);
+                // 날짜가 바뀌었으면 자동 재계산
+                if (p.savedDate !== todayStr) {
+                    autoSubmit(p);
+                }
             } catch {}
         }
         const hist = localStorage.getItem("saju-stock-history");
@@ -139,19 +144,50 @@ export default function SajuPage() {
     const submitSaju = async () => {
         if (!agreed) { setError("위험 고지에 동의해주세요."); return; }
         if (nickname.trim().length < 2) { setNickDup("닉네임은 2자 이상 입력해주세요."); return; }
+        doSubmit();
+    };
+
+    const doSubmit = async () => {
         setLoading(true); setError(""); setNickDup("");
         try {
             const res = await fetch("/api/saju", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ birthDate, birthHour, gender, nickname: nickname.trim() }),
+                body: JSON.stringify({ birthDate, birthHour: birthHour, gender, nickname: nickname.trim() }),
             });
             const data = await res.json();
             if (data.error) { setError(data.error); return; }
             setResult(data);
             setInviteCode(makeRefCode(nickname.trim()));
-            localStorage.setItem("saju-profile", JSON.stringify({ birthDate, birthHour, gender, nickname: nickname.trim() }));
+            const todayStr = new Date().toISOString().slice(0, 10);
+            localStorage.setItem("saju-profile", JSON.stringify({ birthDate, birthHour, gender, nickname: nickname.trim(), savedDate: todayStr }));
         } catch { setError("서버 오류가 발생했습니다."); }
+        finally { setLoading(false); }
+    };
+
+    const autoSubmit = async (p: any) => {
+        setBirthDate(p.birthDate);
+        setBirthHour(p.birthHour);
+        setGender(p.gender || "");
+        setNickname(p.nickname || "");
+        setAgreed(true);
+        // 잠시 기다렸다가 자동 제출
+        await new Promise(r => setTimeout(r, 300));
+        setLoading(true);
+        try {
+            const res = await fetch("/api/saju", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ birthDate: p.birthDate, birthHour: p.birthHour, gender: p.gender, nickname: p.nickname }),
+            });
+            const data = await res.json();
+            if (!data.error) {
+                setResult(data);
+                setInviteCode(makeRefCode(p.nickname || ""));
+                const todayStr = new Date().toISOString().slice(0, 10);
+                localStorage.setItem("saju-profile", JSON.stringify({ ...p, savedDate: todayStr }));
+            }
+        } catch {}
         finally { setLoading(false); }
     };
 
