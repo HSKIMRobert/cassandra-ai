@@ -8,6 +8,8 @@
 - [x] 섹터별 공포·탐욕 지수 (Yahoo Finance × 10 ETF × 5시그널)
 - [x] MU(마이크론) → SK하이닉스 예측 (크로스마켓 회귀, 71% 적중)
 - [x] 14일 백테스트 리스트 (적중/미적중 + 차이 금액)
+- [x] NASDAQ 데일리 상승 Top 10 + 하락 Top 10 + 이유
+- [x] NASDAQ 주간 상승 Top 20 + 하락 Top 10 (Jun 8-13)
 - [x] TypeScript 퀀트 포팅 (`lib/quant-calc.ts`, `lib/sector-fear-greed.ts`, `lib/mu-hynix-predict.ts`)
 - [x] Redis 10분 캐시 + 새로고침 강제 갱신
 - [x] 백테스트 방법론 (`docs/QUANT_BACKTEST.md`)
