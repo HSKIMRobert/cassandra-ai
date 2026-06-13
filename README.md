@@ -59,8 +59,11 @@ NASDAQ Top 100 기반 VIX·이동평균·RSI·거래량으로 시장 국면을 4
 - 데이터: Yahoo Finance → Redis 10분 캐시 → DB + GitHub JSON
 
 ### NASDAQ 상승·하락 TOP
-Yahoo Finance NASDAQ 100 실시간 데이터로 당일·주간 상승률/하락률 상위 종목을 표시합니다.
-각 종목 클릭 시 상승·하락 이유(실적·뉴스·업황)를 확인할 수 있습니다.
+
+![NASDAQ 상승하락 분석](images/nastaq%20up%20down%20LLM.png)
+
+Yahoo Finance NASDAQ 100 실시간 데이터로 당일·주간 상승률/하락률 상위 종목을 한 줄에 표시합니다.
+티커 - 종목명 + 등락률 + 상승·하락 이유(실적·뉴스·업황 패턴 분석)를 함께 제공합니다.
 
 - 데일리: 상승 Top 10 + 하락 Top 10 (미국장 2회 갱신)
 - 주간: 상승 Top 20 + 하락 Top 10 (Jun 8-13)
