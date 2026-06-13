@@ -450,7 +450,7 @@ export default function QuantDashboard() {
                   ))}
                 </div>
                 <div className="text-right text-[8px] text-[var(--text-muted)] mt-1">
-                  갱신: {new Date(nasdaqMovers.daily.generatedAt).toLocaleString("ko-KR")}
+                  갱신: {new Date(nasdaqMovers.daily.generatedAt).toLocaleString("ko-KR")} · 미국장 2회 자동 갱신
                 </div>
               </>
             ) : (

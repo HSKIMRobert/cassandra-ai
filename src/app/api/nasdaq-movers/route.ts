@@ -1,14 +1,14 @@
 /**
- * NASDAQ 상승/하락 종목 API (Yahoo Finance + Redis 10분 캐시)
- * - 데일리: 상승 Top 10 + 하락 Top 10 (미국장 2회 갱신)
+ * NASDAQ 상승/하락 종목 API (Yahoo Finance + Redis 장기 캐시)
+ * - 데일리: 상승 Top 10 + 하락 Top 10 (미국장 2회 갱신, 강제 갱신 시 fetch)
  * - 주간: Jun 8-13 상승 Top 20 + 하락 Top 10
+ * - Redis 캐시: 72시간 유지 → 미국장 개장/마감 후 force=true 호출
  */
 import { NextRequest, NextResponse } from "next/server";
 import { getCache, setCache } from "@/lib/redis-cache";
 
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)";
 const CACHE_KEY = "nasdaq-movers";
-const CACHE_TTL = 600;
 
 const NASDAQ_100 = [
     "AAPL","MSFT","NVDA","AMZN","META","GOOGL","GOOG","TSLA","AVGO","COST",
