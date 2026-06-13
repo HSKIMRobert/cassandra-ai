@@ -233,7 +233,7 @@ export default function SajuPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                     <div>
-                        <label className="text-[10px] text-[var(--text-muted)]">생년월일</label>
+                        <label className="text-[10px] text-[var(--text-muted)]">양력 생년월일</label>
                         <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)}
                             className="w-full mt-1 px-3 py-1.5 rounded bg-[var(--bg)] border border-[var(--border)] text-xs" />
                     </div>
