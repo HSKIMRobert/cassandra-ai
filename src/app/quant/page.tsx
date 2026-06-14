@@ -73,6 +73,7 @@ export default function QuantDashboard() {
   const [cacheInfo, setCacheInfo] = useState("");
   const [sectorData, setSectorData] = useState<{ marketAvg: number; marketStatus: string; sectors: any[] } | null>(null);
   const [muHynixData, setMuHynixData] = useState<{ prediction: any; backtest: any } | null>(null);
+  const [marketOverview, setMarketOverview] = useState<any>(null);
   const [nasdaqMovers, setNasdaqMovers] = useState<any>(null);
   const [moversTab, setMoversTab] = useState<"daily" | "weekly">("daily");
 
@@ -135,6 +136,10 @@ export default function QuantDashboard() {
     fetch("/api/mu-hynix").then(r => r.json()).then(d => {
       if (d.prediction || d.backtest) setMuHynixData(d);
     }).catch(() => {});
+    // 시장 오버뷰
+    fetch("/api/market-overview").then(r => r.json()).then(d => {
+      if (d.etfs || d.sectors) setMarketOverview(d);
+    }).catch(() => {});
     // NASDAQ 상승/하락 TOP
     fetch("/api/nasdaq-movers").then(r => r.json()).then(d => {
       if (d.daily || d.weekly) setNasdaqMovers(d);
@@ -171,6 +176,68 @@ export default function QuantDashboard() {
           <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{cacheInfo}</div>
         </div>
       </div>
+
+      {/* 시장 오버뷰 */}
+      {marketOverview && (
+        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            {/* 인기 ETF */}
+            <div>
+              <h3 className="text-[10px] font-semibold text-[var(--text-muted)] mb-2">인기 ETF</h3>
+              <div className="space-y-0.5">
+                {marketOverview.etfs?.slice(0, 10).map((e: any) => (
+                  <div key={e.ticker} className="flex justify-between items-center text-[10px]">
+                    <div>
+                      <span className="font-semibold">{e.ticker}</span>
+                      <span className="text-[var(--text-muted)] ml-1">{e.name}</span>
+                    </div>
+                    <span className={e.changePct >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}>{e.changePct >= 0 ? "+" : ""}{e.changePct}%</span>
+                  </div>
+                )) || <div className="text-[10px] text-[var(--text-muted)]">로딩 중...</div>}
+              </div>
+            </div>
+            {/* 섹터 */}
+            <div>
+              <h3 className="text-[10px] font-semibold text-[var(--text-muted)] mb-2">섹터별 등락률</h3>
+              <div className="space-y-0.5">
+                {marketOverview.sectors?.map((s: any) => (
+                  <div key={s.ticker} className="flex justify-between items-center text-[10px]">
+                    <span className="text-[var(--text-muted)]">{s.name}</span>
+                    <span className={s.changePct >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}>{s.changePct >= 0 ? "+" : ""}{s.changePct}%</span>
+                  </div>
+                )) || <div className="text-[10px] text-[var(--text-muted)]">로딩 중...</div>}
+              </div>
+            </div>
+            {/* 주요 지수 + VIX */}
+            <div>
+              <h3 className="text-[10px] font-semibold text-[var(--text-muted)] mb-2">주요 지수</h3>
+              <div className="space-y-0.5">
+                {marketOverview.indices?.map((idx: any) => (
+                  <div key={idx.ticker} className="flex justify-between items-center text-[10px]">
+                    <div>
+                      <span className="font-semibold">{idx.ticker}</span>
+                      <span className="text-[var(--text-muted)] ml-1">{idx.name}</span>
+                    </div>
+                    <span className={idx.changePct >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"}>{idx.changePct >= 0 ? "+" : ""}{idx.changePct}%</span>
+                  </div>
+                )) || <div className="text-[10px] text-[var(--text-muted)]">로딩 중...</div>}
+                {marketOverview.vix !== null && (
+                  <div className="flex justify-between items-center text-[10px] mt-1 pt-1 border-t border-[var(--border)]">
+                    <div>
+                      <span className="font-semibold text-[#ef4444]">VIX</span>
+                      <span className="text-[var(--text-muted)] ml-1">변동성</span>
+                    </div>
+                    <span className={marketOverview.vix > 25 ? "text-[#ef4444]" : marketOverview.vix > 20 ? "text-[#f59e0b]" : "text-[#22c55e]"}>{marketOverview.vix}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="text-right text-[8px] text-[var(--text-muted)] mt-2">
+            갱신: {new Date(marketOverview.generatedAt).toLocaleString("ko-KR")} · Yahoo Finance
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* 1. 섹터별 공포·탐욕 지수 (시장 게이지 대체) */}
