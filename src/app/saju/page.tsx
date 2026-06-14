@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Calendar, User, AlertTriangle, Send, Loader2, Sparkles, Share2, Copy, Eye } from "lucide-react";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 const STOCK_ELEMENTS: Record<string, { name: string; element: string; desc: string }> = {
     NVDA: { name:"엔비디아", element:"metal", desc:"AI 반도체·GPU — 금(金) 기운" },
@@ -65,7 +66,8 @@ export default function SajuPage() {
     const [stockResult, setStockResult] = useState<{ stock: string; analysis: string } | null>(null);
     const [stockHistory, setStockHistory] = useState<{ stock: string; analysis: string }[]>([]);
     const [queryCount, setQueryCount] = useState(0);
-    const [maxQueries, setMaxQueries] = useState(3);
+    const [maxQueries, setMaxQueries] = useState(3); // 기본 3회 (비로그인)
+    const [loggedIn, setLoggedIn] = useState(false);
     const [inviteCode, setInviteCode] = useState("");
     const [inviteInput, setInviteInput] = useState("");
     const [inviteBonus, setInviteBonus] = useState(false);
@@ -99,8 +101,9 @@ export default function SajuPage() {
         const todayKey = `saju-quota-${new Date().toISOString().slice(0,10)}`;
         const cnt = parseInt(localStorage.getItem(todayKey) || "0");
         setQueryCount(cnt);
-        const bonus = localStorage.getItem("saju-invite-bonus");
-        if (bonus === "true") { setMaxQueries(6); setInviteBonus(true); }
+
+        // 로그인 상태 확인 → 기본 횟수 설정
+        checkLoginAndQuota(todayKey, cnt);
 
         // URL에서 추천인 코드 파싱 + 기록
         const urlParams = new URLSearchParams(window.location.search);
@@ -122,16 +125,43 @@ export default function SajuPage() {
         setInviteInput(uc);
         // URL로 들어온 경우만 보너스 활성화
         if (fromUrl) {
+            const inviteCnt = parseInt(localStorage.getItem("saju-invite-count") || "0") + 1;
+            localStorage.setItem("saju-invite-count", String(inviteCnt));
             localStorage.setItem("saju-invite-bonus", "true");
             localStorage.setItem("saju-inviter", uc);
-            setMaxQueries(6);
             setInviteBonus(true);
+            updateMaxQueries(); // 초대 보너스 반영
         }
         // 레퍼럴 기록
         fetch("/api/referral", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refCode: uc }) }).catch(() => {});
         fetch(`/api/referral?refCode=${encodeURIComponent(uc)}`).then(r => r.json()).then(d => {
             if (d.total !== undefined) setRefStats(d);
         }).catch(() => {});
+    };
+
+    // 로그인 + 초대 횟수 기반 최대 질문 수 계산
+    const updateMaxQueries = () => {
+        const base = loggedIn ? 5 : 3;
+        const inviteCnt = parseInt(localStorage.getItem("saju-invite-count") || "0");
+        setMaxQueries(base + inviteCnt * 3);
+    };
+
+    const checkLoginAndQuota = async (todayKey: string, cnt: number) => {
+        try {
+            const supabase = createSupabaseBrowser();
+            const { data: { session } } = await supabase.auth.getSession();
+            const isLoggedIn = !!session;
+            setLoggedIn(isLoggedIn);
+
+            const inviteCnt = parseInt(localStorage.getItem("saju-invite-count") || "0");
+            const base = isLoggedIn ? 5 : 3;
+            const max = base + inviteCnt * 3;
+            setMaxQueries(max);
+            if (inviteCnt > 0) setInviteBonus(true);
+        } catch {
+            setLoggedIn(false);
+            setMaxQueries(3);
+        }
     };
 
     const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -205,11 +235,12 @@ export default function SajuPage() {
         e.preventDefault();
         if (!stockQuery.trim() || !result) return;
 
-        // 하루 3개 제한 체크
+        // 하루 질문 제한 체크 (비로그인 3회, 로그인 5회 + 초대당 +3)
         const todayKey = `saju-quota-${new Date().toISOString().slice(0,10)}`;
         const cnt = parseInt(localStorage.getItem(todayKey) || "0");
         if (cnt >= maxQueries) {
-            setStockResult({ stock: "제한", analysis: `오늘 질문 가능 횟수(${maxQueries}회)를 모두 사용했습니다.\n\n친구 초대로 +3회 추가 가능! 아래 초대 링크를 공유해보세요.` });
+            const extraMsg = !loggedIn ? "Google 로그인 시 5회로 증가합니다." : "친구 초대마다 +3회 추가됩니다.";
+            setStockResult({ stock: "제한", analysis: `오늘 질문 가능 횟수(${maxQueries}회)를 모두 사용했습니다.\n\n${extraMsg}` });
             return;
         }
 
