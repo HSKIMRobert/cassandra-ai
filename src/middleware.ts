@@ -8,7 +8,7 @@ import { createServerClient } from "@supabase/ssr";
 
 const EXPERT_PATHS = ["/", "/board", "/wiki", "/person-search", "/corp", "/person", "/fund", "/search", "/report"];
 const EXPERT_EMAILS = ["gameworker@gmail.com", "c.sunho@gmail.com", "testcode@naver.com"];
-const PUBLIC_PATHS = ["/quant", "/dashboard", "/saju", "/login", "/signup", "/admin", "/access-denied", "/expert-apply"];
+const PUBLIC_PATHS = ["/saju", "/login", "/signup", "/admin", "/access-denied", "/expert-apply"];
 const API_PREFIXES = ["/api/", "/_next", "/favicon", "/images"];
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
