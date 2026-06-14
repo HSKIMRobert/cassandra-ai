@@ -6,7 +6,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PUBLIC_PATHS = ["/quant", "/dashboard", "/saju", "/login", "/signup", "/admin"];
+const EXPERT_PATHS = ["/", "/board", "/wiki", "/person-search", "/corp", "/person", "/fund", "/search", "/report"];
+const EXPERT_EMAILS = ["gameworker@gmail.com", "c.sunho@gmail.com", "testcode@naver.com"];
+const PUBLIC_PATHS = ["/quant", "/dashboard", "/saju", "/login", "/signup", "/admin", "/access-denied"];
 const API_PREFIXES = ["/api/", "/_next", "/favicon", "/images"];
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -43,6 +45,13 @@ export async function middleware(request: NextRequest) {
 
   if (session) {
     if (path === "/login") return NextResponse.redirect(new URL("/dashboard", request.url));
+    // Expert 권한 체크
+    if (EXPERT_PATHS.some(p => path === p || path.startsWith(p + "/"))) {
+      const email = session.user?.email;
+      if (email && !EXPERT_EMAILS.includes(email)) {
+        return NextResponse.redirect(new URL("/access-denied?page=" + encodeURIComponent(path), request.url));
+      }
+    }
     return res;
   }
 
