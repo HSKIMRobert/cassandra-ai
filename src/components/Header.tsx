@@ -71,13 +71,20 @@ export default function Header() {
             </a>
           )}
           {loggedIn ? (
-            <button onClick={handleLogout} className="px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] hover:border-[var(--danger)] hover:text-[var(--danger-glow)] transition-colors">
-              로그아웃
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={handleLogout} className="px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] hover:border-[var(--danger)] hover:text-[var(--danger-glow)] transition-colors">
+                로그아웃
+              </button>
+            </div>
           ) : (
-            <a href="/login" className="px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent-glow)] hover:bg-[var(--accent)]/20 transition-colors">
-              로그인
-            </a>
+            <div className="flex items-center gap-2">
+              <a href="/expert-apply" className="px-3 py-1.5 rounded-lg bg-[#f59e0b]/10 border border-[#f59e0b]/30 text-[#f59e0b] hover:bg-[#f59e0b]/20 transition-colors text-xs">
+                Expert 신청
+              </a>
+              <a href="/login" className="px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent-glow)] hover:bg-[var(--accent)]/20 transition-colors">
+                로그인
+              </a>
+            </div>
           )}
         </nav>
       </div>

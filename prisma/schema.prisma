@@ -256,13 +256,16 @@ model MarketSnapshot {
 
 // ─── 사용자 계정 ───
 model AppUser {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String
-  name         String   @default("")
-  role         String   @default("user") // user | admin
-  createdAt    DateTime @default(now())
-  lastLoginAt  DateTime?
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String
+  name              String    @default("")
+  role              String    @default("user") // user | admin
+  tier              String    @default("normal") // normal | expert | admin
+  expertVerifiedAt  DateTime?
+  expertCategory    String?   // media | gov
+  createdAt         DateTime  @default(now())
+  lastLoginAt       DateTime?
 
   loginHistory LoginHistory[]
 }
