@@ -62,7 +62,17 @@ export default function AdminPage() {
                     ))}
                 </div>
                 <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
-                    <h2 className="text-sm font-bold mb-3">Supabase 사용자</h2>
+                    <h2 className="text-sm font-bold mb-3">🔐 Google 로그인 유저</h2>
+                    {stats?.googleUsers?.length > 0 ? stats.googleUsers.map((u: any, i: number) => (
+                        <div key={i} className="flex justify-between text-xs py-1 border-b border-[var(--border)] last:border-0">
+                            <span className="text-[var(--text-muted)] truncate max-w-[180px]">{u.email}</span>
+                            <span className="text-[10px]">{u.last_sign_in ? new Date(u.last_sign_in).toLocaleString("ko-KR", {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}) : "-"}</span>
+                        </div>
+                    )) : <p className="text-[10px] text-[var(--text-muted)]">데이터 없음</p>}
+                    <div className="text-right text-[10px] text-[var(--text-muted)] mt-1">{stats?.googleUsers?.length || 0}명</div>
+                </div>
+                <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
+                    <h2 className="text-sm font-bold mb-3">Supabase 전체 유저</h2>
                     {stats?.supabaseUsers?.map((u: any, i: number) => (
                         <div key={i} className="flex justify-between text-xs py-1 border-b border-[var(--border)] last:border-0">
                             <span className="text-[var(--text-muted)]">{u.email}</span>

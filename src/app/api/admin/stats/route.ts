@@ -18,6 +18,15 @@ export async function GET() {
 
         const { data: { users } } = await supabase.auth.admin.listUsers({ perPage: 100 });
 
+        // Google 로그인 유저 필터링
+        const googleUsers = users?.filter((u: any) =>
+            u.identities?.some((id: any) => id.provider === "google")
+        ).map((u: any) => ({
+            email: u.email,
+            created_at: u.created_at,
+            last_sign_in: u.last_sign_in_at,
+        })) || [];
+
         // DB 통계
         const today = new Date();
         const kst = new Date(today.getTime() + 9 * 60 * 60 * 1000);
@@ -80,6 +89,7 @@ export async function GET() {
                 email: u.email,
                 created_at: u.created_at,
             })) || [],
+            googleUsers,
         });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
