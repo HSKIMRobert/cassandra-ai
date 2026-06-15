@@ -62,6 +62,16 @@ export default function AdminPage() {
                     ))}
                 </div>
                 <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
+                    <h2 className="text-sm font-bold mb-3">🔐 오늘 로그인</h2>
+                    {stats?.todayLoginUsers?.length > 0 ? stats.todayLoginUsers.map((u: any, i: number) => (
+                        <div key={i} className="flex justify-between text-xs py-1 border-b border-[var(--border)] last:border-0">
+                            <span className="text-[var(--text-muted)] truncate max-w-[200px]">{u.email}</span>
+                            <span className="text-[10px]">{new Date(u.time).toLocaleTimeString("ko-KR", {hour:"2-digit",minute:"2-digit"})}</span>
+                        </div>
+                    )) : <p className="text-[10px] text-[var(--text-muted)]">오늘 로그인 없음</p>}
+                    <div className="text-right text-[10px] text-[var(--text-muted)] mt-1">{stats?.todayLoginUsers?.length || 0}명</div>
+                </div>
+                <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
                     <h2 className="text-sm font-bold mb-3">🔐 Google 로그인 유저</h2>
                     {stats?.googleUsers?.length > 0 ? stats.googleUsers.map((u: any, i: number) => (
                         <div key={i} className="flex justify-between text-xs py-1 border-b border-[var(--border)] last:border-0">

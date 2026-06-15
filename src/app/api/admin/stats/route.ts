@@ -42,9 +42,18 @@ export async function GET() {
         const uniqueTotal = await prisma.pageView.groupBy({ by: ["ip"], where: { ip: { not: null } } }).then(r => r.length);
         const uniqueToday = await prisma.pageView.groupBy({ by: ["ip"], where: { ip: { not: null }, createdAt: { gte: todayStart } } }).then(r => r.length);
 
-        // 로그인 통계
+        // 로그인 통계 (LoginHistory 기반)
         const totalLogins = await prisma.loginHistory.count({ where: { success: true } });
         const todayLogins = await prisma.loginHistory.count({ where: { success: true, createdAt: { gte: todayStart } } });
+
+        // 오늘 로그인 유저 목록
+        const todayLoginUsers = await prisma.loginHistory.findMany({
+            where: { success: true, createdAt: { gte: todayStart } },
+            select: { email: true, createdAt: true },
+            orderBy: { createdAt: "desc" },
+            distinct: ["email"],
+            take: 50,
+        });
 
         const recentSignups = users?.filter((u: any) => {
             const d = new Date(u.created_at);
@@ -90,6 +99,7 @@ export async function GET() {
                 created_at: u.created_at,
             })) || [],
             googleUsers,
+            todayLoginUsers: todayLoginUsers.map(u => ({ email: u.email, time: u.createdAt.toISOString() })),
         });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
