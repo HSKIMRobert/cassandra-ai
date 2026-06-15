@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-14T10:15:27.726Z",
+  "generatedAt": "2026-06-15T01:23:03.043Z",
   "period": {
-    "from": "20260607",
-    "to": "20260614"
+    "from": "20260608",
+    "to": "20260615"
   },
-  "totalCompanies": 41,
-  "totalDisclosures": 67,
+  "totalCompanies": 42,
+  "totalDisclosures": 68,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -1086,6 +1086,22 @@
           "date": "20260610",
           "rceptNo": "20260610900230",
           "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "003570",
+      "corpCode": "00134477",
+      "name": "SNT다이내믹스",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260615",
+          "rceptNo": "20260615800149",
+          "title": "주주명부폐쇄기간또는기준일설정              ",
           "type": "I"
         }
       ]
