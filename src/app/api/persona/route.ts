@@ -123,18 +123,18 @@ export async function GET(req: NextRequest) {
     if (cached && !cached.stale) return NextResponse.json({ ...cached.data, fromCache: true });
 
     // 실시간 가격 조회
-    const ticker = stock.includes(".") ? stock : /^\d+$/.test(stock) ? `${stock}.KS` : stock;
-    const quote = await fetchPrice(ticker.includes(".") ? ticker : stock);
+    const yahooTicker = stock.includes(".") ? stock : /^\d+$/.test(stock) ? `${stock}.KS` : stock;
+    const quote = await fetchPrice(yahooTicker);
 
     const p = PERSONAS[persona] || PERSONAS.buffett;
     const result = {
-        stock, name: name || stock,
+        stock: stock!, name: name || stock!,
         persona, personaName: p.name, personaTitle: p.title,
         personaAvatar: p.avatar, personaColor: p.color,
         personaStyle: p.style, personaQuote: p.quote,
         currentPrice: quote?.price || null,
         changePct: quote?.changePct || null,
-        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || stock, stock),
+        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || stock!, stock!),
         generatedAt: new Date().toISOString(),
     };
 
