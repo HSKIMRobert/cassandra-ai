@@ -10,7 +10,26 @@ const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)";
 interface PersonaConfig {
     name: string; title: string; avatar: string; color: string;
     style: string; quote: string;
-    analyze(price: number, changePct: number, name: string, ticker: string): { score: number; summary: string; action: string };
+    analyze(price: number, changePct: number, name: string, ticker: string, stockType: StockType): { score: number; summary: string; action: string };
+}
+
+type StockType = "normal" | "leveraged" | "inverse" | "etf" | "defensive" | "tech";
+
+function classifyStock(ticker: string, name: string): StockType {
+    const t = ticker.toUpperCase();
+    const n = name;
+    // 레버리지 ETF
+    if (["SOXL","TQQQ","SOXS","SQQQ","NVDL","TSLL","AMDL","FNGU","BULZ","SPXL","TECL","UPRO","UDOW","LABU","NAIL","YINN","YANG","CURE","DFEN","UTSL","RETL","WANT","TPOR","BNKU","KORU"].includes(t)) return "leveraged";
+    // 인버스
+    if (t.includes("S") && (t.includes("QQQ") || t.includes("SPX") || t.includes("DOW"))) return "inverse";
+    if (["SH","SDS","SPXU","SQQQ","TZA","FAZ","ERY","SCO","DUG","SEF"].includes(t)) return "inverse";
+    // 방어 ETF/주식
+    if (["SCHD","JEPI","JEPQ","DIVO","XLP","XLU","XLV","GLD","TLT","IEF","BND","AGG","LQD","TIP","DIA"].includes(t)) return "defensive";
+    // 일반 ETF
+    if (["QQQ","SPY","IWM","VTI","VOO","ARKK","SMH","SOXX","XLK","XLF","XLE","XLI","XLY","XLB","XLC","XLRE","VGT","VUG"].includes(t)) return "etf";
+    // 기술주
+    if (["NVDA","TSLA","PLTR","AMD","MSFT","META","GOOGL","AAPL","AMZN","ARM","SNOW","COIN","SOFI","RBLX","NET","CRWD","DDOG","SHOP","SQ","UBER"].includes(t)) return "tech";
+    return "normal";
 }
 
 const PERSONAS: Record<string, PersonaConfig> = {
@@ -18,7 +37,10 @@ const PERSONAS: Record<string, PersonaConfig> = {
         name: "워런 버핏", title: "가치 투자의 대가", avatar: "👴", color: "#22c55e",
         style: "장기 가치 투자, 경제적 해자, 저평가 우량주",
         quote: "\"남들이 욕심낼 때 두려워하고, 남들이 두려워할 때 욕심내라\"",
-        analyze(p, ch, n) {
+        analyze(p, ch, n, t, type) {
+            if (type === "leveraged") return { score: 15, summary: `⚠️ ${n}은(는) 3배 레버리지 ETF입니다. 버핏은 파생상품을 "대량살상무기"라고 불렀으며, 레버리지는 가치 투자의 반대 개념입니다. 장기 보유 시 횡보장에서 가치가 소멸되므로 절대 비추천합니다. QQQ나 SPY 같은 현물 ETF를 고려하세요.`, action: "SELL" };
+            if (type === "inverse") return { score: 10, summary: `${n}은 인버스 ETF로, 시장 하락에 베팅하는 상품입니다. 버핏은 "미국에 베팅하지 말라"고 했습니다. 공매도와 인버스는 가치 투자 철학과 정면으로 배치됩니다. 절대 비추천합니다.`, action: "SELL" };
+
             const absCh = Math.abs(ch);
             if (ch < -5) return { score: 78, summary: `큰 폭 하락으로 ${n}의 내재가치 대비 저평가 구간에 진입했습니다. 버핏이라면 "공포에 사라"는 원칙대로 분할 매수에 들어갈 시점입니다. PER과 PBR 지표를 확인하고, 현금흐름이 견조하다면 장기 보유 전략을 추천합니다.`, action: "BUY" };
             if (ch < -2) return { score: 68, summary: `조정 국면에서 ${n}은 가치 투자 관점에서 매력적인 가격대로 접근 중입니다. 경제적 해자가 있는 기업이라면 3-5년 보유 관점에서 분할 매수를 고려하세요. 단기 변동성에 흔들리지 마세요.`, action: "BUY" };
@@ -31,7 +53,9 @@ const PERSONAS: Record<string, PersonaConfig> = {
         name: "캐시 우드", title: "혁신 기술의 선구자", avatar: "👩‍💼", color: "#a855f7",
         style: "파괴적 혁신, AI·로보틱스·유전체·핀테크 집중",
         quote: "\"혁신은 디플레이션의 가장 강력한 힘입니다\"",
-        analyze(p, ch, n, t) {
+        analyze(p, ch, n, t, type) {
+            if (type === "leveraged") return { score: 40, summary: `${n}은 레버리지 ETF로, 우드의 혁신 투자 철학과도 일부 부합할 수 있으나, 그녀는 개별 혁신 기업의 장기 성장에 베팅합니다. 3배 레버리지는 단기 트레이딩 도구일 뿐입니다. ARKK나 개별 기술주를 대신 고려하세요.`, action: "SELL" };
+            if (type === "inverse") return { score: 20, summary: `인버스 ETF는 혁신의 반대 방향입니다. 우드는 인류의 진보와 기술 혁신에 베팅합니다. 시장 하락에 베팅하는 인버스 상품은 그녀의 투자 철학과 완전히 반대됩니다.`, action: "SELL" };
             const techTickers = ["NVDA","TSLA","PLTR","AMD","MSFT","META","GOOGL","AMZN","AAPL","ARM","SNOW","COIN","SOFI","RBLX"];
             const isTech = techTickers.includes(t) || t.startsWith("00");
             const absCh = Math.abs(ch);
@@ -46,7 +70,9 @@ const PERSONAS: Record<string, PersonaConfig> = {
         name: "레이 달리오", title: "올웨더 전략가", avatar: "🧓", color: "#f59e0b",
         style: "거시경제 사이클, 리스크 패리티, 글로벌 자산배분",
         quote: "\"고통 + 성찰 = 진보\"",
-        analyze(p, ch, n, t) {
+        analyze(p, ch, n, t, type) {
+            if (type === "leveraged") return { score: 25, summary: `레버리지 ETF ${n}은 리스크 패리티 전략과 정반대입니다. 달리오는 "변동성을 평준화하라"고 조언합니다. 3배 레버리지는 포트폴리오의 변동성을 극단적으로 높이므로 올웨더 전략에 부적합합니다.`, action: "SELL" };
+            if (type === "inverse") return { score: 20, summary: `인버스 ETF는 지속적 하락을 전제로 합니다. 달리오의 올웨더 전략은 모든 경제 환경에서 살아남는 포트폴리오를 추구합니다. 단기 방향성 베팅은 그의 철학과 맞지 않습니다.`, action: "SELL" };
             const defenseTickers = ["SCHD","JEPI","XLP","XLU","XLV","GLD"];
             const isDefense = defenseTickers.includes(t);
             const absCh = Math.abs(ch);
@@ -109,7 +135,7 @@ export async function GET(req: NextRequest) {
             for (const pid of Object.keys(PERSONAS)) {
                 const per = PERSONAS[pid];
                 const cacheKey = `persona:${s.ticker}:${pid}`;
-                const r = { stock: s.ticker, name: s.name, ...per.analyze(p, ch, s.name, s.ticker), generatedAt: new Date().toISOString() };
+                const r = { stock: s.ticker, name: s.name, ...per.analyze(p, ch, s.name, s.ticker, classifyStock(s.ticker, s.name)), generatedAt: new Date().toISOString() };
                 await setCache(cacheKey, r);
                 results.push({ ticker: s.ticker, persona: pid, score: r.score, cached: true });
             }
@@ -134,7 +160,7 @@ export async function GET(req: NextRequest) {
         personaStyle: p.style, personaQuote: p.quote,
         currentPrice: quote?.price || null,
         changePct: quote?.changePct || null,
-        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || stock!, stock!),
+        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || stock!, stock!, classifyStock(stock!, name || stock!)),
         generatedAt: new Date().toISOString(),
     };
 
