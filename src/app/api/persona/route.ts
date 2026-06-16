@@ -144,9 +144,13 @@ export async function GET(req: NextRequest) {
     }
 
     // ─── 단일 종목 분석 ───
-    const cacheKey = `persona:${stock}:${persona}`;
+    // 티커 정규화: 005930.KS → 005930, NVDA → NVDA
+    const normalizedStock = stock!.includes(".KS") || stock!.includes(".KQ")
+        ? stock!.split(".")[0]
+        : stock!;
+    const cacheKey = `persona:${normalizedStock}:${persona}`;
     const cached = await getCache(cacheKey);
-    if (cached && !cached.stale) return NextResponse.json({ ...cached.data, fromCache: true });
+    if (cached && !cached.stale) return NextResponse.json({ ...cached.data, fromCache: true, cacheHit: true });
 
     // 실시간 가격 조회
     const yahooTicker = stock!.includes(".") ? stock : /^\d+$/.test(stock) ? `${stock}.KS` : stock;
