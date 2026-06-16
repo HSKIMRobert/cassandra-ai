@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Loader2, TrendingUp, TrendingDown, Minus, Sparkles } from "lucide-react";
 
 const PERSONAS = [
@@ -41,6 +41,14 @@ export default function PersonaPage() {
     const [results, setResults] = useState<Record<string, any>>({});
     const [loading, setLoading] = useState(false);
     const [stockInfo, setStockInfo] = useState({ ticker: "", name: "" });
+    const [precached, setPrecached] = useState(false);
+
+    // 첫 방문 시 인기주식 프리캐싱
+    const preCacheStocks = async () => {
+        if (precached) return;
+        setPrecached(true);
+        fetch("/api/persona?precache=true").catch(() => {});
+    };
 
     const analyze = async (ticker: string, name: string) => {
         setLoading(true);
@@ -64,6 +72,9 @@ export default function PersonaPage() {
         setQuery(ticker);
         analyze(ticker, name);
     };
+
+    // 페이지 로드 시 프리캐싱 (인기주식 × 3페르소나)
+    useEffect(() => { preCacheStocks(); }, []);
 
     const active = activePersona === "buffett" ? PERSONAS[0] : activePersona === "wood" ? PERSONAS[1] : PERSONAS[2];
 

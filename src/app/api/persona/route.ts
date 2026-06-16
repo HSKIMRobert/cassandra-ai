@@ -1,100 +1,140 @@
 /**
- * 페르소나 투자 분석 API — Buffett·Wood·Dalio 시각
- * Redis 캐싱 (장시간 유지, 시장 시간별 갱신)
+ * 페르소나 투자 분석 API — 실시간 주가 데이터 기반 분석 + Redis
+ * 한국인 인기주식 프리캐싱 (첫 요청 시 자동)
  */
 import { NextRequest, NextResponse } from "next/server";
 import { getCache, setCache } from "@/lib/redis-cache";
 
-const PERSONAS = {
+const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)";
+
+interface PersonaConfig {
+    name: string; title: string; avatar: string; color: string;
+    style: string; quote: string;
+    analyze(price: number, changePct: number, name: string, ticker: string): { score: number; summary: string; action: string };
+}
+
+const PERSONAS: Record<string, PersonaConfig> = {
     buffett: {
-        name: "워런 버핏",
-        title: "가치 투자의 대가",
-        avatar: "👴",
-        color: "#22c55e",
-        style: "장기 가치 투자, 해자(경제적 해자) 보유 기업, 저평가된 우량주 선호",
+        name: "워런 버핏", title: "가치 투자의 대가", avatar: "👴", color: "#22c55e",
+        style: "장기 가치 투자, 경제적 해자, 저평가 우량주",
         quote: "\"남들이 욕심낼 때 두려워하고, 남들이 두려워할 때 욕심내라\"",
-        analyze: (stock: string, name: string, price: number) => {
-            const score = Math.floor(Math.random() * 30) + 55; // 55-85
-            const signals = [
-                "안정적인 현금흐름과 낮은 부채비율이 매력적입니다",
-                "현재 주가는 내재가치 대비 적정 수준입니다",
-                "배당 수익률과 자사주 매입 정책이 긍정적입니다",
-                "경제적 해자가 견고한 비즈니스 모델을 보유하고 있습니다",
-            ];
-            const weakness = [
-                "단기 변동성에 휘둘리지 말고 최소 3-5년 보유 관점에서 접근하세요",
-                "PER이 업종 평균보다 다소 높으니 분할 매수를 고려하세요",
-            ];
-            const s = signals[Math.floor(Math.random() * signals.length)];
-            const w = weakness[Math.floor(Math.random() * weakness.length)];
-            return { score, summary: `${s}. ${w}`, action: score > 70 ? "BUY" : score > 55 ? "HOLD" : "SELL" };
+        analyze(p, ch, n) {
+            const absCh = Math.abs(ch);
+            if (ch < -5) return { score: 78, summary: `큰 폭 하락으로 ${n}의 내재가치 대비 저평가 구간에 진입했습니다. 버핏이라면 "공포에 사라"는 원칙대로 분할 매수에 들어갈 시점입니다. PER과 PBR 지표를 확인하고, 현금흐름이 견조하다면 장기 보유 전략을 추천합니다.`, action: "BUY" };
+            if (ch < -2) return { score: 68, summary: `조정 국면에서 ${n}은 가치 투자 관점에서 매력적인 가격대로 접근 중입니다. 경제적 해자가 있는 기업이라면 3-5년 보유 관점에서 분할 매수를 고려하세요. 단기 변동성에 흔들리지 마세요.`, action: "BUY" };
+            if (ch > 10) return { score: 35, summary: `과열 구간입니다. ${n}의 현재 주가는 내재가치를 크게 상회할 가능성이 높습니다. 버핏은 "남들이 욕심낼 때 두려워하라"고 했습니다. 차익 실현을 고려할 시점입니다.`, action: "SELL" };
+            if (ch > 5) return { score: 45, summary: `상승세지만 ${n}의 PER이 역사적 평균을 상회할 수 있습니다. 가치 투자자라면 추가 매수보다는 보유하며 기다리는 전략이 적합합니다. 배당 수익률과 자사주 매입 여부를 확인하세요.`, action: "HOLD" };
+            return { score: 62, summary: `${n}은 안정적인 비즈니스 모델을 갖춘 기업입니다. 현재 밸류에이션은 적정 수준으로, 버핏의 "영원히 보유할 주식" 리스트에 오를 자격이 있습니다. 분할 매수로 포트폴리오에 편입하세요.`, action: "BUY" };
         }
     },
     wood: {
-        name: "캐시 우드",
-        title: "혁신 기술의 선구자",
-        avatar: "👩‍💼",
-        color: "#a855f7",
-        style: "파괴적 혁신 기업, AI·로보틱스·유전체·핀테크 등 미래 기술 선도 기업 집중 투자",
+        name: "캐시 우드", title: "혁신 기술의 선구자", avatar: "👩‍💼", color: "#a855f7",
+        style: "파괴적 혁신, AI·로보틱스·유전체·핀테크 집중",
         quote: "\"혁신은 디플레이션의 가장 강력한 힘입니다\"",
-        analyze: (stock: string, name: string, price: number) => {
-            const score = Math.floor(Math.random() * 35) + 45; // 45-80
-            const signals = [
-                "파괴적 혁신 기술의 수혜주로 5년 후 시장을 선도할 잠재력이 있습니다",
-                "기술력과 특허 포트폴리오가 업계 최고 수준입니다",
-                "AI와의 접목으로 폭발적 성장이 기대됩니다",
-            ];
-            const weakness = [
-                "현재 수익성보다는 성장성에 베팅하는 전략입니다",
-                "변동성이 크므로 포트폴리오 비중을 5% 이내로 제한하세요",
-            ];
-            const s = signals[Math.floor(Math.random() * signals.length)];
-            const w = weakness[Math.floor(Math.random() * weakness.length)];
-            return { score, summary: `${s}. ${w}`, action: score > 65 ? "BUY" : score > 50 ? "HOLD" : "SELL" };
+        analyze(p, ch, n, t) {
+            const techTickers = ["NVDA","TSLA","PLTR","AMD","MSFT","META","GOOGL","AMZN","AAPL","ARM","SNOW","COIN","SOFI","RBLX"];
+            const isTech = techTickers.includes(t) || t.startsWith("00");
+            const absCh = Math.abs(ch);
+            if (ch < -10) return { score: isTech ? 75 : 55, summary: `급락은 혁신 기업에게 오히려 기회입니다. ${n}의 기술력과 특허 포트폴리오는 변하지 않았습니다. 우드는 이런 급락장에서 "5년 후를 보고 산다"며 공격적 매수에 나섭니다. 다만 비중은 포트폴리오의 5% 이내로 제한하세요.`, action: isTech ? "BUY" : "HOLD" };
+            if (ch < -5) return { score: isTech ? 68 : 52, summary: `${n}의 단기 조정은 혁신 사이클의 자연스러운 과정입니다. 기술 로드맵과 R&D 투자가 견조하다면, 우드의 "파괴적 혁신" 관점에서 매수 기회로 볼 수 있습니다.`, action: isTech ? "BUY" : "HOLD" };
+            if (ch > 15) return { score: 80, summary: `${n}의 폭발적 상승은 혁신 기술이 시장에서 인정받고 있다는 신호입니다. 캐시 우드는 이런 모멘텀을 "5년 후 세상을 바꿀 기술"의 초기 신호로 해석합니다. 추가 상승 여력이 있지만, 일부 차익 실현도 고려하세요.`, action: "BUY" };
+            if (ch > 5) return { score: 70, summary: `${n}의 상승세는 혁신의 S-커브 초기 단계를 보여줍니다. ARK의 분석 프레임워크로 보면, 아직 전체 시장 침투율이 낮아 장기 성장 여력이 충분합니다.`, action: "BUY" };
+            return { score: isTech ? 65 : 50, summary: `${n}은(는) 우드의 관심 종목입니다. 기술적 우위와 시장 선점 효과를 고려할 때, 혁신 포트폴리오의 일부로 편입을 검토할 만합니다. 변동성을 감안해 분할 매수하세요.`, action: isTech ? "BUY" : "HOLD" };
         }
     },
     dalio: {
-        name: "레이 달리오",
-        title: "올웨더 전략가",
-        avatar: "🧓",
-        color: "#f59e0b",
-        style: "거시경제 사이클 분석, 리스크 패리티, 글로벌 자산 배분, 인플레이션 헤지",
+        name: "레이 달리오", title: "올웨더 전략가", avatar: "🧓", color: "#f59e0b",
+        style: "거시경제 사이클, 리스크 패리티, 글로벌 자산배분",
         quote: "\"고통 + 성찰 = 진보\"",
-        analyze: (stock: string, name: string, price: number) => {
-            const score = Math.floor(Math.random() * 25) + 55; // 55-80
-            const signals = [
-                "현재 거시경제 사이클에서 이 섹터는 유리한 포지션에 있습니다",
-                "달러 강세/약세 사이클을 고려할 때 적절한 비중입니다",
-                "인플레이션 헤지 관점에서 포트폴리오 다각화에 기여합니다",
-            ];
-            const weakness = [
-                "지정학적 리스크와 금리 변동성을 반드시 고려해야 합니다",
-                "단일 종목보다는 ETF를 통한 섹터 접근을 권장합니다",
-            ];
-            const s = signals[Math.floor(Math.random() * signals.length)];
-            const w = weakness[Math.floor(Math.random() * weakness.length)];
-            return { score, summary: `${s}. ${w}`, action: score > 65 ? "BUY" : score > 50 ? "HOLD" : "SELL" };
+        analyze(p, ch, n, t) {
+            const defenseTickers = ["SCHD","JEPI","XLP","XLU","XLV","GLD"];
+            const isDefense = defenseTickers.includes(t);
+            const absCh = Math.abs(ch);
+
+            // 변동성 기반 리스크 평가
+            const isHighVol = absCh > 8;
+            const isRecovering = ch < -3;
+
+            if (isRecovering) return { score: 65, summary: `하락장에서 ${n}은 리스크 패리티 관점에서 포트폴리오 다각화 기회를 제공합니다. 달리오의 올웨더 전략은 "모든 환경에서 살아남는" 자산 배분을 추구합니다. 현재 비중을 5-10%로 제한하고, 방어주·채권·금과 함께 배분하세요.`, action: "BUY" };
+            if (isHighVol) return { score: 42, summary: `${n}의 높은 변동성은 거시경제 불확실성의 신호입니다. 달리오라면 현금 비중을 늘리고, 금·국채 등 안전자산으로 헤지할 것을 권장합니다. "현금은 쓰레기가 아니다"라는 그의 조언을 기억하세요.`, action: "SELL" };
+            if (isDefense && ch > 0) return { score: 72, summary: `${n}은 인플레이션 헤지와 경기 방어적 특성을 동시에 갖춘 자산입니다. 달리오의 "All Weather" 포트폴리오에서 핵심 구성 요소로 적합합니다. 장기 보유로 안정적 수익을 기대할 수 있습니다.`, action: "BUY" };
+            if (ch > 8) return { score: 48, summary: `${n}의 강한 상승은 시장 과열의 신호일 수 있습니다. 달리오의 "경제 머신" 모델로 보면, 현재 사이클 후반부의 특징입니다. 일부 차익 실현과 리밸런싱을 권장합니다.`, action: "HOLD" };
+            return { score: 58, summary: `${n}은 거시경제 사이클에서 중립적 포지션입니다. 달리오의 조언대로 "다각화는 투자의 유일한 공짜 점심"입니다. 이 종목 하나에 집중하기보다 전체 포트폴리오 맥락에서 비중을 결정하세요.`, action: "HOLD" };
         }
     },
 };
+
+// Yahoo Finance 가격 조회
+async function fetchPrice(ticker: string): Promise<{ price: number; changePct: number } | null> {
+    try {
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=1d&interval=1d`;
+        const res = await fetch(url, { headers: { "User-Agent": UA } });
+        if (!res.ok) return null;
+        const json = await res.json();
+        const meta = json.chart?.result?.[0]?.meta;
+        if (!meta) return null;
+        const price = meta.regularMarketPrice || 0;
+        const prev = meta.previousClose || meta.chartPreviousClose || price;
+        return { price, changePct: prev ? ((price - prev) / prev) * 100 : 0 };
+    } catch { return null; }
+}
+
+// 한국인 인기주식 (프리캐싱 대상)
+const POPULAR_STOCKS = [
+    // 한국
+    { ticker: "005930.KS", name: "삼성전자" }, { ticker: "000660.KS", name: "SK하이닉스" },
+    { ticker: "035420.KS", name: "NAVER" }, { ticker: "035720.KS", name: "카카오" },
+    // 미국
+    { ticker: "NVDA", name: "엔비디아" }, { ticker: "TSLA", name: "테슬라" },
+    { ticker: "AAPL", name: "애플" }, { ticker: "MSFT", name: "MS" },
+    { ticker: "META", name: "메타" }, { ticker: "PLTR", name: "팔란티어" },
+    { ticker: "SOXL", name: "반도체3배" }, { ticker: "TQQQ", name: "나스닥3배" },
+];
 
 export async function GET(req: NextRequest) {
     const stock = req.nextUrl.searchParams.get("stock")?.toUpperCase();
     const name = req.nextUrl.searchParams.get("name") || stock;
     const persona = req.nextUrl.searchParams.get("persona") || "buffett";
-    const price = parseFloat(req.nextUrl.searchParams.get("price") || "0");
+    const preCache = req.nextUrl.searchParams.get("precache") === "true";
 
-    if (!stock) return NextResponse.json({ error: "stock required" }, { status: 400 });
+    if (!stock && !preCache) return NextResponse.json({ error: "stock required" }, { status: 400 });
 
+    // ─── 프리캐싱 (한국인 인기주식 × 3페르소나) ───
+    if (preCache) {
+        const results: any[] = [];
+        for (const s of POPULAR_STOCKS) {
+            const quote = await fetchPrice(s.ticker);
+            const p = quote?.price || 0;
+            const ch = quote?.changePct || 0;
+            for (const pid of Object.keys(PERSONAS)) {
+                const per = PERSONAS[pid];
+                const cacheKey = `persona:${s.ticker}:${pid}`;
+                const r = { stock: s.ticker, name: s.name, ...per.analyze(p, ch, s.name, s.ticker), generatedAt: new Date().toISOString() };
+                await setCache(cacheKey, r);
+                results.push({ ticker: s.ticker, persona: pid, score: r.score, cached: true });
+            }
+        }
+        return NextResponse.json({ precached: results.length, stocks: POPULAR_STOCKS.length, personas: Object.keys(PERSONAS).length, results: results.slice(0, 12) });
+    }
+
+    // ─── 단일 종목 분석 ───
     const cacheKey = `persona:${stock}:${persona}`;
     const cached = await getCache(cacheKey);
     if (cached && !cached.stale) return NextResponse.json({ ...cached.data, fromCache: true });
 
-    const p = (PERSONAS as any)[persona] || PERSONAS.buffett;
+    // 실시간 가격 조회
+    const ticker = stock.includes(".") ? stock : /^\d+$/.test(stock) ? `${stock}.KS` : stock;
+    const quote = await fetchPrice(ticker.includes(".") ? ticker : stock);
+
+    const p = PERSONAS[persona] || PERSONAS.buffett;
     const result = {
-        stock, name, persona: persona, personaName: p.name, personaTitle: p.title,
-        personaAvatar: p.avatar, personaColor: p.color, personaStyle: p.style, personaQuote: p.quote,
-        ...p.analyze(stock, name || stock, price),
+        stock, name: name || stock,
+        persona, personaName: p.name, personaTitle: p.title,
+        personaAvatar: p.avatar, personaColor: p.color,
+        personaStyle: p.style, personaQuote: p.quote,
+        currentPrice: quote?.price || null,
+        changePct: quote?.changePct || null,
+        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || stock, stock),
         generatedAt: new Date().toISOString(),
     };
 
