@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-16T01:24:21.477Z",
+  "generatedAt": "2026-06-16T10:42:24.828Z",
   "period": {
     "from": "20260609",
     "to": "20260616"
   },
-  "totalCompanies": 43,
-  "totalDisclosures": 71,
+  "totalCompanies": 47,
+  "totalDisclosures": 82,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -349,7 +349,7 @@
       "stockCode": "015590",
       "corpCode": "00108746",
       "name": "DKME",
-      "totalDisclosures": 2,
+      "totalDisclosures": 3,
       "signals": [
         {
           "rule": "소송/분쟁",
@@ -360,6 +360,12 @@
       ],
       "riskScore": 25,
       "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616800380",
+          "title": "단일판매ㆍ공급계약체결(자율공시)              ",
+          "type": "I"
+        },
         {
           "date": "20260612",
           "rceptNo": "20260612800292",
@@ -457,6 +463,29 @@
       ]
     },
     {
+      "stockCode": "033310",
+      "corpCode": "00143226",
+      "name": "엠투엔",
+      "totalDisclosures": 1,
+      "signals": [
+        {
+          "rule": "대주주변경",
+          "weight": 20,
+          "count": 1,
+          "latestDate": "20260616"
+        }
+      ],
+      "riskScore": 20,
+      "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616900839",
+          "title": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "127120",
       "corpCode": "00642541",
       "name": "제이에스링크",
@@ -510,6 +539,35 @@
           "date": "20260610",
           "rceptNo": "20260610900310",
           "title": "전환가액의조정              (제6회차)",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "900100",
+      "corpCode": "00781202",
+      "name": "파이온엑스",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "20260616"
+        }
+      ],
+      "riskScore": 10,
+      "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616000046",
+          "title": "[첨부정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260615",
+          "rceptNo": "20260615900360",
+          "title": "[기재정정]주주총회소집결의              ",
           "type": "I"
         }
       ]
@@ -634,7 +692,7 @@
       "stockCode": "000490",
       "corpCode": "00109286",
       "name": "대동",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [
         {
           "rule": "증자/감자",
@@ -645,6 +703,12 @@
       ],
       "riskScore": 10,
       "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616800515",
+          "title": "타법인주식및출자증권취득결정              ",
+          "type": "I"
+        },
         {
           "date": "20260610",
           "rceptNo": "20260610800693",
@@ -673,6 +737,29 @@
           "rceptNo": "20260615900366",
           "title": "감자완료              ",
           "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "049470",
+      "corpCode": "00351579",
+      "name": "비트플래닛",
+      "totalDisclosures": 1,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "20260616"
+        }
+      ],
+      "riskScore": 10,
+      "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616000274",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
         }
       ]
     },
@@ -734,22 +821,6 @@
           "date": "20260615",
           "rceptNo": "20260615800335",
           "title": "주주명부폐쇄기간또는기준일설정              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "900100",
-      "corpCode": "00781202",
-      "name": "파이온엑스",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900360",
-          "title": "[기재정정]주주총회소집결의              ",
           "type": "I"
         }
       ]
@@ -889,6 +960,28 @@
       ]
     },
     {
+      "stockCode": "288620",
+      "corpCode": "01257872",
+      "name": "에스프리즘",
+      "totalDisclosures": 2,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616900494",
+          "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        },
+        {
+          "date": "20260616",
+          "rceptNo": "20260616900612",
+          "title": "타인에대한담보제공결정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "317400",
       "corpCode": "00367844",
       "name": "자이에스앤디",
@@ -924,10 +1017,16 @@
       "stockCode": "001080",
       "corpCode": "00120872",
       "name": "만호제강",
-      "totalDisclosures": 2,
+      "totalDisclosures": 3,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616000189",
+          "title": "주요사항보고서(자기주식취득신탁계약해지결정)",
+          "type": "B"
+        },
         {
           "date": "20260615",
           "rceptNo": "20260615800287",
@@ -962,10 +1061,16 @@
       "stockCode": "025440",
       "corpCode": "00110583",
       "name": "DH오토웨어",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616900277",
+          "title": "단기차입금증가결정              ",
+          "type": "I"
+        },
         {
           "date": "20260610",
           "rceptNo": "20260610900892",
@@ -1120,6 +1225,28 @@
           "date": "20260610",
           "rceptNo": "20260610900230",
           "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "388210",
+      "corpCode": "01529982",
+      "name": "씨엠티엑스",
+      "totalDisclosures": 2,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260616",
+          "rceptNo": "20260616900438",
+          "title": "주주총회소집결의              (임시주주총회)",
+          "type": "I"
+        },
+        {
+          "date": "20260616",
+          "rceptNo": "20260616900432",
+          "title": "주주명부폐쇄기간또는기준일설정              ",
           "type": "I"
         }
       ]
