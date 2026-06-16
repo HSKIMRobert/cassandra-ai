@@ -142,9 +142,12 @@ export default function PersonaPage() {
                             <h3 className="font-bold">{stockInfo.name} ({stockInfo.ticker})</h3>
                             <p className="text-[10px] text-[var(--text-muted)]">{active.name}의 {active.desc}</p>
                         </div>
-                        {(results[activePersona] as any)?.fromCache && (
-                            <span className="ml-auto text-[9px] text-[var(--text-muted)]">📦 Redis 캐시</span>
-                        )}
+                    {(results[activePersona] as any)?.cacheHit && (
+                        <span className="ml-auto text-[9px] text-[#22c55e] bg-[#22c55e]/10 px-2 py-0.5 rounded-full">📦 Redis 캐시</span>
+                    )}
+                    {!(results[activePersona] as any)?.cacheHit && (results[activePersona] as any) && (
+                        <span className="ml-auto text-[9px] text-[var(--text-muted)]">🔄 실시간 분석</span>
+                    )}
                     </div>
 
                     {Object.entries(results).map(([k, r]: [string, any]) => (
