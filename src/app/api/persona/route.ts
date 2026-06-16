@@ -146,26 +146,25 @@ export async function GET(req: NextRequest) {
 
     // ─── 단일 종목 분석 ───
     // 티커 정규화: 005930.KS → 005930, NVDA → NVDA
-    const normalizedStock = stock!.includes(".KS") || stock!.includes(".KQ")
-        ? stock!.split(".")[0]
-        : stock!;
+    const s = stock!; // 타입 좁히기 (위에서 null 체크 완료)
+    const normalizedStock = s.includes(".KS") || s.includes(".KQ") ? s.split(".")[0] : s;
     const cacheKey = `persona:${normalizedStock}:${persona}`;
     const cached = await getCache(cacheKey);
     if (cached && !cached.stale) return NextResponse.json({ ...cached.data, fromCache: true, cacheHit: true });
 
     // 실시간 가격 조회
-    const yahooTicker = stock!.includes(".") ? stock : /^\d+$/.test(stock) ? `${stock}.KS` : stock;
+    const yahooTicker = s.includes(".") ? s : /^\d+$/.test(s) ? `${s}.KS` : s;
     const quote = await fetchPrice(yahooTicker);
 
     const p = PERSONAS[persona] || PERSONAS.buffett;
     const result = {
-        stock: stock!, name: name || stock!,
+        stock: s, name: name || s,
         persona, personaName: p.name, personaTitle: p.title,
         personaAvatar: p.avatar, personaColor: p.color,
         personaStyle: p.style, personaQuote: p.quote,
         currentPrice: quote?.price || null,
         changePct: quote?.changePct || null,
-        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || stock!, stock!, classifyStock(stock!, name || stock!)),
+        ...p.analyze(quote?.price || 0, quote?.changePct || 0, name || s, s, classifyStock(s, name || s)),
         generatedAt: new Date().toISOString(),
     };
 
