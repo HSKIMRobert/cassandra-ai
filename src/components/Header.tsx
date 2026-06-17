@@ -54,7 +54,7 @@ export default function Header() {
           <span className="text-xs text-[var(--text-muted)] hidden sm:inline">AI</span>
         </a>
         <nav className="flex items-center gap-2 text-xs">
-          {btn("/dashboard", "코스닥 특이점")}
+          {btn("/dashboard", "코스닥 시그널")}
           <a href="/quant" className="px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent-glow)] hover:bg-[var(--accent)]/20 transition-colors text-xs">
             퀀트 대시보드
           </a>
