@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-17T01:20:15.768Z",
+  "generatedAt": "2026-06-17T05:36:25.311Z",
   "period": {
-    "from": "20260610",
+    "from": "20260609",
     "to": "20260617"
   },
-  "totalCompanies": 45,
-  "totalDisclosures": 78,
+  "totalCompanies": 48,
+  "totalDisclosures": 84,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -573,6 +573,35 @@
       ]
     },
     {
+      "stockCode": "026910",
+      "corpCode": "00104120",
+      "name": "광진실업",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "증자/감자",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "20260617"
+        }
+      ],
+      "riskScore": 10,
+      "recentDisclosures": [
+        {
+          "date": "20260617",
+          "rceptNo": "20260617000241",
+          "title": "[기재정정]주요사항보고서(유상증자결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260611",
+          "rceptNo": "20260611900752",
+          "title": "[기재정정]주주총회소집결의              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "000880",
       "corpCode": "00160588",
       "name": "한화",
@@ -858,17 +887,23 @@
       ]
     },
     {
-      "stockCode": "026910",
-      "corpCode": "00104120",
-      "name": "광진실업",
-      "totalDisclosures": 1,
+      "stockCode": "291810",
+      "corpCode": "01524507",
+      "name": "핀텔",
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
         {
-          "date": "20260611",
-          "rceptNo": "20260611900752",
-          "title": "[기재정정]주주총회소집결의              ",
+          "date": "20260609",
+          "rceptNo": "20260609900884",
+          "title": "[기재정정]조회공시요구(현저한시황변동)에대한답변(미확정)              ",
+          "type": "I"
+        },
+        {
+          "date": "20260609",
+          "rceptNo": "20260609900753",
+          "title": "조회공시요구(현저한시황변동)에대한답변(미확정)              ",
           "type": "I"
         }
       ]
@@ -960,6 +995,22 @@
       ]
     },
     {
+      "stockCode": "317400",
+      "corpCode": "00367844",
+      "name": "자이에스앤디",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260609",
+          "rceptNo": "20260609800185",
+          "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "101930",
       "corpCode": "00482426",
       "name": "인화정공",
@@ -979,7 +1030,7 @@
       "stockCode": "001080",
       "corpCode": "00120872",
       "name": "만호제강",
-      "totalDisclosures": 2,
+      "totalDisclosures": 3,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
@@ -993,6 +1044,12 @@
           "date": "20260615",
           "rceptNo": "20260615800287",
           "title": "주주명부폐쇄기간또는기준일설정              ",
+          "type": "I"
+        },
+        {
+          "date": "20260609",
+          "rceptNo": "20260609800280",
+          "title": "타법인주식및출자증권취득결정              ",
           "type": "I"
         }
       ]
@@ -1031,6 +1088,22 @@
           "date": "20260610",
           "rceptNo": "20260610900892",
           "title": "주권매매거래정지              (주식의 병합, 분할 등 전자등록 변경, 말소)",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "058630",
+      "corpCode": "00397058",
+      "name": "엠게임",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260617",
+          "rceptNo": "20260617900192",
+          "title": "중간(분기)배당을위한주주명부폐쇄(기준일)결정              ",
           "type": "I"
         }
       ]
