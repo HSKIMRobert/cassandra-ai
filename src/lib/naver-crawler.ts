@@ -80,10 +80,10 @@ async function fetchStocks(
       changePercent,
       volume: s.accumulatedTradingVolume
         ? Number(s.accumulatedTradingVolume).toLocaleString()
-        : undefined,
+        : "-",
       marketCap: s.marketValue
         ? (Number(s.marketValue) / 1e8).toFixed(0) + "억"
-        : undefined,
+        : "-",
     });
   }
 
