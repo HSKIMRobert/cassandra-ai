@@ -56,11 +56,14 @@ export async function buildDeepGraph(query: string, depth: number = 1): Promise<
     if (current.type === "corp") {
       if (visitedCorps.has(current.id)) continue;
       visitedCorps.add(current.id);
-      const corp = await prisma.corp.findUnique({ where: { id: current.id }, include: { personRelations: { include: { person: true } }, fundRelations: { include: { fund: true } }, auditRelations: { include: { auditor: true }, orderBy: { fiscalYear: "desc" }, take: 3 } } });
+      const corp = await prisma.corp.findUnique({ where: { id: current.id }, include: { personRelations: { include: { person: true } }, fundRelations: { include: { fund: true } } } });
       if (!corp) continue;
       for (const rel of corp.personRelations) { const pid = `person-${rel.personId}`; if (!nodes.has(pid)) { addPersonNode(nodes, rel.person, nextHop); queue.push({ id: rel.personId, type: "person", hop: nextHop }); } const eid = `pc-${rel.id}`; if (!edges.has(eid)) edges.set(eid, { data: { id: eid, source: pid, target: `corp-${corp.id}`, label: rel.role, type: "person_corp", since: rel.since?.toISOString().slice(0,10), until: rel.until?.toISOString().slice(0,10) } }); }
       for (const rel of corp.fundRelations) { const fid = `fund-${rel.fundId}`; if (!nodes.has(fid)) { addFundNode(nodes, rel.fund, nextHop); queue.push({ id: rel.fundId, type: "fund", hop: nextHop }); } const eid = `fc-${rel.id}`; if (!edges.has(eid)) edges.set(eid, { data: { id: eid, source: fid, target: `corp-${corp.id}`, label: rel.relationType, type: "fund_corp", since: rel.at?.toISOString().slice(0,10), amount: rel.amount ? Number(rel.amount) : undefined, pct: rel.pct ?? undefined } }); }
-      for (const rel of corp.auditRelations) { const aid = `auditor-${rel.auditorId}`; if (!nodes.has(aid)) addAuditorNode(nodes, rel.auditor, rel.opinion, nextHop); const eid = `ac-${rel.id}`; if (!edges.has(eid)) edges.set(eid, { data: { id: eid, source: aid, target: `corp-${corp.id}`, label: `${rel.fiscalYear} 감사`, type: "audit_corp" } }); }
+      try {
+        const auditRels = await (prisma as any).corpAuditRelation.findMany({ where: { corpId: current.id }, include: { auditor: true }, orderBy: { fiscalYear: "desc" }, take: 3 });
+        for (const rel of auditRels) { const aid = `auditor-${rel.auditorId}`; if (!nodes.has(aid)) addAuditorNode(nodes, rel.auditor, rel.opinion, nextHop); const eid = `ac-${rel.id}`; if (!edges.has(eid)) edges.set(eid, { data: { id: eid, source: aid, target: `corp-${corp.id}`, label: `${rel.fiscalYear} 감사`, type: "audit_corp" } }); }
+      } catch { /* auditRelations table not yet migrated */ }
       if (current.hop === 0 && corp.personRelations.length === 0 && corp.fundRelations.length === 0) { const dbFilings = await prisma.filing.findMany({ where: { corpId: corp.id }, orderBy: { filedAt: "desc" }, take: 20 }); for (const f of dbFilings) filings.push({ date: f.filedAt.toISOString().slice(0,10), title: f.title, type: f.filingType }); }
     } else if (current.type === "person") {
       if (visitedPersons.has(current.id)) continue;
