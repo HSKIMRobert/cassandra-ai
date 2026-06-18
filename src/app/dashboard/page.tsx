@@ -90,8 +90,23 @@ export default function DashboardPage() {
     );
   }
 
+  // 통합 검색 (allStocks + categories + dartSections)
+  const allSearchable = [
+    ...allStocks.map((s: any) => ({ type: "stock", ...s })),
+    ...Object.values(categories).flat().map((s: any) => ({ type: "signal", ...s })),
+    ...DART_SECTIONS.flatMap((ds) => {
+      const data = dartSections[ds.key];
+      const events = data?.data || [];
+      if (!Array.isArray(events)) return [];
+      return events.map((e: any) => ({ type: "dart", section: ds.label, ...e }));
+    }),
+  ];
   const filtered = searchQuery
-    ? allStocks.filter((s) => s.name.includes(searchQuery) || s.code.includes(searchQuery))
+    ? allSearchable.filter((s: any) => 
+        (s.name||s.companyName||"").includes(searchQuery) || 
+        (s.code||s.stockCode||"").includes(searchQuery) ||
+        (s.reportName||s.title||"").includes(searchQuery)
+      ).slice(0, 50)
     : allStocks;
 
   const activeData = activeTab === "all" ? filtered : (categories[activeTab] || []);
