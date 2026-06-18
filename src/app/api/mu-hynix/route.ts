@@ -106,7 +106,7 @@ async function getBacktest(current: any, force: boolean) {
         };
 
         // Redis 캐시 (10분)
-        await setCache(cachedKey, result);
+        await setCache(cachedKey, result, 600);
         return result;
     } catch {
         return { items: [], accuracy: 0, totalHits: 0, totalEvaluated: 0 };

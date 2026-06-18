@@ -131,6 +131,6 @@ export async function predictHynix(): Promise<MUHynixPrediction | null> {
     };
 
     // Redis 캐시 (10분)
-    await setCache(CACHE_KEY_PREFIX, result);
+    await setCache(CACHE_KEY_PREFIX, result, 600);
     return result;
 }
