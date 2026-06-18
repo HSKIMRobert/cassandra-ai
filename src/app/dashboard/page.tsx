@@ -114,7 +114,7 @@ export default function DashboardPage() {
   // DART 이벤트를 시간순으로 통합
   const timelineEvents = DART_SECTIONS.flatMap((ds) => {
     const data = dartSections[ds.key];
-    const events = data?.data || (data?.events ? data.data : []) || [];
+    const events = Array.isArray(data) ? data : (data?.data || (data?.events ? data.data : []) || []);
     if (!Array.isArray(events)) return [];
     return events.map((e: any) => ({ ...e, section: ds.label }));
   }).sort((a: any, b: any) => (b.date || "").localeCompare(a.date || ""));
@@ -127,7 +127,7 @@ export default function DashboardPage() {
 
     for (const ds of DART_SECTIONS) {
       const data = dartSections[ds.key];
-      const events = data?.data || (data?.events ? data.data : []) || [];
+      const events = Array.isArray(data) ? data : (data?.data || (data?.events ? data.data : []) || []);
       if (!Array.isArray(events) || events.length === 0) continue;
       lines.push(`## ${ds.label} (${events.length}건)\n`);
       for (const e of events.slice(0, 20)) {
@@ -288,7 +288,7 @@ export default function DashboardPage() {
             <div className="grid gap-3 md:grid-cols-2">
               {DART_SECTIONS.map((ds) => {
                 const data = dartSections[ds.key];
-                const events = data?.data || (data?.events ? data.data : []) || [];
+                const events = Array.isArray(data) ? data : (data?.data || (data?.events ? data.data : []) || []);
                 if (!events || events.length === 0) return null;
                 return (
                   <div key={ds.key} className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
