@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-17T10:39:03.277Z",
+  "generatedAt": "2026-06-18T01:19:05.865Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 4,
-    "totalSignals": 23,
+    "highRiskCount": 3,
+    "totalSignals": 20,
     "topRisks": [
       {
         "name": "알로이스",
@@ -31,17 +31,10 @@
         ]
       },
       {
-        "name": "일정실업",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "제이에스링크",
+        "name": "우성머티리얼스",
         "score": 30,
         "signals": [
-          "CB발행"
+          "증자/감자"
         ]
       }
     ]
