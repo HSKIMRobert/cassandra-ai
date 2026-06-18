@@ -1,6 +1,6 @@
 {
   "name": "dart-monitor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,20 +13,13 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "setup": "node scripts/setup-key.js",
-    "update-db": "node scripts/update-neon-pw.js",
     "postinstall": "npx prisma generate",
     "deploy:setup": "node scripts/deploy-setup.js",
     "extract-kb": "tsx scripts/build-knowledge-base.ts",
     "daily": "tsx scripts/daily-sync.ts",
-    "person-sync": "tsx scripts/sync-person-history.ts",
-    "elestock-sync": "tsx scripts/sync-elestock.ts",
-    "batch": "tsx scripts/process-batch.ts",
-    "crawl-persons": "tsx scripts/crawl-persons.ts",
     "logs": "node scripts/view-logs.js",
-    "saju-stats": "npx tsx scripts/saju-stats.ts",
-    "extract-cb": "npx tsx scripts/extract-cb.ts",
-    "test-graph": "tsx scripts/test-graph.ts",
-    "extract-dart": "tsx scripts/extract-dart-events.ts"
+    "extract-dart": "tsx scripts/extract-dart-events.ts",
+    "backtest:network": "tsx scripts/backtest-network.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -35,8 +28,6 @@
     "@prisma/client": "^6.0.0",
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^2.0.0",
-    "@supabase/ssr": "^0.12.0",
-    "@supabase/supabase-js": "^2.108.1",
     "@tanstack/react-query": "^5.0.0",
     "@upstash/redis": "^1.38.0",
     "bcryptjs": "^3.0.3",
@@ -47,10 +38,10 @@
     "lucide-react": "^0.400.0",
     "next": "^15.0.0",
     "prisma": "^6.0.0",
+    "puppeteer": "^25.1.0",
     "react": "^19.0.0",
     "react-cytoscapejs": "^2.0.0",
     "react-dom": "^19.0.0",
-    "recharts": "^3.8.1",
     "tailwind-merge": "^2.0.0",
     "zod": "^3.0.0",
     "zustand": "^5.0.14"

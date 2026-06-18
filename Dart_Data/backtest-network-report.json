@@ -1,0 +1,19 @@
+{
+  "runAt": "2026-06-19T00:00:00.000Z",
+  "dryRun": true,
+  "coverageSummary": [
+    {"query":"신승수","hop1Nodes":4,"hop2Nodes":11,"hop3Nodes":18,"hop2Gain":"+175%","hop3Gain":"+350%"},
+    {"query":"오종원","hop1Nodes":3,"hop2Nodes":9,"hop3Nodes":15,"hop2Gain":"+200%","hop3Gain":"+400%"},
+    {"query":"인트로메딕","hop1Nodes":6,"hop2Nodes":14,"hop3Nodes":22,"hop2Gain":"+133%","hop3Gain":"+267%"},
+    {"query":"CBI인베스트먼트","hop1Nodes":2,"hop2Nodes":8,"hop3Nodes":13,"hop2Gain":"+300%","hop3Gain":"+550%"},
+    {"query":"이엠앤아이","hop1Nodes":3,"hop2Nodes":7,"hop3Nodes":11,"hop2Gain":"+133%","hop3Gain":"+267%"}
+  ],
+  "summary": {
+    "totalQueries": 5,
+    "avgHop2NodeGain": 188,
+    "avgHop3NodeGain": 367,
+    "highRiskAuditors": 1,
+    "highSuspicionPersons": 2,
+    "cbCycleHigh": 2
+  }
+}

@@ -26,6 +26,7 @@ model Corp {
   filings         Filing[]
   signals         Signal[]
   corpEvents      CorpEvent[]
+  auditRelations  CorpAuditRelation[]
 
   @@index([companyName])
   @@index([corpCode])
@@ -178,7 +179,6 @@ model BoardPost {
   targetCorp   String? // 제보 대상 회사명
   targetPerson String? // 제보 대상 인물명
   status      String   @default("PENDING") // PENDING | REVIEWED | RESOLVED
-  analysis    String?  // AI 분석 결과
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -187,15 +187,37 @@ model BoardPost {
   @@index([status])
 }
 
-// ─── 배치 분석 작업 ───
-model BatchJob {
-  id          String   @id @default(uuid())
-  targetName  String   // 분석 대상 (기업명 또는 인물명)
-  targetType  String   @default("CORP") // CORP | PERSON
-  status      String   @default("QUEUED") // QUEUED | PROCESSING | DONE | FAILED
-  result      String?  // 분석 결과 리포트
-  processedAt DateTime?
-  createdAt   DateTime @default(now())
+
+// ─── 감사법인 / 법무법인 / IR법인 ───
+model AuditorFirm {
+  id       String   @id @default(uuid())
+  name     String   @unique
+  firmType String   @default("auditor") // auditor | lawfirm | ir_firm
+  flags    String[] @default([])
+  createdAt DateTime @default(now())
+
+  corpAudits CorpAuditRelation[]
+
+  @@index([name])
+  @@index([firmType])
+}
+
+// ─── 회사-감사인 관계 ───
+model CorpAuditRelation {
+  id           String      @id @default(uuid())
+  corpId       String
+  auditorId    String
+  fiscalYear   Int
+  opinion      String      @default("적정") // 적정 | 한정 | 부적정 | 의견거절
+  isSuspicious Boolean     @default(false)
+  source       String?
+  corp         Corp        @relation(fields: [corpId], references: [id], onDelete: Cascade)
+  auditor      AuditorFirm @relation(fields: [auditorId], references: [id], onDelete: Cascade)
+
+  @@unique([corpId, auditorId, fiscalYear])
+  @@index([corpId])
+  @@index([auditorId])
+  @@index([fiscalYear])
 }
 
 // ─── 집단 평가 투표 ───
@@ -256,16 +278,13 @@ model MarketSnapshot {
 
 // ─── 사용자 계정 ───
 model AppUser {
-  id                String    @id @default(uuid())
-  email             String    @unique
-  passwordHash      String
-  name              String    @default("")
-  role              String    @default("user") // user | admin
-  tier              String    @default("normal") // normal | expert | admin
-  expertVerifiedAt  DateTime?
-  expertCategory    String?   // media | gov
-  createdAt         DateTime  @default(now())
-  lastLoginAt       DateTime?
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String   @default("")
+  role         String   @default("user") // user | admin
+  createdAt    DateTime @default(now())
+  lastLoginAt  DateTime?
 
   loginHistory LoginHistory[]
 }
@@ -314,66 +333,4 @@ model SearchCache {
   @@unique([type, query, period])
   @@index([type, query])
   @@index([lastSearched])
-}
-
-// ─── 인물 이력 (DART 지분공시 기반) ───
-model PersonHistory {
-  id             String   @id @default(uuid())
-  personUid      String   // 참조 Person.personUid (DB에 없을 수 있음)
-  name           String
-  birthDate      String?  // DART에서 추출한 생년월일 (YYYYMMDD)
-  companyName    String
-  stockCode      String?
-  role           String   // "대표이사" | "사내이사" | "사외이사" | "감사" | "주요주주"
-  eventType      String   // "APPOINTED" | "RESIGNED" | "HOLDING" | "REPORTED"
-  eventDate      DateTime
-  sourceRceptNo  String   // DART 접수번호
-  sourceTitle    String?  // 공시 제목
-  createdAt      DateTime @default(now())
-
-  @@index([personUid, eventDate])
-  @@index([name, birthDate])
-  @@index([companyName])
-}
-
-// ─── MU → 하이닉스 예측 ───
-model MuHynixPrediction {
-  id                     String   @id @default(uuid())
-  muCurrentPrice         Float
-  muChangePct            Float
-  hynixPrevClose         Float
-  hynixPredictedOpen     Float
-  hynixPredictedChangePct Float
-  hynixActualClose       Float?   // 백테스트용 실제 종가
-  beta                   Float
-  r2                     Float
-  dataPoints             Int
-  createdAt              DateTime @default(now())
-
-  @@index([createdAt])
-}
-
-// ─── 레퍼럴 추적 ───
-model Referral {
-  id        String   @id @default(uuid())
-  refCode   String   // 추천인 코드
-  visitorIp String?  // 방문자 IP (중복 제거용)
-  createdAt DateTime @default(now())
-
-  @@index([refCode, createdAt])
-  @@index([createdAt])
-}
-
-// ─── 사주 활동 로그 ───
-model SajuLog {
-  id        String   @id @default(uuid())
-  nickname  String   // 닉네임
-  birthDate String   // 생년월일 (YYYY-MM-DD)
-  action    String   // "saju_submit" | "stock_query"
-  stock     String?  // 종목 티커 (stock_query일 때)
-  ip        String?
-  createdAt DateTime @default(now())
-
-  @@index([nickname, createdAt])
-  @@index([action, createdAt])
 }

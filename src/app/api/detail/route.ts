@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { toJSON } from "@/lib/serialize";
+import { getPersonTimeline } from "@/lib/graph-queries";
 
 export async function GET(req: NextRequest) {
   const type = req.nextUrl.searchParams.get("type");
@@ -22,12 +23,11 @@ export async function GET(req: NextRequest) {
 
     const totalConnections = person.corpRelations.length + person.fundRelations.length;
     const suspiciousCorps = person.corpRelations.filter(r => r.corp.isAdmin || r.corp.delistedAt).length;
-
-    // 동명이인 체크
     const sameNameGroup = await prisma.sameNameGroup.findFirst({ where: { name: person.name } });
     const sameNameCount = sameNameGroup ? sameNameGroup.personIds.length : 1;
+    const timeline = await getPersonTimeline(person.id);
 
-    return NextResponse.json(toJSON({ ...person, totalConnections, suspiciousCorps, sameNameCount }));
+    return NextResponse.json(toJSON({ ...person, totalConnections, suspiciousCorps, sameNameCount, timeline }));
   }
 
   if (type === "fund") {
@@ -44,7 +44,6 @@ export async function GET(req: NextRequest) {
 
     const totalConnections = fund.corpRelations.length + fund.personRelations.length;
     const suspiciousCorps = fund.corpRelations.filter(r => r.corp.isAdmin || r.corp.delistedAt).length;
-
     return NextResponse.json(toJSON({ ...fund, totalConnections, suspiciousCorps }));
   }
 
