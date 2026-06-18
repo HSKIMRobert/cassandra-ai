@@ -6,6 +6,7 @@ import UsageBanner from "@/components/UsageBanner";
 export const metadata: Metadata = {
   title: "CASSANDRA AI — Toss × DART × LLM 투자 리스크 모니터링",
   description: "코스닥 시장 공시·거래 데이터 분석, 이상 징후 탐지, 관계망 분석 시스템",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
