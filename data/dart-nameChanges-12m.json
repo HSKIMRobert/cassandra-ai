@@ -1,10 +1,20 @@
 {
-  "generatedAt": "2026-06-09T03:56:58.609Z",
+  "generatedAt": "2026-06-18T12:40:36.547Z",
   "category": "nameChanges",
   "period": "12개월",
   "totalCompanies": 100,
-  "events": 6,
+  "events": 7,
   "data": [
+    {
+      "stockCode": "013720",
+      "corpCode": "00151605",
+      "companyName": "THE CUBE&",
+      "marketCap": 277,
+      "reportName": "상호변경안내              ",
+      "rceptNo": "20260612900321",
+      "date": "20260612",
+      "category": "사명변경"
+    },
     {
       "stockCode": "900110",
       "corpCode": "00799070",

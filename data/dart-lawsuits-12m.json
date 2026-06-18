@@ -1,10 +1,20 @@
 {
-  "generatedAt": "2026-06-09T03:56:58.611Z",
+  "generatedAt": "2026-06-18T12:40:36.549Z",
   "category": "lawsuits",
   "period": "12개월",
   "totalCompanies": 100,
-  "events": 25,
+  "events": 26,
   "data": [
+    {
+      "stockCode": "043220",
+      "corpCode": "00317487",
+      "companyName": "티에스넥스젠",
+      "marketCap": 272,
+      "reportName": "기타경영사항(자율공시)              (상장폐지결정 효력정지 가처분 신청)",
+      "rceptNo": "20260609900527",
+      "date": "20260609",
+      "category": "소송/분쟁"
+    },
     {
       "stockCode": "237750",
       "corpCode": "00525864",
