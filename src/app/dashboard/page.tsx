@@ -53,6 +53,13 @@ export default function DashboardPage() {
   const [showTimeline, setShowTimeline] = useState(false);
   const [reportText, setReportText] = useState<string | null>(null);
   const [showLegal, setShowLegal] = useState(false);
+  const [dbSignals, setDbSignals] = useState<any>(null);
+
+  useEffect(() => {
+    // DB 시그널 별도 fetch
+    fetch("/api/dashboard").then(r => r.json()).then(d => {
+      if (d.signals) setDbSignals(d.signals);
+    }).catch(() => {});
 
   useEffect(() => {
     Promise.all([
@@ -195,6 +202,22 @@ export default function DashboardPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {dbSignals?.highRisk?.length > 0 && (
+        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">
+          <h2 className="text-sm font-bold flex items-center gap-2 mb-3">
+            <AlertTriangle className="w-4 h-4 text-[#ef4444]" /> DART 공시 이상 시그널 (최근 3일)
+          </h2>
+          <div className="flex gap-2 text-[10px] text-[var(--text-muted)] mb-3">
+            <span>CB {dbSignals.counts?.cb || 0}건</span>
+            <span>| 소송 {dbSignals.counts?.lawsuit || 0}건</span>
+            <span>| 대주주 {dbSignals.counts?.holderChange || 0}건</span>
+          </div>
+          <table className="w-full text-[10px]"><thead><tr className="text-[var(--text-muted)] border-b border-[var(--border)]"><th className="text-left py-1">기업</th><th>종목</th><th>시그널</th><th className="text-right">점수</th></tr></thead><tbody>
+            {dbSignals.highRisk.map((s:any,i:number)=>(<tr key={i} className="border-b border-[var(--border)] hover:bg-[var(--bg)]"><td className="py-1 font-semibold">{s.company}</td><td className="text-[var(--text-muted)]">{s.stockCode}</td><td><span className={'px-1 py-0.5 rounded text-[9px] '+(s.rule.includes('CB')?'bg-[var(--accent)]/10 text-[var(--accent-glow)]':s.rule.includes('소송')?'bg-[#ef4444]/10 text-[#ef4444]':'bg-[var(--warning)]/10 text-[var(--warning)]')}>{s.rule}</span></td><td className={'text-right font-bold '+(s.score>=50?'text-[#ef4444]':s.score>=30?'text-[var(--warning)]':'')}>{s.score}점</td></tr>))}
+          </tbody></table>
         </div>
       )}
 
