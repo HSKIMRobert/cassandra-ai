@@ -7,8 +7,15 @@ export async function GET(
   { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
+  const decoded = decodeURIComponent(code);
   const corp = await prisma.corp.findFirst({
-    where: { corpCode: code },
+    where: {
+      OR: [
+        { corpCode: decoded },
+        { stockCode: decoded },
+        { companyName: { contains: decoded, mode: "insensitive" } },
+      ],
+    },
     include: {
       personRelations: { include: { person: true } },
       fundRelations: { include: { fund: true } },
