@@ -178,8 +178,24 @@ async function main() {
 
       await prisma.batchJob.update({ where: { id: job.id }, data: { status: "DONE", result, reportPath, processedAt: new Date() } });
 
-      const boardPost = await prisma.boardPost.findFirst({ where: { OR: [{ targetCorp: { contains: job.targetName, mode: "insensitive" } }, { targetPerson: { contains: job.targetName, mode: "insensitive" } }], category: "ANALYSIS_REQUEST" }, orderBy: { createdAt: "desc" } });
-      if (boardPost) await prisma.boardPost.update({ where: { id: boardPost.id }, data: { analysis: result, reportPath, status: "RESOLVED" } });
+      // 매칭되는 모든 ANALYSIS_REQUEST 게시글 RESOLVED로 업데이트
+      const searchName = extractEntityName(job.targetName);
+      const matchingPosts = await prisma.boardPost.findMany({
+        where: {
+          category: "ANALYSIS_REQUEST",
+          status: { in: ["PENDING", "PROCESSING"] },
+          OR: [
+            { targetCorp: { contains: searchName, mode: "insensitive" } },
+            { targetPerson: { contains: searchName, mode: "insensitive" } },
+            { targetCorp: { contains: job.targetName, mode: "insensitive" } },
+            { targetPerson: { contains: job.targetName, mode: "insensitive" } },
+          ],
+        },
+      });
+      for (const bp of matchingPosts) {
+        await prisma.boardPost.update({ where: { id: bp.id }, data: { analysis: result, reportPath, status: "RESOLVED" } });
+      }
+      console.log(`  📋 게시글 ${matchingPosts.length}건 RESOLVED 업데이트`);
 
       console.log(`  ✅ ${job.targetName}${reportPath ? " → " + reportPath : ""}`);
     } catch (e: any) {
