@@ -93,6 +93,14 @@ async function main() {
 
   let saved = 0;
 
+  // Person 찾거나 생성 (personUid 필수)
+  async function findOrCreatePerson(name: string, birthDate?: string): Promise<any> {
+    const existing = await prisma.person.findFirst({ where: { name, ...(birthDate ? { birthDate } : {}) } });
+    if (existing) return existing;
+    const personUid = `${name}-${birthDate || Date.now()}`.replace(/[^가-힣a-zA-Z0-9-]/g, "_");
+    return prisma.person.create({ data: { name, birthDate: birthDate || undefined, personUid, flags: [] } });
+  }
+
   // 4. 임원 → CorpPersonRelation 저장
   for (const o of officers) {
     const name = o.nm?.trim();
@@ -100,14 +108,8 @@ async function main() {
     const rawRole = o.ofcps?.trim() || "DIRECTOR";
     const role = ROLE_MAP[rawRole] || "DIRECTOR";
 
-    // Person upsert
-    const person = await prisma.person.upsert({
-      where: { name_birthDate: { name, birthDate: o.birth_dte?.trim() || "" } },
-      update: {},
-      create: { name, birthDate: o.birth_dte?.trim() || undefined, flags: [] },
-    });
+    const person = await findOrCreatePerson(name, o.birth_dte?.trim() || undefined);
 
-    // CorpPersonRelation upsert
     await prisma.corpPersonRelation.upsert({
       where: { corpId_personId_role: { corpId: corp.id, personId: person.id, role } },
       update: { isCurrent: true },
@@ -125,11 +127,7 @@ async function main() {
     const pct = parseFloat(s.stkqy_irds?.replace(/,/g, "") || "0");
     const role = pct >= 5 ? "LARGEST_HOLDER" : "INSIDER";
 
-    const person = await prisma.person.upsert({
-      where: { name_birthDate: { name, birthDate: "" } },
-      update: {},
-      create: { name, flags: [] },
-    });
+    const person = await findOrCreatePerson(name);
 
     await prisma.corpPersonRelation.upsert({
       where: { corpId_personId_role: { corpId: corp.id, personId: person.id, role } },
