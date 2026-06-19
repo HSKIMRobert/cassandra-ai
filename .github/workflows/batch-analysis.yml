@@ -33,5 +33,10 @@ jobs:
           git config user.name "cassandra-bot"
           git config user.email "cassandra-bot@users.noreply.github.com"
           git add Dart_Data/reports/
-          git diff --staged --quiet || git commit -m "chore: batch report $(date -u '+%Y-%m-%d %H:%M') UTC"
-          git push
+          if git diff --staged --quiet; then
+            echo "변경 없음 — 처리할 배치 작업이 없었거나 DB에 데이터 없음"
+          else
+            git commit -m "chore: batch report $(date -u '+%Y-%m-%d %H:%M') UTC"
+            git pull --rebase origin main || true
+            git push origin main
+          fi
