@@ -8,6 +8,7 @@ import {
   MessageSquare, Plus, X, Eye, Trash2, Send, Lock,
   FileSearch, AlertTriangle, Loader2, ChevronLeft, ChevronRight,
   CheckCircle2, Clock, BarChart2, Building2, User, ChevronDown, ChevronUp,
+  FileText, TrendingUp,
 } from "lucide-react";
 
 const EntityGraph = dynamic(() => import("@/components/EntityGraph"), { ssr: false, loading: () => <div className="h-48 flex items-center justify-center text-xs text-[var(--text-muted)]"><Loader2 className="w-4 h-4 animate-spin mr-2" />그래프 로딩...</div> });
@@ -45,12 +46,12 @@ const STATUS_BADGE: Record<string, { label: string; color: string }> = {
   REVIEWED: { label: "검토완료", color: "text-[var(--accent-glow)] bg-[var(--accent)]/10" },
 };
 
-function ReportView({ post }: { post: BoardPost }) {
-  const [report, setReport] = useState<ReportData | null>(null);
+function ReportView({ post, preloadedData }: { post: BoardPost; preloadedData?: ReportData }) {
+  const [report, setReport] = useState<ReportData | null>(preloadedData || null);
   const [loading, setLoading] = useState(false);
   const [showGraph, setShowGraph] = useState(false);
   const [graphData, setGraphData] = useState<any>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(!!preloadedData);
   const [aiOpen, setAiOpen] = useState(false);
 
   const target = post.targetCorp || post.targetPerson;
@@ -59,7 +60,6 @@ function ReportView({ post }: { post: BoardPost }) {
     if (report || loading || !target) return;
     setLoading(true);
     try {
-      // Dart_Data/reports/{name}.json에서 로드
       const safe = target.replace(/[^가-힣a-zA-Z0-9]/g, "_");
       const res = await fetch(`/Dart_Data/reports/${safe}.json`);
       if (res.ok) { setReport(await res.json()); }
@@ -241,7 +241,93 @@ function ReportView({ post }: { post: BoardPost }) {
   );
 }
 
+interface BatchReport {
+  id: string; targetName: string; targetType: string;
+  reportPath: string | null; processedAt: string | null; createdAt: string;
+}
+
+function ReportListPanel() {
+  const [reports, setReports] = useState<BatchReport[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<BatchReport | null>(null);
+  const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [loadingReport, setLoadingReport] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/batch-reports")
+      .then((r) => r.json())
+      .then((d) => { setReports(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const openReport = async (r: BatchReport) => {
+    if (!r.reportPath) return;
+    setSelected(r);
+    setReportData(null);
+    setLoadingReport(true);
+    try {
+      const url = `https://raw.githubusercontent.com/gameworkerkim/cassandra-ai/main/${r.reportPath}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setReportData(data);
+    } catch { setReportData(null); }
+    setLoadingReport(false);
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[var(--accent-glow)]" /></div>;
+  if (reports.length === 0) return (
+    <div className="text-center py-12 text-[var(--text-muted)] text-sm">
+      <FileText className="w-8 h-8 mx-auto mb-2 opacity-30" />
+      아직 완성된 보고서가 없습니다.<br />
+      <span className="text-[10px]">분석 요청 후 오전 6시 / 오후 3시 / 오후 9시 배치 처리 시 생성됩니다.</span>
+    </div>
+  );
+
+  if (selected) return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <button onClick={() => { setSelected(null); setReportData(null); }} className="text-xs text-[var(--accent-glow)] hover:underline flex items-center gap-1">
+          ← 목록으로
+        </button>
+        <span className="text-sm font-bold">{selected.targetName} 보고서</span>
+        <span className="text-[10px] text-[var(--text-muted)] ml-auto">
+          {selected.processedAt ? format(new Date(selected.processedAt), "yyyy-MM-dd HH:mm", { locale: ko }) : ""}
+        </span>
+      </div>
+      {loadingReport ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-[var(--accent-glow)]" /></div>
+      ) : reportData ? (
+        <ReportView post={{ status: "RESOLVED", reportPath: selected.reportPath } as any} preloadedData={reportData} />
+      ) : (
+        <div className="text-center py-8 text-sm text-[var(--text-muted)]">보고서를 불러올 수 없습니다.</div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] text-[var(--text-muted)]">총 {reports.length}개 보고서</p>
+      {reports.map((r) => (
+        <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-colors cursor-pointer" onClick={() => openReport(r)}>
+          <span className="text-lg">{r.targetType === "PERSON" ? "👤" : "🏢"}</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium truncate">{r.targetName}</div>
+            <div className="text-[10px] text-[var(--text-muted)]">
+              {r.processedAt ? format(new Date(r.processedAt), "yyyy-MM-dd HH:mm", { locale: ko }) + " 분석 완료" : "처리중"}
+            </div>
+          </div>
+          <span className="text-[10px] px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 font-medium flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" /> 완료
+          </span>
+          <FileText className="w-4 h-4 text-[var(--text-muted)]" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function BoardPage() {
+  const [tab, setTab] = useState<"board" | "reports">("board");
   const [posts, setPosts] = useState<BoardPost[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
@@ -303,11 +389,24 @@ export default function BoardPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold flex items-center gap-2"><MessageSquare className="w-5 h-5" /> 제보·분석요청 게시판</h2>
-        <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90">
-          {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}{showForm ? "닫기" : "글쓰기"}
-        </button>
+        <div className="flex items-center gap-1 bg-[var(--surface)] rounded-xl p-1 border border-[var(--border)]">
+          <button onClick={() => setTab("board")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${tab === "board" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text)]"}`}>
+            <MessageSquare className="w-3.5 h-3.5" /> 게시판
+          </button>
+          <button onClick={() => setTab("reports")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${tab === "reports" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text)]"}`}>
+            <TrendingUp className="w-3.5 h-3.5" /> 보고서
+          </button>
+        </div>
+        {tab === "board" && (
+          <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90">
+            {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}{showForm ? "닫기" : "글쓰기"}
+          </button>
+        )}
       </div>
+
+      {tab === "reports" && <ReportListPanel />}
+      {tab === "reports" && null /* 아래 board 내용은 렌더 안 함 */}
+      {tab === "board" && (<>
 
       {showForm && (
         <form onSubmit={handleSubmit} className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-3">
@@ -432,6 +531,7 @@ export default function BoardPage() {
           </div>
         </div>
       )}
+      </>)}
     </div>
   );
 }
