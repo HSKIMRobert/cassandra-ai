@@ -16,10 +16,23 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
 
       - name: Install dependencies
-        run: npm install && npx prisma generate
+        run: |
+          echo "=== npm install ==="
+          npm install
+          echo "=== prisma generate ==="
+          npx prisma generate
+          echo "=== versions ==="
+          node --version
+          npx tsx --version || true
+
+      - name: Check env vars
+        run: |
+          echo "DATABASE_URL set: ${{ vars.DATABASE_URL != '' }}"
+          echo "DART_API_KEY set: ${{ vars.DART_API_KEY != '' }}"
+          echo "DEEPSEEK_API_KEY set: ${{ vars.DEEPSEEK_API_KEY != '' }}"
 
       - name: Process batch jobs
         run: npx tsx scripts/process-batch.ts
