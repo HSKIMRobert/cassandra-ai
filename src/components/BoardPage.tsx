@@ -625,6 +625,11 @@ export default function BoardPage() {
     setLoading(false);
   }, [page, category]);
 
+  // 완료된 BatchJob → PENDING 게시글 소급 적용
+  useEffect(() => {
+    fetch("/api/batch-reconcile", { method: "POST" }).catch(() => {});
+  }, []);
+
   useEffect(() => { fetchPosts(); }, [fetchPosts]);
 
   const handleSubmit = async (e: React.FormEvent) => {
