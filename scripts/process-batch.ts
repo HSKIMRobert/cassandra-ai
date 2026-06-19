@@ -13,6 +13,17 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 function getDartKey() { return process.env.DART_API_KEY || (fs.existsSync(".env") ? (fs.readFileSync(".env","utf-8").match(/DART_API_KEY=(.+)/)?.[1]?.trim() || "") : ""); }
 function getDSKey() { return process.env.DEEPSEEK_API_KEY || (fs.existsSync(".env") ? (fs.readFileSync(".env","utf-8").match(/DEEPSEEK_API_KEY=(.+)/)?.[1]?.trim() || "") : ""); }
 
+// "대동스틸 분석해줘" → "대동스틸" 처럼 핵심 엔티티명 추출
+function extractEntityName(raw: string): string {
+  // 불필요한 동사/조사 제거
+  const cleaned = raw
+    .replace(/\s*(분석해줘|분석해|분석요청|알려줘|조사해줘|검색해줘|이사진|주주|관계자|정보)\s*/g, " ")
+    .replace(/\s*(을|를|의|에|과|와|이|가|은|는)\s*/g, " ")
+    .trim();
+  // 가장 긴 단어(회사명)를 첫 토큰으로 간주
+  return cleaned.split(/\s+/)[0]?.trim() || raw.trim();
+}
+
 async function callDeepSeek(prompt: string): Promise<string> {
   const key = getDSKey();
   if (!key) return "⚠️ DEEPSEEK_API_KEY 미설정";
@@ -51,8 +62,9 @@ async function fetchDartShareholders(corpCode: string, dk: string) {
 }
 
 async function processCorpJob(job: any, dartKey: string) {
+  const searchName = extractEntityName(job.targetName);
   const corp = await prisma.corp.findFirst({
-    where: { companyName: { contains: job.targetName, mode: "insensitive" } },
+    where: { companyName: { contains: searchName, mode: "insensitive" } },
     include: {
       filings: { orderBy: { filedAt: "desc" }, take: 30 },
       personRelations: { include: { person: true } },
@@ -60,7 +72,7 @@ async function processCorpJob(job: any, dartKey: string) {
       signals: { orderBy: { firedAt: "desc" }, take: 10 },
     },
   });
-  if (!corp) return { result: `⏳ DB에 '${job.targetName}' 없음`, report: null };
+  if (!corp) return { result: `⏳ DB에 '${searchName}'(원본: '${job.targetName}') 없음 — fetch-officers로 수집 필요`, report: null };
 
   const cats: Record<string, { count: number; items: string[] }> = {};
   for (const f of corp.filings) {
@@ -109,8 +121,9 @@ async function processCorpJob(job: any, dartKey: string) {
 }
 
 async function processPersonJob(job: any) {
+  const searchName = extractEntityName(job.targetName);
   const person = await prisma.person.findFirst({
-    where: { name: { contains: job.targetName, mode: "insensitive" } },
+    where: { name: { contains: searchName, mode: "insensitive" } },
     include: { corpRelations: { include: { corp: { include: { signals: { take: 3 } } } } }, fundRelations: { include: { fund: true } } },
   });
   if (!person) return { result: `⏳ DB에 '${job.targetName}' 인물 없음`, report: null };
