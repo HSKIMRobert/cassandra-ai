@@ -1,0 +1,244 @@
+# CASSANDRA AI — 개발 기능 명세 (LLM-readable)
+# Version: 1.4.0 | Updated: 2026-06-18
+# Format: dev_llms.txt — optimized for LLM context ingestion
+
+## PROJECT OVERVIEW
+Name: CASSANDRA AI
+Purpose: KOSDAQ DART disclosure intelligence platform
+Stack: Next.js 15 + TypeScript + Prisma + Neon PostgreSQL + Upstash Redis + Supabase Auth + Vercel
+Cost: $0/month (free tier only)
+URL: https://dart-monitor-pi.vercel.app
+
+## INFRASTRUCTURE (ALL FREE TIER)
+| Service | Plan | Limit | Usage |
+|---------|------|-------|-------|
+| Vercel | Hobby | 1M func/month, 100GB band | <1% |
+| Neon PostgreSQL | Free | 0.5GB, 100h compute | 3% |
+| Upstash Redis | Free | 256MB, 500K cmd/month | <1% |
+| Supabase Auth | Free | 50,000 MAU | <1% |
+| GitHub Actions | Free (public repo) | Unlimited | 5x daily |
+
+## AUTHENTICATION
+Provider: Supabase Auth
+Methods: Google OAuth + Email/Password
+Korean social login: Naver/Kakao NOT supported (Supabase limitation)
+Admin emails: ["gameworker@gmail.com"]
+Expert emails: ["gameworker@gmail.com", "c.sunho@gmail.com", "testcode@naver.com"]
+
+Tiers:
+- Anonymous: /saju only
+- Normal (Google login): /quant, /dashboard, /saju, /persona
+- Expert (approved email): ALL pages including /, /board, /wiki, /person-search
+- Admin (gameworker@gmail.com): ALL + /admin
+
+Expert registration flow:
+1. Google login → /expert-apply → domain verification (media/gov domains)
+2. Admin approval → OTP email verification → Expert activated
+3. 6-month re-verification required
+
+Invite flow:
+1. Expert shares invite link → /invite?email=EMAIL
+2. New user enters password×2 + name + organization
+3. Auto-registered as Expert with referrer tracking
+
+## MENU STRUCTURE
+| Menu | Path | Auth | Purpose |
+|------|------|------|---------|
+| 코스닥 시그널 | /dashboard | Login | KOSDAQ signal detection + DART 12m data |
+| 퀀트 대시보드 | /quant | Login | Market overview, ETFs, sectors, indices |
+| 페르소나 투자 | /persona | Login | Buffett/Wood/Dalio AI stock analysis |
+| 주식 사주 | /saju | Public | Saju fortune + stock compatibility |
+| 관계망 분석 | / | Expert | Cytoscape.js 1-hop graph |
+| 제보·분석 | /board | Expert | User report + AI analysis |
+| WIKI | /wiki | Expert | Stock celebrities |
+| 인명검색 | /person-search | Expert | Person search + history |
+| 관리자 | /admin | Admin | Stats, users, Expert approval |
+| 로그인 | /login | Public | Google + Email sign-in |
+
+## API ENDPOINTS
+
+### Auth APIs
+| Endpoint | Method | Cache | Purpose |
+|----------|--------|-------|---------|
+| /api/auth/callback | GET | None | Supabase OAuth callback, records LoginHistory |
+| /api/auth/expert | POST | None | Expert apply/approve/reject/verify-otp/list |
+| /api/auth/export-register | POST/GET | None | Export member registration + list |
+
+### Quant Dashboard APIs
+| Endpoint | Cache TTL | Source | Purpose |
+|----------|-----------|--------|---------|
+| /api/quant-data | 600s (10m) | Naver Finance | Market gauge (fear/neutral/greed) |
+| /api/sector-fear-greed | 600s (10m) | Yahoo Finance | 10 US sector ETF fear & greed scores |
+| /api/market-overview | 600s (10m) | Yahoo Finance | ETFs, sectors, indices, VIX |
+| /api/nasdaq-movers | 7200s (2h) | Yahoo Finance | Daily/weekly gainers/losers + reasons |
+| /api/mu-hynix | 600s (10m) | Yahoo Finance | MU→SK Hynix price prediction + 14d backtest |
+| /api/pageview | 600s (10m) | Neon DB | Visitor counts per path (invalidated on POST) |
+
+### Dashboard APIs
+| Endpoint | Cache TTL | Source | Purpose |
+|----------|-----------|--------|---------|
+| /api/dashboard | 1h (snapshot) | Naver + Neon DB | Market data + DB signals (CB, lawsuits, etc.) |
+| /api/kosdaq-data | Static file | data/*.json | KOSDAQ anomaly report + category data |
+| /api/monitor | 1h | Neon DB + Redis | Server/DB/Redis usage stats |
+
+### Persona API
+| Endpoint | Cache TTL | Source | Purpose |
+|----------|-----------|--------|---------|
+| /api/persona | 72h | Yahoo + template | 3-persona stock analysis (precache: 12 stocks × 3 = 36) |
+
+### Saju APIs
+| Endpoint | Cache TTL | Source | Purpose |
+|----------|-----------|--------|---------|
+| /api/saju | 24h (keyed by birth+date) | saju-engine.ts | Saju profile + today fortune + 4 pillars |
+| /api/referral | None (DB) | Neon DB | Referral tracking + stats |
+| /api/admin/stats | None | Supabase + Neon DB | Admin dashboard stats |
+
+### Data APIs
+| Endpoint | Purpose |
+|----------|---------|
+| /api/search | Unified search (DART API + DB + knowledge base) |
+| /api/chat | DART chatbot with 4-step search |
+| /api/graph | Cytoscape.js graph data (1-hop) |
+| /api/person-search | Person search with period selector |
+| /api/board | Board CRUD for reports |
+| /api/wiki | Wiki entries for stock celebrities |
+
+## REDIS CACHING STRATEGY
+Library: src/lib/redis-cache.ts
+Fallback: in-memory Map (when Redis unavailable)
+Default TTL: 72h (overridden per endpoint via ttlSec parameter)
+
+Cache key patterns:
+- quant:data                             10min
+- sector-fear-greed                       10min
+- market-overview                         10min
+- nasdaq-movers                           2h
+- mu-hynix / mu-hynix-backtest           10min
+- pv:today:PATH / pv:total:PATH          10min (invalidated on POST)
+- persona:STOCK:PERSONA                   72h
+- saju:BIRTHDATE:HOUR:DATE               24h
+- saju:stock:CODE:ELEMENT                 (varies)
+
+Redis free tier: 256MB storage, 500K commands/month
+Current usage: 22KB / 1.5K commands (<1%)
+
+## NEON POSTGRESQL (FREE TIER)
+ORM: Prisma 6
+Free tier: 0.5GB storage, 100 compute-hours/month
+Current: 0.03GB (6%), ~2h compute (2%)
+Connection: serverless pooler via DATABASE_URL
+
+Key tables (24 total):
+- Corp (601 companies, KOSDAQ)
+- Person (414 people related to companies)
+- Filing (984 DART disclosures)
+- Signal (141 risk signals: CB, lawsuits, etc.)
+- PersonHistory (500 records from DART D-type)
+- PageView (visitor tracking per path)
+- LoginHistory (login attempts + success)
+- AppUser (Supabase-linked user profiles)
+- Referral (referral tracking)
+- SajuLog (saju submission + stock queries)
+- MuHynixPrediction (MU→Hynix prediction history)
+- MarketSnapshot (Naver Finance snapshots)
+- ExpertApplication (expert applications)
+- SearchCache (search results cached)
+- CorpPersonRelation, CorpFundRelation (graph edges)
+- BoardPost, BatchJob (board + batch analysis)
+- EntityVote, EntityComment (voting + comments)
+- CorpEvent (name changes, etc.)
+- Fund, SameNameGroup (funds + dedup)
+
+## DATA FETCH CYCLES
+
+### DART Disclosure Sync
+Script: scripts/daily-sync.ts (npm run daily)
+Trigger: GitHub Actions cron (2x daily) or manual
+Process:
+1. Fetch DART API for 3,920 KOSDAQ companies (filtered to DB-active ~600)
+2. Extract new filings since last sync
+3. Apply 8 signal rules: CB issuance, CB refixing, name change, 
+   major holder change, lawsuit/dispute, capital increase/decrease,
+   audit risk, payment delay
+4. Score each company (riskScore 0-100)
+5. Save to Neon DB (Filing + Signal tables)
+6. Update data/daily-report.json + data/kosdaq-*.json
+
+### DART 12-Month Event Extraction
+Script: scripts/extract-dart-events.ts
+Purpose: Extract lawsuits, name changes, major holder changes, 
+  purpose additions from DART API for past 12 months
+Output: data/dart-*-12m.json (4 files)
+Trigger: Manual or GitHub Actions
+
+### CB Extraction
+Script: scripts/extract-cb.ts (npm run extract-cb)
+Purpose: Extract CB issuance + refixing filings
+Output: data/kosdaq-cb-issuances.json (67 records)
+Includes: riskLevel (고위험/주의/보통), refixingFlag, detail
+
+### Naver Finance Crawler
+Script: src/lib/naver-crawler.ts
+Purpose: KOSDAQ market cap, volume, gainers top 20
+Trigger: /api/dashboard on cache miss (1h snapshot)
+Data: stored in MarketSnapshot table
+
+### Person History Sync
+Script: scripts/sync-person-history.ts
+Purpose: DART D-type person disclosure data
+Output: PersonHistory table (500 records)
+Trigger: GitHub Actions cron
+
+### MU-Hynix Backfill
+Script: scripts/backfill-mu-hynix.ts
+Purpose: 14-day historical prediction generation
+Data: MuHynixPrediction table + data/prediction/mu-hynix-predictions.json
+
+## PAGE-SPECIFIC DATA FLOW
+
+### /quant (Quant Dashboard)
+On load:
+1. fetch /api/market-overview → ETF·sector·index tables (top panel)
+2. fetch /api/quant-data → market gauge + individual stock signals
+3. fetch /api/sector-fear-greed → 10 sector fear & greed scores
+4. fetch /api/mu-hynix → MU→Hynix prediction + 14d backtest
+5. fetch /api/nasdaq-movers → daily/weekly gainers/losers
+6. fetch /api/pageview?path=/quant → visitor counts
+Refresh: manual button calls all APIs with ?force=true
+
+### /saju (Saju Fortune)
+On load:
+1. Check localStorage for cached profile (saju-profile)
+2. If profile exists + date changed → auto API call
+3. POST /api/saju → 60-gapja calculation, 4 pillars, fortune scores
+4. Supabase session check → determine query limit (3/5+invites)
+5. Stock queries: element matching from STOCK_ELEMENTS table
+6. Referral: URL ?ref=CODE → sessionStorage → apply on login
+
+### /dashboard (KOSDAQ Signals)
+On load:
+1. fetch /api/kosdaq-data?file=kosdaq-anomaly-report → all stocks
+2. fetch /api/kosdaq-data?file=daily-report → high risk signals
+3. fetch 5 category files → name-changes, holder-changes, lawsuits, 
+   cb-issuances, high-volatility
+4. fetch 4 DART files → dart-*-12m.json
+5. Search: unified filter across allStocks + categories + DART sections
+6. Tabs: each category as separate data view
+
+### /persona (Persona Investment)
+On load:
+1. Precaching: 12 stocks × 3 personas = 36 API calls (background)
+2. Persona selection: buffett | wood | dalio
+3. Stock search: ticker + Korean name
+4. GET /api/persona?stock=TICKER&persona=ID → analysis + score
+5. Analysis: Yahoo price data → scenario-based response (5 branches per persona)
+6. Leveraged ETF detection: SOXL/TQQQ/etc → sell warning all personas
+
+## SECURITY NOTES
+- DART_API_KEY in .env (gitignored), Vercel env vars
+- JWT: Supabase GoTrue JWT (not bcryptjs)
+- XSS: React auto-escape, no dangerouslySetInnerHTML
+- SQL injection: Prisma parameterized queries only
+- Path traversal: safeName sanitization + path resolution check
+- Cookie: Supabase session cookie (httpOnly)
+- Public paths only: /saju, /login, /signup, /invite, /admin, /access-denied, /expert-apply, /persona
