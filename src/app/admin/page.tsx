@@ -182,10 +182,17 @@ function AdminExpertList() {
 function InviteSection({ adminEmail }: { adminEmail: string }) {
     const [email, setEmail] = useState("");
     const [link, setLink] = useState("");
-    const [copied, setCopied] = useState(false);
+    const [expiresAt, setExpiresAt] = useState("");
+    const [copiedEmail, setCopiedEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [invited, setInvited] = useState<{ email: string; link: string }[]>([]);
+    const [history, setHistory] = useState<any[]>([]);
+
+    const loadHistory = () => {
+        fetch("/api/admin/invite?list=1").then(r => r.json()).then(d => setHistory(d.invites || []));
+    };
+
+    useEffect(() => { loadHistory(); }, []);
 
     const handleCreate = async () => {
         if (!email.trim() || !email.includes("@")) { setError("유효한 이메일을 입력하세요"); return; }
@@ -199,17 +206,20 @@ function InviteSection({ adminEmail }: { adminEmail: string }) {
             const data = await res.json();
             if (!res.ok) { setError(data.error || "오류 발생"); setLoading(false); return; }
             setLink(data.link);
-            setInvited(prev => [{ email: email.trim(), link: data.link }, ...prev.filter(i => i.email !== email.trim())]);
+            setExpiresAt(data.expiresAt);
             setEmail("");
+            loadHistory();
         } catch { setError("네트워크 오류"); }
         setLoading(false);
     };
 
-    const handleCopy = (text: string) => {
+    const handleCopy = (text: string, key: string) => {
         navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setCopiedEmail(key);
+        setTimeout(() => setCopiedEmail(""), 2000);
     };
+
+    const makeLink = (e: string) => `https://dart-monitor-pi.vercel.app/invite?email=${encodeURIComponent(e)}`;
 
     return (
         <div className="space-y-3">
@@ -222,11 +232,8 @@ function InviteSection({ adminEmail }: { adminEmail: string }) {
                     placeholder="초대할 이메일 입력 (예: user@naver.com)"
                     className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs text-[var(--text)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
                 />
-                <button
-                    onClick={handleCreate}
-                    disabled={loading || !email.trim()}
-                    className="px-4 py-2 rounded-lg bg-[#22c55e] text-white text-xs font-medium disabled:opacity-40 flex items-center gap-1.5"
-                >
+                <button onClick={handleCreate} disabled={loading || !email.trim()}
+                    className="px-4 py-2 rounded-lg bg-[#22c55e] text-white text-xs font-medium disabled:opacity-40 flex items-center gap-1.5 shrink-0">
                     <Link className="w-3.5 h-3.5" />
                     {loading ? "생성 중..." : "링크 생성"}
                 </button>
@@ -235,28 +242,47 @@ function InviteSection({ adminEmail }: { adminEmail: string }) {
 
             {link && (
                 <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[#22c55e]/5 border border-[#22c55e]/20">
-                    <span className="flex-1 text-[10px] font-mono text-[var(--text-muted)] truncate">{link}</span>
-                    <button
-                        onClick={() => handleCopy(link)}
-                        className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded bg-[#22c55e] text-white text-[10px]"
-                    >
-                        {copied ? <CheckCircle2 className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                        {copied ? "복사됨" : "복사"}
+                    <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-mono text-[var(--text-muted)] truncate">{link}</p>
+                        <p className="text-[9px] text-[var(--text-muted)] mt-0.5">만료: {expiresAt ? new Date(expiresAt).toLocaleDateString("ko-KR") : ""} (7일)</p>
+                    </div>
+                    <button onClick={() => handleCopy(link, "new")}
+                        className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded bg-[#22c55e] text-white text-[10px]">
+                        {copiedEmail === "new" ? <CheckCircle2 className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        {copiedEmail === "new" ? "복사됨" : "복사"}
                     </button>
                 </div>
             )}
 
-            {invited.length > 0 && (
-                <div className="space-y-1 pt-1 border-t border-[var(--border)]">
-                    <p className="text-[10px] text-[var(--text-muted)] mb-1">이번 세션 초대 목록</p>
-                    {invited.map(i => (
-                        <div key={i.email} className="flex items-center justify-between text-[10px] py-1">
-                            <span className="text-[var(--text)]">{i.email}</span>
-                            <button onClick={() => handleCopy(i.link)} className="text-[var(--accent-glow)] hover:underline flex items-center gap-0.5">
-                                <Copy className="w-2.5 h-2.5" /> 링크 복사
-                            </button>
+            {/* 초대 이력 */}
+            {history.length > 0 && (
+                <div className="border-t border-[var(--border)] pt-3">
+                    <p className="text-[10px] font-semibold text-[var(--text-muted)] mb-2">초대 이력 ({history.length}건)</p>
+                    <div className="space-y-1 max-h-48 overflow-y-auto">
+                        <div className="grid grid-cols-[1fr_70px_60px_60px] text-[9px] text-[var(--text-muted)] pb-1 border-b border-[var(--border)]">
+                            <span>이메일</span><span>만료</span><span>상태</span><span className="text-right">링크</span>
                         </div>
-                    ))}
+                        {history.map((inv: any) => {
+                            const expired = new Date(inv.expiresAt) < new Date();
+                            const accepted = !!inv.acceptedAt;
+                            const status = accepted ? "가입완료" : expired ? "만료" : "대기";
+                            const statusColor = accepted ? "text-[#22c55e]" : expired ? "text-[#ef4444]" : "text-[#f59e0b]";
+                            return (
+                                <div key={inv.id} className="grid grid-cols-[1fr_70px_60px_60px] items-center text-[10px] py-1 border-b border-[var(--border)]/40 last:border-0">
+                                    <span className="truncate text-[var(--text)]">{inv.email}{inv.name ? ` (${inv.name})` : ""}</span>
+                                    <span className="text-[var(--text-muted)]">{new Date(inv.expiresAt).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" })}</span>
+                                    <span className={statusColor}>{status}</span>
+                                    {!accepted && !expired ? (
+                                        <button onClick={() => handleCopy(makeLink(inv.email), inv.email)}
+                                            className="text-right text-[var(--accent-glow)] hover:underline flex items-center justify-end gap-0.5">
+                                            {copiedEmail === inv.email ? <CheckCircle2 className="w-2.5 h-2.5" /> : <Copy className="w-2.5 h-2.5" />}
+                                            복사
+                                        </button>
+                                    ) : <span />}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
         </div>

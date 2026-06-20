@@ -295,15 +295,32 @@ model MarketSnapshot {
 
 // ─── 사용자 계정 ───
 model AppUser {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String
-  name         String   @default("")
-  role         String   @default("user") // user | admin
-  createdAt    DateTime @default(now())
-  lastLoginAt  DateTime?
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String
+  name              String    @default("")
+  role              String    @default("user")   // user | admin
+  tier              String    @default("free")   // free | expert
+  expertCategory    String?                      // media | public
+  expertVerifiedAt  DateTime?
+  createdAt         DateTime  @default(now())
+  lastLoginAt       DateTime?
 
   loginHistory LoginHistory[]
+}
+
+// ─── Expert 초대 ───
+model ExpertInvite {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  createdBy  String
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  name       String?
+
+  @@index([email])
+  @@index([expiresAt])
 }
 
 // ─── 로그인 이력 ───

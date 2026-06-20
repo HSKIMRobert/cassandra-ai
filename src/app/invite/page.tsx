@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Shield, Mail, Lock, User, Building2, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Shield, Lock, User, Loader2, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 function InviteForm() {
     const params = useSearchParams();
-    const router = useRouter();
     const email = params.get("email") || "";
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
@@ -17,24 +16,18 @@ function InviteForm() {
     const [error, setError] = useState("");
     const [done, setDone] = useState(false);
     const [checking, setChecking] = useState(true);
-    const [alreadyExists, setAlreadyExists] = useState(false);
+    const [status, setStatus] = useState<"ok" | "not_invited" | "expired" | "already_used" | "no_email">("ok");
 
-    const [notApproved, setNotApproved] = useState(false);
-
-    // 사전 승인 + 중복 가입 체크
     useEffect(() => {
-        if (!email) { setChecking(false); return; }
-        Promise.all([
-            fetch(`/api/admin/invite?email=${encodeURIComponent(email)}`).then(r => r.json()),
-            createSupabaseBrowser().auth.getSession(),
-        ]).then(([approvalData, { data: { session } }]) => {
-            if (!approvalData.approved) {
-                setNotApproved(true);
-            } else if (session?.user?.email === email) {
-                setAlreadyExists(true);
-            }
-            setChecking(false);
-        }).catch(() => setChecking(false));
+        if (!email) { setStatus("no_email"); setChecking(false); return; }
+        fetch(`/api/admin/invite?email=${encodeURIComponent(email)}`)
+            .then(r => r.json())
+            .then(d => {
+                if (d.approved) setStatus("ok");
+                else setStatus(d.reason || "not_invited");
+                setChecking(false);
+            })
+            .catch(() => { setStatus("not_invited"); setChecking(false); });
     }, [email]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -46,23 +39,13 @@ function InviteForm() {
         setLoading(true); setError("");
         try {
             const supabase = createSupabaseBrowser();
-
-            // 중복 가입 체크
-            const { data: existing } = await supabase.auth.getSession();
-            if (existing?.session?.user?.email === email) {
-                setAlreadyExists(true);
-                setLoading(false);
-                return;
-            }
-
             const { error: signUpError } = await supabase.auth.signUp({
                 email, password,
                 options: { data: { name: name.trim(), organization: org.trim(), role: "expert" } },
             });
-
             if (signUpError) {
-                if (signUpError.message.includes("already") || signUpError.message.includes("exist")) {
-                    setAlreadyExists(true);
+                if (signUpError.message.toLowerCase().includes("already")) {
+                    setError("이미 가입된 이메일입니다. 로그인 페이지를 이용해주세요.");
                 } else {
                     setError(signUpError.message);
                 }
@@ -70,11 +53,11 @@ function InviteForm() {
                 return;
             }
 
-            // Export 회원 등록 API 호출
-            await fetch("/api/auth/export-register", {
-                method: "POST",
+            // 초대 완료 처리 + AppUser 등록
+            await fetch("/api/admin/invite", {
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, name: name.trim(), organization: org.trim() }),
+                body: JSON.stringify({ email, name: name.trim() }),
             });
 
             setDone(true);
@@ -82,42 +65,29 @@ function InviteForm() {
         setLoading(false);
     };
 
-    if (notApproved) {
+    if (checking) {
         return (
-            <div className="min-h-screen flex items-center justify-center px-4">
-                <div className="w-full max-w-sm text-center space-y-4">
-                    <Shield className="w-12 h-12 mx-auto text-[#ef4444]" />
-                    <h1 className="text-lg font-bold">초대되지 않은 이메일입니다</h1>
-                    <p className="text-xs text-[var(--text-muted)]">{email || "이 링크"}는 유효한 초대 링크가 아닙니다.<br />관리자에게 문의하세요.</p>
-                </div>
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-[var(--text-muted)]" />
             </div>
         );
     }
 
-    if (alreadyExists) {
-        return (
-            <div className="min-h-screen flex items-center justify-center px-4">
-                <div className="w-full max-w-sm text-center space-y-4">
-                    <Shield className="w-12 h-12 mx-auto text-[#f59e0b]" />
-                    <h1 className="text-lg font-bold">이미 가입된 계정입니다</h1>
-                    <p className="text-xs text-[var(--text-muted)]">{email}은 이미 등록된 이메일입니다.</p>
-                    <a href="/login" className="block py-2 rounded-lg bg-[var(--accent)] text-white text-sm">로그인하기</a>
-                </div>
-            </div>
-        );
+    if (status === "no_email") {
+        return <StatusScreen icon={<AlertCircle className="w-12 h-12 text-[#ef4444]" />} title="초대 링크 오류" desc="유효한 초대 링크가 아닙니다. 관리자에게 문의하세요." />;
+    }
+    if (status === "not_invited") {
+        return <StatusScreen icon={<Shield className="w-12 h-12 text-[#ef4444]" />} title="초대되지 않은 이메일" desc={`${email}은 초대된 이메일이 아닙니다. 관리자에게 문의하세요.`} />;
+    }
+    if (status === "expired") {
+        return <StatusScreen icon={<Clock className="w-12 h-12 text-[#f59e0b]" />} title="초대 링크 만료" desc="초대 링크가 만료되었습니다 (유효기간 7일). 관리자에게 새 초대 링크를 요청하세요." />;
+    }
+    if (status === "already_used") {
+        return <StatusScreen icon={<CheckCircle2 className="w-12 h-12 text-[#22c55e]" />} title="이미 가입된 초대" desc={`${email}은 이미 가입 완료된 이메일입니다.`} linkLabel="로그인하기" linkHref="/login" />;
     }
 
     if (done) {
-        return (
-            <div className="min-h-screen flex items-center justify-center px-4">
-                <div className="w-full max-w-sm text-center space-y-4">
-                    <CheckCircle2 className="w-12 h-12 mx-auto text-[#22c55e]" />
-                    <h1 className="text-lg font-bold">가입 완료!</h1>
-                    <p className="text-xs text-[var(--text-muted)]">이메일 인증 후 로그인할 수 있습니다.</p>
-                    <a href="/login" className="block py-2 rounded-lg bg-[var(--accent)] text-white text-sm">로그인하기</a>
-                </div>
-            </div>
-        );
+        return <StatusScreen icon={<CheckCircle2 className="w-12 h-12 text-[#22c55e]" />} title="가입 완료!" desc="이메일 인증 후 로그인할 수 있습니다." linkLabel="로그인하기" linkHref="/login" />;
     }
 
     return (
@@ -126,7 +96,7 @@ function InviteForm() {
                 <div className="text-center">
                     <Shield className="w-10 h-10 mx-auto text-[#f59e0b]" />
                     <h1 className="text-lg font-bold mt-3">CASSANDRA AI 초대</h1>
-                    <p className="text-xs text-[var(--text-muted)] mt-1">Export 회원 가입</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">Expert 회원 가입</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-5 space-y-3">
@@ -135,29 +105,29 @@ function InviteForm() {
                         <input type="email" value={email} disabled className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm opacity-60" />
                     </div>
                     <div>
-                        <label className="text-[10px] text-[var(--text-muted)]">비밀번호</label>
-                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
-                            placeholder="6자 이상" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] text-[var(--text-muted)]">비밀번호 확인</label>
-                        <input type="password" value={password2} onChange={e => setPassword2(e.target.value)} required
-                            placeholder="한번 더 입력" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] text-[var(--text-muted)]">이름</label>
+                        <label className="text-[10px] text-[var(--text-muted)]">이름 *</label>
                         <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                            placeholder="실명" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm" />
+                            placeholder="실명" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
                     </div>
                     <div>
                         <label className="text-[10px] text-[var(--text-muted)]">소속</label>
                         <input type="text" value={org} onChange={e => setOrg(e.target.value)}
-                            placeholder="회사/기관명" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm" />
+                            placeholder="회사/기관명" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] text-[var(--text-muted)]">비밀번호 *</label>
+                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
+                            placeholder="6자 이상" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] text-[var(--text-muted)]">비밀번호 확인 *</label>
+                        <input type="password" value={password2} onChange={e => setPassword2(e.target.value)} required
+                            placeholder="한번 더 입력" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
                     </div>
 
                     {error && (
                         <div className="flex items-center gap-2 text-[#ef4444] text-xs bg-[#ef4444]/10 rounded p-2">
-                            <AlertCircle className="w-3 h-3 flex-shrink-0" /> {error}
+                            <AlertCircle className="w-3 h-3 shrink-0" /> {error}
                         </div>
                     )}
 
@@ -166,6 +136,21 @@ function InviteForm() {
                         {loading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "가입하기"}
                     </button>
                 </form>
+            </div>
+        </div>
+    );
+}
+
+function StatusScreen({ icon, title, desc, linkLabel, linkHref }: { icon: React.ReactNode; title: string; desc: string; linkLabel?: string; linkHref?: string }) {
+    return (
+        <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="w-full max-w-sm text-center space-y-4">
+                <div className="flex justify-center">{icon}</div>
+                <h1 className="text-lg font-bold">{title}</h1>
+                <p className="text-xs text-[var(--text-muted)]">{desc}</p>
+                {linkLabel && linkHref && (
+                    <a href={linkHref} className="block py-2 rounded-lg bg-[var(--accent)] text-white text-sm">{linkLabel}</a>
+                )}
             </div>
         </div>
     );
