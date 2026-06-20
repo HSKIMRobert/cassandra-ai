@@ -15,7 +15,7 @@ function InviteForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [checking, setChecking] = useState(true);
-    const [status, setStatus] = useState<"ok" | "not_invited" | "expired" | "already_used" | "no_email" | "email_sent">("ok");
+    const [status, setStatus] = useState<"ok" | "not_invited" | "expired" | "already_used" | "no_email">("ok");
 
     useEffect(() => {
         if (!email) { setStatus("no_email"); setChecking(false); return; }
@@ -35,41 +35,32 @@ function InviteForm() {
         if (!name.trim()) { setError("이름을 입력해주세요."); return; }
 
         setLoading(true); setError("");
-        const supabase = createSupabaseBrowser();
 
         try {
-            // 1) Supabase 가입
-            const { error: signUpError } = await supabase.auth.signUp({
-                email, password,
-                options: { data: { name: name.trim(), role: "expert" } },
+            // 1) 서버에서 Admin API로 유저 생성 + 이메일 인증 자동 완료
+            const res = await fetch("/api/admin/invite", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, name: name.trim() }),
             });
-
-            if (signUpError && !signUpError.message.toLowerCase().includes("already")) {
-                setError(signUpError.message);
+            const data = await res.json();
+            if (!res.ok) {
+                setError(data.error || "가입 중 오류가 발생했습니다.");
                 setLoading(false);
                 return;
             }
 
-            // 2) 즉시 로그인 시도 (이메일 인증 없이)
+            // 2) 즉시 로그인 (이메일 인증 완료 상태이므로 반드시 성공)
+            const supabase = createSupabaseBrowser();
             const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
-            // 3) 초대 완료 처리 (로그인 성공 여부와 무관하게)
-            await fetch("/api/admin/invite", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, name: name.trim() }),
-            });
-
-            if (!signInError) {
-                // 로그인 성공 → 즉시 대시보드로
-                router.push("/dashboard");
+            if (signInError) {
+                setError("가입은 완료됐으나 로그인 실패: " + signInError.message);
+                setLoading(false);
                 return;
             }
 
-            // 로그인 실패 = Supabase 이메일 인증 설정이 켜져 있는 경우
-            setStatus("email_sent");
-        } catch { setError("가입 중 오류가 발생했습니다."); }
-        setLoading(false);
+            router.push("/dashboard");
+        } catch { setError("가입 중 오류가 발생했습니다."); setLoading(false); }
     };
 
     if (checking) return (
@@ -82,7 +73,6 @@ function InviteForm() {
     if (status === "not_invited")  return <StatusScreen icon={<Shield className="w-12 h-12 text-[#ef4444]" />} title="초대되지 않은 이메일" desc={`${email}은 초대된 이메일이 아닙니다. 관리자에게 문의하세요.`} />;
     if (status === "expired")      return <StatusScreen icon={<Clock className="w-12 h-12 text-[#f59e0b]" />} title="초대 링크 만료" desc="유효기간(7일)이 지났습니다. 관리자에게 새 초대 링크를 요청하세요." />;
     if (status === "already_used") return <StatusScreen icon={<CheckCircle2 className="w-12 h-12 text-[#22c55e]" />} title="이미 가입된 초대" desc={`${email}은 이미 가입 완료된 이메일입니다.`} linkLabel="로그인하기" linkHref="/login" />;
-    if (status === "email_sent")   return <StatusScreen icon={<CheckCircle2 className="w-12 h-12 text-[#22c55e]" />} title="가입 완료!" desc={`${email}로 인증 메일을 발송했습니다. 확인 후 로그인해주세요.`} linkLabel="로그인하기" linkHref="/login" />;
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4">
