@@ -206,6 +206,59 @@ On load:
 6. fetch /api/pageview?path=/quant → visitor counts
 Refresh: manual button calls all APIs with ?force=true
 
+## GITHUB JSON CACHING STRATEGY
+Purpose: Use GitHub repository as free CDN/storage for static JSON data.
+All files in data/*.json are committed to repo. GitHub Actions auto-commit.
+Raw file access via https://raw.githubusercontent.com/... (free CDN).
+
+### Person & Corporation Data (GitHub JSON)
+| File | Content | Update |
+|------|---------|--------|
+| data/dart-corp-codes.json | 3,920 KOSDAQ company mapping (corp_code→stock_code) | Static (rarely changes) |
+| data/dart-knowledge.json | Company knowledge base (82 events: name changes, lawsuits) | Manual |
+| data/knowledge-base.json | Person knowledge base | Manual |
+| data/daily-report.json | Daily high-risk report (npm run daily output) | GitHub Actions 2x/day |
+| data/person-analysis.json | Person analysis data | Manual |
+
+### KOSDAQ Category Data (GitHub JSON)
+Updated by: scripts/daily-sync.ts + scripts/extract-dart-events.ts
+| File | Records | Update |
+|------|---------|--------|
+| data/kosdaq-anomaly-report.json | 100 companies with flags | Daily sync |
+| data/kosdaq-name-changes.json | 7 name change events | Extract script |
+| data/kosdaq-major-holder-changes.json | 48 holder change events | Extract script |
+| data/kosdaq-lawsuits.json | 26 lawsuit events | Extract script |
+| data/kosdaq-cb-issuances.json | 67 CB events (6 refixing) | Extract script |
+| data/kosdaq-high-volatility.json | 5 high volatility | Daily sync |
+
+### DART 12-Month Data (GitHub JSON)
+Updated by: scripts/extract-dart-events.ts
+| File | Records | Update |
+|------|---------|--------|
+| data/dart-nameChanges-12m.json | 7 events (12 months) | Manual/GitHub Actions |
+| data/dart-majorHolderChanges-12m.json | 48 events (12 months) | Manual/GitHub Actions |
+| data/dart-lawsuits-12m.json | 26 events (12 months) | Manual/GitHub Actions |
+| data/dart-purposeAdditions-12m.json | 0 events (12 months) | Manual/GitHub Actions |
+
+### Prediction Data (GitHub JSON)
+| File | Content | Update |
+|------|---------|--------|
+| Dart_Data/prediction/mu-hynix-predictions.json | MU→Hynix prediction history | /api/mu-hynix each call |
+| Dart_Data/person-results/*.json | Person search results | /api/person-search |
+
+### Serving Strategy
+API: /api/kosdaq-data?file=NAME → reads data/NAME.json via fs.readFileSync
+Whitelist: only ALLOWED_FILES set (prevents path traversal)
+Vercel: serverless function includes data/ files in deployment bundle
+Cache: GitHub raw URLs for direct CDN access (not currently used)
+
+### Auto-Commit Flow
+1. GitHub Actions runs daily-sync.ts or extract-dart-events.ts
+2. Script generates/updates data/*.json files
+3. GitHub Actions auto-commits changes to repo
+4. Vercel auto-deploys on push → updated JSON in production
+5. Next.js reads JSON from file system (no API call needed)
+
 ### /saju (Saju Fortune)
 On load:
 1. Check localStorage for cached profile (saju-profile)
