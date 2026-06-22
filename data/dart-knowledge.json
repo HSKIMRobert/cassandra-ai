@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T10:20:06.511Z",
+  "generatedAt": "2026-06-22T11:02:06.162Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,7 +12,7 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 2,
-    "totalSignals": 17,
+    "totalSignals": 22,
     "topRisks": [
       {
         "name": "일정실업",

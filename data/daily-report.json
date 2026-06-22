@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-21T10:20:06.510Z",
+  "generatedAt": "2026-06-22T11:02:06.161Z",
   "period": {
-    "from": "20260614",
-    "to": "20260621"
+    "from": "20260615",
+    "to": "20260622"
   },
-  "totalCompanies": 43,
-  "totalDisclosures": 72,
+  "totalCompanies": 46,
+  "totalDisclosures": 84,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -231,7 +231,7 @@
       "stockCode": "288620",
       "corpCode": "01257872",
       "name": "에스프리즘",
-      "totalDisclosures": 3,
+      "totalDisclosures": 4,
       "signals": [
         {
           "rule": "소송/분쟁",
@@ -242,6 +242,12 @@
       ],
       "riskScore": 25,
       "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900714",
+          "title": "[기재정정]금전대여결정              ",
+          "type": "I"
+        },
         {
           "date": "20260618",
           "rceptNo": "20260618900830",
@@ -263,10 +269,51 @@
       ]
     },
     {
+      "stockCode": "334970",
+      "corpCode": "01258428",
+      "name": "프레스티지바이오로직스",
+      "totalDisclosures": 3,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "20260622"
+        },
+        {
+          "rule": "CB리픽싱",
+          "weight": 15,
+          "count": 1,
+          "latestDate": "20260622"
+        }
+      ],
+      "riskScore": 25,
+      "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622000362",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900794",
+          "title": "전환가액의조정              ",
+          "type": "I"
+        },
+        {
+          "date": "20260615",
+          "rceptNo": "20260615900654",
+          "title": "주주명부폐쇄기간또는기준일설정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "900100",
       "corpCode": "00781202",
       "name": "파이온엑스",
-      "totalDisclosures": 3,
+      "totalDisclosures": 4,
       "signals": [
         {
           "rule": "CB발행",
@@ -288,6 +335,12 @@
           "rceptNo": "20260616000046",
           "title": "[첨부정정]주요사항보고서(전환사채권발행결정)",
           "type": "B"
+        },
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900833",
+          "title": "주권매매거래정지해제              (액면병합 주권 변경상장)",
+          "type": "I"
         },
         {
           "date": "20260615",
@@ -344,6 +397,29 @@
         {
           "date": "20260616",
           "rceptNo": "20260616900839",
+          "title": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "019210",
+      "corpCode": "00139719",
+      "name": "와이지-원",
+      "totalDisclosures": 1,
+      "signals": [
+        {
+          "rule": "대주주변경",
+          "weight": 20,
+          "count": 1,
+          "latestDate": "20260622"
+        }
+      ],
+      "riskScore": 20,
+      "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900659",
           "title": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
           "type": "I"
         }
@@ -449,6 +525,35 @@
       ]
     },
     {
+      "stockCode": "389470",
+      "corpCode": "01516456",
+      "name": "인벤티지랩",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 2,
+          "latestDate": "20260622"
+        }
+      ],
+      "riskScore": 20,
+      "recentDisclosures": [
+        {
+          "date": "20260615",
+          "rceptNo": "20260615000306",
+          "title": "주요사항보고서(자기전환사채만기전취득결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900427",
+          "title": "전환사채(해외전환사채포함)발행후만기전사채취득              (제2회차)",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "026910",
       "corpCode": "00104120",
       "name": "광진실업",
@@ -510,7 +615,7 @@
       "stockCode": "084440",
       "corpCode": "00531078",
       "name": "유비온",
-      "totalDisclosures": 3,
+      "totalDisclosures": 4,
       "signals": [
         {
           "rule": "증자/감자",
@@ -521,6 +626,12 @@
       ],
       "riskScore": 10,
       "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900252",
+          "title": "기업설명회(IR)개최              ",
+          "type": "I"
+        },
         {
           "date": "20260615",
           "rceptNo": "20260615900820",
@@ -617,6 +728,35 @@
       ]
     },
     {
+      "stockCode": "023440",
+      "corpCode": "00148531",
+      "name": "제이스코홀딩스",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "20260622"
+        }
+      ],
+      "riskScore": 10,
+      "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622000404",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900722",
+          "title": "[기재정정]타인에대한담보제공결정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "104040",
       "corpCode": "00442905",
       "name": "디에스엠",
@@ -640,24 +780,24 @@
       ]
     },
     {
-      "stockCode": "389470",
-      "corpCode": "01516456",
-      "name": "인벤티지랩",
+      "stockCode": "088290",
+      "corpCode": "00409140",
+      "name": "이원컴포텍",
       "totalDisclosures": 1,
       "signals": [
         {
-          "rule": "CB발행",
+          "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260615"
+          "latestDate": "20260622"
         }
       ],
       "riskScore": 10,
       "recentDisclosures": [
         {
-          "date": "20260615",
-          "rceptNo": "20260615000306",
-          "title": "주요사항보고서(자기전환사채만기전취득결정)",
+          "date": "20260622",
+          "rceptNo": "20260622000180",
+          "title": "[기재정정]주요사항보고서(유상증자결정)",
           "type": "B"
         }
       ]
@@ -666,10 +806,16 @@
       "stockCode": "000210",
       "corpCode": "00109693",
       "name": "DL",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622800879",
+          "title": "벌금등의부과(자회사의 주요경영사항)              ",
+          "type": "I"
+        },
         {
           "date": "20260617",
           "rceptNo": "20260617800650",
@@ -924,10 +1070,16 @@
       "stockCode": "375500",
       "corpCode": "01524093",
       "name": "DL이앤씨",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622800877",
+          "title": "벌금등의부과              ",
+          "type": "I"
+        },
         {
           "date": "20260617",
           "rceptNo": "20260617800636",
@@ -1040,22 +1192,6 @@
           "date": "20260615",
           "rceptNo": "20260615900627",
           "title": "[기재정정]주주총회소집결의              (임시주주총회)",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "334970",
-      "corpCode": "01258428",
-      "name": "프레스티지바이오로직스",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900654",
-          "title": "주주명부폐쇄기간또는기준일설정              ",
           "type": "I"
         }
       ]
