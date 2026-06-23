@@ -72,9 +72,16 @@ export default function Header() {
           {btn("/wiki", "WIKI")}
           {btn("/person-search", "인명검색")}
           {isAdmin && (
-            <a href="/admin" className="px-3 py-1.5 rounded-lg bg-[#f59e0b]/10 border border-[#f59e0b]/30 text-[#f59e0b] hover:bg-[#f59e0b]/20 transition-colors text-xs">
-              ⚙ 관리자
-            </a>
+            <>
+              <a href="/tqqq" className={`px-3 py-1.5 rounded-lg border transition-colors text-xs ${
+                pathname === "/tqqq"
+                  ? "bg-[#22c55e]/10 border-[#22c55e]/30 text-[#22c55e]"
+                  : "bg-[var(--bg)] border-[var(--border)] hover:border-[#22c55e] hover:text-[#22c55e]"
+              }`}>📈 TQQQ</a>
+              <a href="/admin" className="px-3 py-1.5 rounded-lg bg-[#f59e0b]/10 border border-[#f59e0b]/30 text-[#f59e0b] hover:bg-[#f59e0b]/20 transition-colors text-xs">
+                ⚙ 관리자
+              </a>
+            </>
           )}
           {loggedIn ? (
             <div className="flex items-center gap-2">
