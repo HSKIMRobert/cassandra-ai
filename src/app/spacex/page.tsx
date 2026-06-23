@@ -187,6 +187,8 @@ function ElonNewsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState("");
   const [fetchedAt, setFetchedAt] = useState("");
+  const [source, setSource]   = useState("");
+  const [isXPost, setIsXPost] = useState(false);
 
   useEffect(() => {
     fetch("/api/spacex/news")
@@ -194,30 +196,43 @@ function ElonNewsSection() {
       .then(d => {
         setTweets(d.tweets || []);
         setFetchedAt(d.fetchedAt || "");
+        setSource(d.source || "");
+        setIsXPost(d.isXPost || false);
         if (d.error) setError(d.error);
       })
       .catch(() => setError("뉴스 로딩 실패"))
       .finally(() => setLoading(false));
   }, []);
 
+  const sectionTitle = isXPost
+    ? "일론 머스크 X — SpaceX 관련 포스트 & LLM 분석"
+    : "SpaceX 관련 최신 뉴스 & LLM 분석";
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold flex items-center gap-2">
           <Twitter className="w-4 h-4 text-[#1d9bf0]" />
-          일론 머스크 X — SpaceX 관련 포스트 & LLM 분석
+          {sectionTitle}
         </h2>
-        {fetchedAt && <span className="text-[9px] text-[var(--text-muted)]">{fmtDate(fetchedAt)} 기준</span>}
+        <div className="flex items-center gap-2">
+          {source && !isXPost && (
+            <span className="text-[9px] text-[var(--text-muted)] bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded">
+              📰 Google News
+            </span>
+          )}
+          {fetchedAt && <span className="text-[9px] text-[var(--text-muted)]">{fmtDate(fetchedAt)} 기준</span>}
+        </div>
       </div>
 
-      {loading && <p className="text-[11px] text-[var(--text-muted)] py-4 text-center">X 포스트 가져오는 중...</p>}
+      {loading && <p className="text-[11px] text-[var(--text-muted)] py-4 text-center">뉴스 가져오는 중...</p>}
       {!loading && error && !tweets.length && (
         <div className="rounded-lg bg-[#ef4444]/5 border border-[#ef4444]/20 p-3 text-[11px] text-[#ef4444]">
-          X 데이터를 가져올 수 없습니다: {error}
+          뉴스를 가져올 수 없습니다: {error}
         </div>
       )}
       {!loading && !tweets.length && !error && (
-        <p className="text-[11px] text-[var(--text-muted)] py-4 text-center">SpaceX 관련 포스트가 없습니다.</p>
+        <p className="text-[11px] text-[var(--text-muted)] py-4 text-center">SpaceX 관련 뉴스가 없습니다.</p>
       )}
 
       <div className="space-y-3">
@@ -225,14 +240,14 @@ function ElonNewsSection() {
           const a = t.analysis;
           return (
             <div key={i} className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4 space-y-3">
-              {/* 트윗 원문 */}
+              {/* 본문 */}
               <div className="flex gap-2">
                 <div className="w-7 h-7 rounded-full bg-[#1d9bf0]/20 flex items-center justify-center shrink-0">
                   <Twitter className="w-3.5 h-3.5 text-[#1d9bf0]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[11px] font-bold">@elonmusk</span>
+                    <span className="text-[11px] font-bold">{isXPost ? "@elonmusk" : "SpaceX News"}</span>
                     <span className="text-[9px] text-[var(--text-muted)]">{fmtDate(t.pubDate)}</span>
                     {t.link && (
                       <a href={t.link} target="_blank" rel="noopener noreferrer"
