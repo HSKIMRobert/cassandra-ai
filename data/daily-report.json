@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-22T11:02:06.161Z",
+  "generatedAt": "2026-06-23T01:08:56.356Z",
   "period": {
-    "from": "20260615",
-    "to": "20260622"
+    "from": "20260616",
+    "to": "20260623"
   },
-  "totalCompanies": 46,
-  "totalDisclosures": 84,
+  "totalCompanies": 38,
+  "totalDisclosures": 68,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -50,31 +50,43 @@
   ],
   "highRisk": [
     {
-      "stockCode": "008500",
-      "corpCode": "00146542",
-      "name": "일정실업",
-      "totalDisclosures": 2,
+      "stockCode": "127120",
+      "corpCode": "00642541",
+      "name": "제이에스링크",
+      "totalDisclosures": 4,
       "signals": [
         {
-          "rule": "대주주변경",
-          "weight": 20,
-          "count": 2,
-          "latestDate": "20260615"
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 4,
+          "latestDate": "20260617"
         }
       ],
-      "riskScore": 40,
+      "riskScore": 30,
       "recentDisclosures": [
         {
-          "date": "20260619",
-          "rceptNo": "20260619800593",
-          "title": "최대주주등소유주식변동신고서              ",
-          "type": "I"
+          "date": "20260623",
+          "rceptNo": "20260623000018",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
         },
         {
-          "date": "20260615",
-          "rceptNo": "20260615800389",
-          "title": "최대주주등소유주식변동신고서              ",
-          "type": "I"
+          "date": "20260623",
+          "rceptNo": "20260623000017",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260617",
+          "rceptNo": "20260617000473",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260617",
+          "rceptNo": "20260617000402",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
         }
       ]
     },
@@ -140,31 +152,43 @@
   ],
   "companies": [
     {
-      "stockCode": "008500",
-      "corpCode": "00146542",
-      "name": "일정실업",
-      "totalDisclosures": 2,
+      "stockCode": "127120",
+      "corpCode": "00642541",
+      "name": "제이에스링크",
+      "totalDisclosures": 4,
       "signals": [
         {
-          "rule": "대주주변경",
-          "weight": 20,
-          "count": 2,
-          "latestDate": "20260615"
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 4,
+          "latestDate": "20260617"
         }
       ],
-      "riskScore": 40,
+      "riskScore": 30,
       "recentDisclosures": [
         {
-          "date": "20260619",
-          "rceptNo": "20260619800593",
-          "title": "최대주주등소유주식변동신고서              ",
-          "type": "I"
+          "date": "20260623",
+          "rceptNo": "20260623000018",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
         },
         {
-          "date": "20260615",
-          "rceptNo": "20260615800389",
-          "title": "최대주주등소유주식변동신고서              ",
-          "type": "I"
+          "date": "20260623",
+          "rceptNo": "20260623000017",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260617",
+          "rceptNo": "20260617000473",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260617",
+          "rceptNo": "20260617000402",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
         }
       ]
     },
@@ -272,7 +296,7 @@
       "stockCode": "334970",
       "corpCode": "01258428",
       "name": "프레스티지바이오로직스",
-      "totalDisclosures": 3,
+      "totalDisclosures": 2,
       "signals": [
         {
           "rule": "CB발행",
@@ -300,12 +324,6 @@
           "rceptNo": "20260622900794",
           "title": "전환가액의조정              ",
           "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900654",
-          "title": "주주명부폐쇄기간또는기준일설정              ",
-          "type": "I"
         }
       ]
     },
@@ -313,7 +331,7 @@
       "stockCode": "900100",
       "corpCode": "00781202",
       "name": "파이온엑스",
-      "totalDisclosures": 4,
+      "totalDisclosures": 3,
       "signals": [
         {
           "rule": "CB발행",
@@ -340,12 +358,6 @@
           "date": "20260622",
           "rceptNo": "20260622900833",
           "title": "주권매매거래정지해제              (액면병합 주권 변경상장)",
-          "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900360",
-          "title": "[기재정정]주주총회소집결의              ",
           "type": "I"
         }
       ]
@@ -455,35 +467,6 @@
       ]
     },
     {
-      "stockCode": "127120",
-      "corpCode": "00642541",
-      "name": "제이에스링크",
-      "totalDisclosures": 2,
-      "signals": [
-        {
-          "rule": "CB발행",
-          "weight": 10,
-          "count": 2,
-          "latestDate": "20260617"
-        }
-      ],
-      "riskScore": 20,
-      "recentDisclosures": [
-        {
-          "date": "20260617",
-          "rceptNo": "20260617000473",
-          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
-          "type": "B"
-        },
-        {
-          "date": "20260617",
-          "rceptNo": "20260617000402",
-          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
-          "type": "B"
-        }
-      ]
-    },
-    {
       "stockCode": "049470",
       "corpCode": "00351579",
       "name": "비트플래닛",
@@ -525,30 +508,24 @@
       ]
     },
     {
-      "stockCode": "389470",
-      "corpCode": "01516456",
-      "name": "인벤티지랩",
-      "totalDisclosures": 2,
+      "stockCode": "008500",
+      "corpCode": "00146542",
+      "name": "일정실업",
+      "totalDisclosures": 1,
       "signals": [
         {
-          "rule": "CB발행",
-          "weight": 10,
-          "count": 2,
-          "latestDate": "20260622"
+          "rule": "대주주변경",
+          "weight": 20,
+          "count": 1,
+          "latestDate": "20260619"
         }
       ],
       "riskScore": 20,
       "recentDisclosures": [
         {
-          "date": "20260615",
-          "rceptNo": "20260615000306",
-          "title": "주요사항보고서(자기전환사채만기전취득결정)",
-          "type": "B"
-        },
-        {
-          "date": "20260622",
-          "rceptNo": "20260622900427",
-          "title": "전환사채(해외전환사채포함)발행후만기전사채취득              (제2회차)",
+          "date": "20260619",
+          "rceptNo": "20260619800593",
+          "title": "최대주주등소유주식변동신고서              ",
           "type": "I"
         }
       ]
@@ -607,93 +584,6 @@
           "date": "20260619",
           "rceptNo": "20260619900871",
           "title": "신규시설투자등              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "084440",
-      "corpCode": "00531078",
-      "name": "유비온",
-      "totalDisclosures": 4,
-      "signals": [
-        {
-          "rule": "증자/감자",
-          "weight": 10,
-          "count": 1,
-          "latestDate": "20260615"
-        }
-      ],
-      "riskScore": 10,
-      "recentDisclosures": [
-        {
-          "date": "20260622",
-          "rceptNo": "20260622900252",
-          "title": "기업설명회(IR)개최              ",
-          "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900820",
-          "title": "주주명부폐쇄기간또는기준일설정              ",
-          "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900870",
-          "title": "주주총회소집결의              (임시주주총회)",
-          "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900872",
-          "title": "주식병합결정              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "046070",
-      "corpCode": "00295857",
-      "name": "코다코",
-      "totalDisclosures": 1,
-      "signals": [
-        {
-          "rule": "증자/감자",
-          "weight": 10,
-          "count": 1,
-          "latestDate": "20260615"
-        }
-      ],
-      "riskScore": 10,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900366",
-          "title": "감자완료              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "222420",
-      "corpCode": "01091054",
-      "name": "쎄노텍",
-      "totalDisclosures": 1,
-      "signals": [
-        {
-          "rule": "CB발행",
-          "weight": 10,
-          "count": 1,
-          "latestDate": "20260615"
-        }
-      ],
-      "riskScore": 10,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900538",
-          "title": "전환사채(해외전환사채포함)발행후만기전사채취득              ",
           "type": "I"
         }
       ]
@@ -803,6 +693,29 @@
       ]
     },
     {
+      "stockCode": "389470",
+      "corpCode": "01516456",
+      "name": "인벤티지랩",
+      "totalDisclosures": 1,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "20260622"
+        }
+      ],
+      "riskScore": 10,
+      "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900427",
+          "title": "전환사채(해외전환사채포함)발행후만기전사채취득              (제2회차)",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "000210",
       "corpCode": "00109693",
       "name": "DL",
@@ -820,22 +733,6 @@
           "date": "20260617",
           "rceptNo": "20260617800650",
           "title": "타인에대한채무보증결정(자회사의 주요경영사항)              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "094800",
-      "corpCode": "00600013",
-      "name": "맵스리얼티",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615800335",
-          "title": "주주명부폐쇄기간또는기준일설정              ",
           "type": "I"
         }
       ]
@@ -873,22 +770,6 @@
       ]
     },
     {
-      "stockCode": "258830",
-      "corpCode": "00959229",
-      "name": "세종메디칼",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900601",
-          "title": "[기재정정]주주총회소집결의              (임시주주총회)",
-          "type": "I"
-        }
-      ]
-    },
-    {
       "stockCode": "291810",
       "corpCode": "01524507",
       "name": "핀텔",
@@ -921,22 +802,6 @@
       ]
     },
     {
-      "stockCode": "064400",
-      "corpCode": "00139834",
-      "name": "LG씨엔에스",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615800384",
-          "title": "기업설명회(IR)개최(안내공시)              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
       "stockCode": "478340",
       "corpCode": "01787355",
       "name": "나라스페이스테크놀로지",
@@ -956,7 +821,7 @@
       "stockCode": "001080",
       "corpCode": "00120872",
       "name": "만호제강",
-      "totalDisclosures": 2,
+      "totalDisclosures": 1,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
@@ -965,28 +830,6 @@
           "rceptNo": "20260616000189",
           "title": "주요사항보고서(자기주식취득신탁계약해지결정)",
           "type": "B"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615800287",
-          "title": "주주명부폐쇄기간또는기준일설정              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "145210",
-      "corpCode": "00453488",
-      "name": "다이나믹디자인",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615800449",
-          "title": "임시주주총회결과              ",
-          "type": "I"
         }
       ]
     },
@@ -1024,6 +867,22 @@
           "date": "20260616",
           "rceptNo": "20260616900277",
           "title": "단기차입금증가결정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "084440",
+      "corpCode": "00531078",
+      "name": "유비온",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900252",
+          "title": "기업설명회(IR)개최              ",
           "type": "I"
         }
       ]
@@ -1137,22 +996,6 @@
       ]
     },
     {
-      "stockCode": "462860",
-      "corpCode": "01563667",
-      "name": "더즌",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900417",
-          "title": "중간(분기)배당을위한주주명부폐쇄(기준일)결정              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
       "stockCode": "205100",
       "corpCode": "01042085",
       "name": "엑셈",
@@ -1172,7 +1015,7 @@
       "stockCode": "123010",
       "corpCode": "00615723",
       "name": "알엔티엑스",
-      "totalDisclosures": 3,
+      "totalDisclosures": 1,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
@@ -1180,18 +1023,6 @@
           "date": "20260616",
           "rceptNo": "20260616900003",
           "title": "[기재정정]주주명부폐쇄기간또는기준일설정              ",
-          "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900739",
-          "title": "본점소재지변경              ",
-          "type": "I"
-        },
-        {
-          "date": "20260615",
-          "rceptNo": "20260615900627",
-          "title": "[기재정정]주주총회소집결의              (임시주주총회)",
           "type": "I"
         }
       ]
@@ -1236,22 +1067,6 @@
           "date": "20260617",
           "rceptNo": "20260617900370",
           "title": "기업설명회(IR)개최              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "003570",
-      "corpCode": "00134477",
-      "name": "SNT다이내믹스",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260615",
-          "rceptNo": "20260615800149",
-          "title": "주주명부폐쇄기간또는기준일설정              ",
           "type": "I"
         }
       ]
