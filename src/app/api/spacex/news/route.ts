@@ -67,18 +67,44 @@ async function fetchElonRSS(): Promise<{ xml: string; source: string }> {
   return fetchGoogleNews();
 }
 
+function decodeHtml(s: string): string {
+  return s
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&").replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'").replace(/&#x27;/g, "'")
+    .replace(/&nbsp;/g, " ");
+}
+
+function stripHtml(s: string): string {
+  // 먼저 엔티티 디코드 후 태그 제거 (엔티티로 인코딩된 태그도 제거)
+  return decodeHtml(s)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function parseRSSItems(xml: string): { title: string; link: string; pubDate: string; text: string }[] {
   const items: { title: string; link: string; pubDate: string; text: string }[] = [];
 
   const blocks = xml.split("<item>").slice(1);
   for (const block of blocks) {
-    const title   = block.match(/<title[^>]*><!\[CDATA\[(.*?)\]\]>/s)?.[1]?.trim()
-                 || block.match(/<title[^>]*>(.*?)<\/title>/s)?.[1]?.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&#39;/g,"'").replace(/&quot;/g,'"').trim() || "";
-    const link    = block.match(/<link>(.*?)<\/link>/)?.[1]?.trim() || "";
+    const titleRaw = block.match(/<title[^>]*><!\[CDATA\[(.*?)\]\]>/s)?.[1]
+                  || block.match(/<title[^>]*>(.*?)<\/title>/s)?.[1] || "";
+    const title = stripHtml(titleRaw).trim();
+
+    // Google News RSS: <link> 바로 뒤에 실제 URL이 아닌 구글 리다이렉트 URL
+    // <source url="..."> 또는 <link>...</link> 에서 추출
+    const link = block.match(/<link>(.*?)<\/link>/)?.[1]?.trim() || "";
+
     const pubDate = block.match(/<pubDate>(.*?)<\/pubDate>/)?.[1]?.trim() || "";
-    const desc    = block.match(/<description><!\[CDATA\[(.*?)\]\]>/s)?.[1]
+
+    const descRaw = block.match(/<description><!\[CDATA\[(.*?)\]\]>/s)?.[1]
                  || block.match(/<description>(.*?)<\/description>/s)?.[1] || "";
-    const text = (title + " " + desc).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const descClean = stripHtml(descRaw);
+
+    // 제목만 text로 사용 (desc는 Google News에서 출처 반복이 많음)
+    const text = title + (descClean && descClean !== title ? " " + descClean.slice(0, 200) : "");
+
     if (title.length > 5) items.push({ title, link, pubDate, text });
   }
 
@@ -140,9 +166,11 @@ JSON만 출력하세요. 마크다운 코드블록 없이.`;
 let cache: { data: any; at: number } | null = null;
 const CACHE_MS = 60 * 60 * 1000;
 
-export async function GET() {
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const force = url.searchParams.get("refresh") === "1";
   try {
-    if (cache && Date.now() - cache.at < CACHE_MS) {
+    if (!force && cache && Date.now() - cache.at < CACHE_MS) {
       return NextResponse.json({ ...cache.data, cached: true });
     }
 

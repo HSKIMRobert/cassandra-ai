@@ -161,50 +161,65 @@ async function refreshAll() {
   await pruneStaleSymbols();
   const results = await Promise.allSettled(
     STOCKS.map(async (s) => {
-      const bars = await fetchOHLCV(s.symbol);
-      const last = bars[bars.length - 1];
-      const prev = bars[bars.length - 2];
+      let price: number | null = null;
+      let change1d: number | null = null;
+      let change5d: number | null = null;
+      let volume: bigint = BigInt(0);
+      let high52w: number | null = null;
+      let low52w: number | null = null;
+      let wr: number | null = null;
+      let rsi: number | null = null;
+      let sma20: number | null = null;
+      let sma50: number | null = null;
+      let mom: number | null = null;
+      let score = 0;
+      let ohlcv: any[] = [];
 
-      const wr   = calcWilliamsR(bars);
-      const rsi  = calcRSI(bars);
-      const sma20= calcSMA(bars, 20);
-      const sma50= calcSMA(bars, 50);
-      const mom  = calcMomentum(bars);
-      const score= calcScore(wr, rsi, last.close, sma20, sma50, mom);
+      try {
+        const bars = await fetchOHLCV(s.symbol);
+        const last = bars[bars.length - 1];
+        const prev = bars[bars.length - 2];
 
-      const change1d = prev ? ((last.close - prev.close) / prev.close) * 100 : null;
-      const bar5 = bars.length >= 6 ? bars[bars.length - 6] : null;
-      const change5d = bar5 ? ((last.close - bar5.close) / bar5.close) * 100 : null;
-
-      const highs52 = bars.map(b => b.high).filter(Boolean);
-      const lows52  = bars.map(b => b.low).filter(Boolean);
+        wr    = calcWilliamsR(bars);
+        rsi   = calcRSI(bars);
+        sma20 = calcSMA(bars, 20);
+        sma50 = calcSMA(bars, 50);
+        mom   = calcMomentum(bars);
+        score = calcScore(wr, rsi, last.close, sma20, sma50, mom);
+        price = last.close;
+        change1d = prev ? ((last.close - prev.close) / prev.close) * 100 : null;
+        const bar5 = bars.length >= 6 ? bars[bars.length - 6] : null;
+        change5d = bar5 ? ((last.close - bar5.close) / bar5.close) * 100 : null;
+        const highs52 = bars.map(b => b.high).filter(Boolean);
+        const lows52  = bars.map(b => b.low).filter(Boolean);
+        high52w = highs52.length ? Math.max(...highs52) : null;
+        low52w  = lows52.length  ? Math.min(...lows52)  : null;
+        volume  = BigInt(Math.round(last.volume ?? 0));
+        ohlcv   = bars.slice(-60);
+      } catch {
+        // Yahoo Finance 실패 시 가격 없이 DB에 기록 (심볼은 목록에 표시)
+      }
 
       await prisma.spaceXQuant.upsert({
         where: { symbol: s.symbol },
         update: {
           name: s.name, group: s.group,
-          price: last.close,
-          change1d, change5d,
-          volume: BigInt(Math.round(last.volume ?? 0)),
-          high52w: highs52.length ? Math.max(...highs52) : null,
-          low52w:  lows52.length  ? Math.min(...lows52)  : null,
+          price, change1d, change5d, volume,
+          high52w, low52w,
           williamsR: wr, rsi14: rsi,
           sma20, sma50, momentum20: mom,
           score, signal: scoreToSignal(score),
-          ohlcv: bars.slice(-60),
+          ohlcv,
           updatedAt: new Date(),
         },
         create: {
           symbol: s.symbol, name: s.name, group: s.group,
-          price: last.close,
-          change1d, change5d,
-          volume: BigInt(Math.round(last.volume ?? 0)),
-          high52w: highs52.length ? Math.max(...highs52) : null,
-          low52w:  lows52.length  ? Math.min(...lows52)  : null,
+          price, change1d, change5d, volume,
+          high52w, low52w,
           williamsR: wr, rsi14: rsi,
           sma20, sma50, momentum20: mom,
           score, signal: scoreToSignal(score),
-          ohlcv: bars.slice(-60),
+          ohlcv,
         },
       });
       return s.symbol;
