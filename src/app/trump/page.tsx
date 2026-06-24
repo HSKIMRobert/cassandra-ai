@@ -410,11 +410,18 @@ export default function TrumpPage() {
               )}
             </div>
 
-            {/* 정보 출처 푸터 */}
-            <p className="text-[9px] text-[var(--text-muted)] text-center pb-4">
-              데이터 출처: Truth Social RSS · Google News RSS · Claude Haiku 분석 · 1시간 캐시
-              {data?.fromCache && ` · 마지막 분석: ${new Date(data.generatedAt).toLocaleString("ko-KR")}`}
-            </p>
+            {/* 리스크 고지 */}
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)]/60 px-5 py-4 space-y-2 text-[10px] text-[var(--text-muted)] leading-relaxed">
+              <p className="font-semibold text-[11px] text-[var(--text)]">⚠️ 투자 위험 고지 (Risk Disclaimer)</p>
+              <p>본 페이지에 제공되는 모든 정보는 <strong>투자 참고용</strong>이며, 특정 종목의 매수·매도를 권유하거나 투자 결과를 보장하지 않습니다.</p>
+              <p>AI(DeepSeek)가 생성한 종목 분석 및 BUY/SELL 시그널은 뉴스·SNS 텍스트를 기반으로 한 자동 추론 결과로, <strong>오류·편향·누락이 포함될 수 있으며 실제 시장 상황과 다를 수 있습니다.</strong></p>
+              <p>트럼프 관련 뉴스 및 Truth Social 인용 내용은 제3자 출처(Google News RSS 등)를 통해 수집되며, 내용의 정확성·완전성을 보증하지 않습니다.</p>
+              <p>주식·ETF·암호화자산 등 모든 금융 상품 투자에는 원금 손실 위험이 있으며, 최종 투자 판단과 그에 따른 결과는 <strong>전적으로 투자자 본인에게 귀속</strong>됩니다.</p>
+              <p className="pt-1 border-t border-[var(--border)]">
+                데이터 출처: Google News RSS · Truth Social RSS · DeepSeek V3 분석 · Redis 1시간 캐시
+                {data?.generatedAt && ` · 마지막 분석: ${new Date(data.generatedAt).toLocaleString("ko-KR")}`}
+              </p>
+            </div>
           </>
         )}
       </main>
