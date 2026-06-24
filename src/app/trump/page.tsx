@@ -114,8 +114,15 @@ export default function TrumpPage() {
 
   const picks = data?.analysis?.picks ?? [];
   const analysis = data?.analysis;
-  const newsItems  = data?.items?.filter(i => i.type === "news")  ?? [];
-  const truthPosts = data?.items?.filter(i => i.type === "truth") ?? [];
+  const allItems = data?.items ?? [];
+  // Truth Social 인용 뉴스 = source에 Truth Social 포함되거나 type=truth
+  const truthItems = allItems.filter(i =>
+    i.type === "truth" ||
+    i.source?.toLowerCase().includes("truth") ||
+    i.title?.toLowerCase().includes("truth social") ||
+    i.titleKo?.includes("트루스소셜")
+  );
+  const newsItems = allItems.filter(i => !truthItems.includes(i));
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -128,7 +135,7 @@ export default function TrumpPage() {
               🇺🇸 <span>Trump Pick</span>
             </h1>
             <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-              트루스소셜 + 뉴스 → Claude AI 분석 → 영향 종목 BUY/SELL
+              트루스소셜 인용 뉴스 + Google/Yahoo News → AI 분석 → 영향 종목 BUY/SELL
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -255,7 +262,7 @@ export default function TrumpPage() {
                 {[
                   { key: "picks", label: `📊 종목 픽 (${picks.length})` },
                   { key: "news",  label: `📰 뉴스 (${newsItems.length})` },
-                  { key: "truth", label: `🦅 트루스소셜 (${truthPosts.length})` },
+                  { key: "truth", label: `🦅 트루스소셜 인용 (${truthItems.length})` },
                 ].map(({ key, label }) => (
                   <button
                     key={key}
@@ -362,49 +369,52 @@ export default function TrumpPage() {
                 </div>
               )}
 
-              {/* ─── 트루스소셜 탭 ─── */}
+              {/* ─── 트루스소셜 인용 탭 ─── */}
               {tab === "truth" && (
-                <div className="p-4">
-                  {truthPosts.length === 0 ? (
-                    <div className="text-center py-8 space-y-2">
+                <div className="divide-y divide-[var(--border)]">
+                  {/* 안내 배너 */}
+                  <div className="px-4 py-2.5 bg-[#dc2626]/05 flex items-center gap-2">
+                    <MessageSquare className="w-3.5 h-3.5 text-[#f87171] shrink-0" />
+                    <p className="text-[10px] text-[var(--text-muted)]">
+                      Vercel 서버에서 Truth Social 직접 접근 차단 —
+                      <span className="text-[#f87171] ml-1">트루스소셜을 인용·보도한 뉴스</span>를 수집해 표시합니다
+                    </p>
+                  </div>
+
+                  {truthItems.length === 0 ? (
+                    <div className="text-center py-10 space-y-2 text-[var(--text-muted)]">
                       <div className="text-2xl">🦅</div>
-                      <p className="text-sm text-[var(--text-muted)]">트루스소셜 포스트 수집 실패</p>
-                      <p className="text-[10px] text-[var(--text-muted)]">
-                        Mastodon API · RSS 애그리게이터 모두 응답 없음<br/>
-                        뉴스 탭에서 트럼프 SNS 인용 내용 확인 가능
-                      </p>
+                      <p className="text-sm">트루스소셜 인용 뉴스 없음</p>
+                      <p className="text-[10px]">뉴스 탭에서 전체 기사 확인</p>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-1.5">
-                        <MessageSquare className="w-3 h-3" />
-                        출처: {data?.truthSource}
-                      </div>
-                      {truthPosts.map((p, i) => (
-                        <div key={i} className="rounded-lg bg-[var(--bg)] border border-[var(--border)] p-3">
-                          <div className="flex items-start gap-2">
-                            <div className="w-7 h-7 rounded-full bg-[#dc2626]/20 flex items-center justify-center text-sm shrink-0">🇺🇸</div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-xs font-bold text-[#f87171]">Donald J. Trump</span>
-                                <span className="text-[9px] text-[var(--text-muted)]">@realDonaldTrump</span>
-                                <span className="text-[9px] text-[var(--text-muted)]">{timeAgo(p.date)}</span>
-                              </div>
-                              {/* 한국어 요약 */}
-                              {p.titleKo && <p className="text-xs font-semibold mt-1.5">{p.titleKo}</p>}
-                              {p.summaryKo && <p className="text-[11px] text-[var(--text-muted)] mt-0.5 leading-relaxed">{p.summaryKo}</p>}
-                              {/* 원문 */}
-                              {(p.title || p.text) && (
-                                <details className="mt-1.5">
-                                  <summary className="text-[9px] text-[var(--text-muted)] cursor-pointer hover:text-[var(--text)]">원문 보기</summary>
-                                  <p className="text-[10px] text-[var(--text-muted)] mt-1 italic leading-relaxed">{p.title} {p.text}</p>
-                                </details>
-                              )}
+                    truthItems.map((n, i) => (
+                      <div key={i} className="px-4 py-3 hover:bg-[var(--bg)] transition-colors">
+                        <div className="flex items-start gap-2">
+                          <div className="w-6 h-6 rounded-full bg-[#dc2626]/15 flex items-center justify-center text-xs shrink-0 mt-0.5">🇺🇸</div>
+                          <div className="min-w-0 flex-1">
+                            {n.link ? (
+                              <a href={n.link} target="_blank" rel="noopener noreferrer"
+                                className="text-xs font-semibold hover:text-[#f87171] transition-colors block">
+                                {n.titleKo || n.title}
+                              </a>
+                            ) : (
+                              <p className="text-xs font-semibold">{n.titleKo || n.title}</p>
+                            )}
+                            {n.titleKo && (
+                              <p className="text-[9px] text-[var(--text-muted)] mt-0.5 italic">{n.title}</p>
+                            )}
+                            {n.summaryKo && (
+                              <p className="text-[11px] text-[var(--text-muted)] mt-1 leading-relaxed">{n.summaryKo}</p>
+                            )}
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[9px] text-[var(--text-muted)]">{timeAgo(n.date)}</span>
+                              <span className="text-[9px] text-[#dc2626]/70 truncate">{n.source}</span>
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))
                   )}
                 </div>
               )}
