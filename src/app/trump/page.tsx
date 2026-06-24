@@ -157,7 +157,7 @@ export default function TrumpPage() {
         {loading ? (
           <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-12 text-center">
             <div className="text-3xl mb-3 animate-pulse">🇺🇸</div>
-            <p className="text-sm text-[var(--text-muted)]">트루스소셜 & 뉴스 수집 중… Claude가 분석 중입니다</p>
+            <p className="text-sm text-[var(--text-muted)]">트루스소셜 & 뉴스 수집 중… AI가 분석 중입니다</p>
             <p className="text-[10px] text-[var(--text-muted)] mt-1">약 10~20초 소요</p>
           </div>
         ) : data?.error && !analysis ? (
