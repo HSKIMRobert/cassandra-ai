@@ -207,19 +207,34 @@ export async function GET(req: NextRequest) {
 
     // Claude 분석
     let analysis: any = null;
-    try {
-      analysis = await analyzeWithClaude(truthPosts, newsItems);
-    } catch (e: any) {
-      console.error("Claude analysis failed:", e.message);
+    let analysisError: string | null = null;
+    if (!process.env.ANTHROPIC_API_KEY) {
+      analysisError = "ANTHROPIC_API_KEY 환경변수 미설정 — Vercel 대시보드에서 추가 필요";
       analysis = {
-        summary: "LLM 분석 일시 오류 — 뉴스 데이터는 정상 수집됨",
+        summary: analysisError,
         mood: "불확실",
         keyTopics: [],
-        marketImpact: "분석 불가",
+        marketImpact: "API 키 설정 후 재시도",
         picks: [],
-        riskFactors: [],
+        riskFactors: ["Vercel → Settings → Environment Variables → ANTHROPIC_API_KEY 추가"],
         nextCatalyst: "",
       };
+    } else {
+      try {
+        analysis = await analyzeWithClaude(truthPosts, newsItems);
+      } catch (e: any) {
+        analysisError = e.message;
+        console.error("Claude analysis failed:", e.message);
+        analysis = {
+          summary: `Claude 분석 오류: ${e.message}`,
+          mood: "불확실",
+          keyTopics: newsItems.slice(0, 3).map(n => n.title.slice(0, 30)),
+          marketImpact: "분석 재시도 중",
+          picks: [],
+          riskFactors: [`오류: ${e.message}`],
+          nextCatalyst: "",
+        };
+      }
     }
 
     const payload = {
@@ -228,6 +243,7 @@ export async function GET(req: NextRequest) {
       truthSource: truthResult?.source ?? null,
       newsItems: newsItems.slice(0, 15),
       analysis,
+      analysisError,
       fromCache: false,
     };
 

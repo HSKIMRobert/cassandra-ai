@@ -31,6 +31,7 @@ interface TrumpData {
   truthSource: string | null;
   newsItems: { title: string; text: string; date: string; source: string; link: string }[];
   analysis: Analysis;
+  analysisError?: string | null;
   fromCache?: boolean;
   cachedSecondsAgo?: number;
   stale?: boolean;
@@ -149,6 +150,22 @@ export default function TrumpPage() {
           </div>
         ) : (
           <>
+            {/* ─── API 키 오류 배너 ─── */}
+            {data?.analysisError && (
+              <div className="rounded-xl bg-[#f59e0b]/10 border border-[#f59e0b]/40 p-4 flex items-start gap-3">
+                <AlertTriangle className="w-4 h-4 text-[#f59e0b] mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-[#f59e0b]">Claude 분석 실패</p>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{data.analysisError}</p>
+                  {data.analysisError.includes("ANTHROPIC_API_KEY") && (
+                    <p className="text-[11px] text-[#f59e0b] mt-1">
+                      Vercel 대시보드 → Settings → Environment Variables → <code className="bg-[#f59e0b]/20 px-1 rounded">ANTHROPIC_API_KEY</code> 추가 후 재배포
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* ─── 트럼프 무드 + 요약 ─── */}
             {analysis && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
