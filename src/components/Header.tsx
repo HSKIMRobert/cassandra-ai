@@ -58,6 +58,9 @@ export default function Header() {
           <a href="/spacex" className={`px-3 py-1.5 rounded-lg border transition-colors text-xs ${
             pathname === "/spacex" ? "bg-[#3b82f6]/10 border-[#3b82f6]/30 text-[#3b82f6]" : "bg-[var(--bg)] border-[var(--border)] hover:border-[#3b82f6] hover:text-[#3b82f6]"
           }`}>🚀 SpaceX</a>
+          <a href="/trump" className={`px-3 py-1.5 rounded-lg border transition-colors text-xs ${
+            pathname === "/trump" ? "bg-[#dc2626]/10 border-[#dc2626]/30 text-[#f87171]" : "bg-[var(--bg)] border-[var(--border)] hover:border-[#dc2626] hover:text-[#f87171]"
+          }`}>🇺🇸 Trump Pick</a>
           <a href="/quant" className="px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent-glow)] hover:bg-[var(--accent)]/20 transition-colors text-xs">
             퀀트 대시보드
           </a>
