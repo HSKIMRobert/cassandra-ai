@@ -73,7 +73,6 @@ export default function Header() {
           {btn("/", "관계망 분석")}
           {btn("/board", "제보·분석")}
           {btn("/wiki", "WIKI")}
-          {btn("/person-search", "인명검색")}
           {isAdmin && (
             <>
               <a href="/tqqq" className={`px-3 py-1.5 rounded-lg border transition-colors text-xs ${
