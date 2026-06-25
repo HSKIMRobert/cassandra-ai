@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-24T10:10:13.991Z",
+  "generatedAt": "2026-06-25T01:10:55.784Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,16 +11,9 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 2,
-    "totalSignals": 22,
+    "highRiskCount": 1,
+    "totalSignals": 20,
     "topRisks": [
-      {
-        "name": "제이에스링크",
-        "score": 30,
-        "signals": [
-          "CB발행"
-        ]
-      },
       {
         "name": "우성머티리얼스",
         "score": 30,
