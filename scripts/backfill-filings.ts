@@ -20,6 +20,9 @@ const daysArg = args.indexOf("--days");
 const DAYS = daysArg !== -1 ? parseInt(args[daysArg + 1], 10) : 180;
 const corpArg = args.indexOf("--corp");
 const CORP_FILTER = corpArg !== -1 ? args[corpArg + 1] : null;
+// 코스닥 시총 5000억 이하 필터 (--cap-filter 플래그)
+const CAP_FILTER = args.includes("--cap-filter");
+const CAP_THRESHOLD = BigInt(500_000_000_000); // 5000억원
 
 async function main() {
   if (!process.env.DART_API_KEY) {
@@ -33,9 +36,11 @@ async function main() {
     where: {
       corpCode: { not: "" },
       ...(CORP_FILTER ? { companyName: { contains: CORP_FILTER } } : {}),
+      // --cap-filter: 시총 5000억 이하 (시총 미입력 기업 포함 — 소형주 가능성 높음)
+      ...(CAP_FILTER ? { OR: [{ marketCap: { lte: CAP_THRESHOLD } }, { marketCap: null }] } : {}),
     },
-    select: { id: true, corpCode: true, companyName: true },
-    orderBy: { companyName: "asc" },
+    select: { id: true, corpCode: true, companyName: true, marketCap: true },
+    orderBy: [{ marketCap: "asc" }, { companyName: "asc" }], // 소형주 우선
     take: LIMIT,
   });
 

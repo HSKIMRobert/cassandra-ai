@@ -23,6 +23,8 @@ const limitArg = args.indexOf("--limit");
 const LIMIT = limitArg !== -1 ? parseInt(args[limitArg + 1], 10) : 100;
 const corpArg = args.indexOf("--corp");
 const CORP_FILTER = corpArg !== -1 ? args[corpArg + 1] : null;
+const CAP_FILTER = args.includes("--cap-filter");
+const CAP_THRESHOLD = BigInt(500_000_000_000);
 const YEAR = new Date().getFullYear() - 1;
 
 async function findOrCreatePerson(name: string, birthDate?: string) {
@@ -107,13 +109,13 @@ async function main() {
 
   console.log(`\n🔄 관계망 백필 시작 (${YEAR}년 기준, 최대 ${LIMIT}개)\n`);
 
-  const where = CORP_FILTER
-    ? { companyName: { contains: CORP_FILTER } }
-    : {};
-
   const corps = await prisma.corp.findMany({
-    where: { corpCode: { not: "" }, ...where },
-    orderBy: { companyName: "asc" },
+    where: {
+      corpCode: { not: "" },
+      ...(CORP_FILTER ? { companyName: { contains: CORP_FILTER } } : {}),
+      ...(CAP_FILTER ? { OR: [{ marketCap: { lte: CAP_THRESHOLD } }, { marketCap: null }] } : {}),
+    },
+    orderBy: [{ marketCap: "asc" }, { companyName: "asc" }],
     take: LIMIT,
     select: { id: true, corpCode: true, companyName: true },
   });

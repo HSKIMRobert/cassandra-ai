@@ -35,15 +35,15 @@ jobs:
           TOSS_CLIENT_SECRET: ${{ vars.TOSS_CLIENT_SECRET }}
         continue-on-error: true   # Toss 실패해도 DART sync는 유지
 
-      - name: Backfill filings (DB Corp → DART 공시 연결)
-        run: npx tsx scripts/backfill-filings.ts --limit 200 --days 90
+      - name: Backfill filings (코스닥 5000억 이하 → DART 공시 연결)
+        run: npx tsx scripts/backfill-filings.ts --limit 200 --days 90 --cap-filter
         env:
           DATABASE_URL: ${{ vars.DATABASE_URL }}
           DART_API_KEY: ${{ vars.DART_API_KEY }}
         continue-on-error: true
 
-      - name: Backfill relations (DART 임원/주주 → 관계망)
-        run: npx tsx scripts/backfill-relations.ts --limit 50
+      - name: Backfill relations (코스닥 5000억 이하 임원/주주 → 관계망)
+        run: npx tsx scripts/backfill-relations.ts --limit 50 --cap-filter
         env:
           DATABASE_URL: ${{ vars.DATABASE_URL }}
           DART_API_KEY: ${{ vars.DART_API_KEY }}
