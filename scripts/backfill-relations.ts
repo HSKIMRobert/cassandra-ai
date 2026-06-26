@@ -13,6 +13,7 @@
 import { PrismaClient } from "@prisma/client";
 import { fetchOfficers, fetchMajorShareholders, fetchAuditOpinion } from "../src/lib/dart-parsers";
 import { buildFundNodesFromShareholders, isFundEntity } from "../src/lib/fund-builder";
+import { makePersonUid } from "../src/lib/person-uid";
 
 const prisma = new PrismaClient();
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -23,11 +24,6 @@ const LIMIT = limitArg !== -1 ? parseInt(args[limitArg + 1], 10) : 100;
 const corpArg = args.indexOf("--corp");
 const CORP_FILTER = corpArg !== -1 ? args[corpArg + 1] : null;
 const YEAR = new Date().getFullYear() - 1;
-
-// personUid 생성 (일관성 유지)
-function makePersonUid(name: string, birthDate?: string): string {
-  return `${name}_${birthDate || "unknown"}`.replace(/[^가-힣a-zA-Z0-9_-]/g, "_");
-}
 
 async function findOrCreatePerson(name: string, birthDate?: string) {
   const personUid = makePersonUid(name, birthDate);
