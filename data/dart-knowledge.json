@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T12:35:40.280Z",
+  "generatedAt": "2026-06-26T16:32:46.290Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,14 +11,36 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 3,
-    "totalSignals": 24,
+    "highRiskCount": 6,
+    "totalSignals": 27,
     "topRisks": [
+      {
+        "name": "파이온엑스",
+        "score": 45,
+        "signals": [
+          "CB발행",
+          "상장폐지위험"
+        ]
+      },
       {
         "name": "엠투엔",
         "score": 40,
         "signals": [
           "대주주변경"
+        ]
+      },
+      {
+        "name": "동성제약",
+        "score": 40,
+        "signals": [
+          "횡령/배임"
+        ]
+      },
+      {
+        "name": "소프트센",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
         ]
       },
       {

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T12:35:40.280Z",
+  "generatedAt": "2026-06-26T16:32:46.289Z",
   "period": {
     "from": "20260619",
     "to": "20260626"
@@ -43,12 +43,63 @@
       "weight": 20
     },
     {
-      "key": "AUDIT",
+      "key": "AUDIT_RISK",
       "label": "감사위험",
       "weight": 30
+    },
+    {
+      "key": "DELIST_RISK",
+      "label": "상장폐지위험",
+      "weight": 35
+    },
+    {
+      "key": "EMBEZZLE",
+      "label": "횡령/배임",
+      "weight": 40
     }
   ],
   "highRisk": [
+    {
+      "stockCode": "900100",
+      "corpCode": "00781202",
+      "name": "파이온엑스",
+      "totalDisclosures": 3,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "2026-06-19"
+        },
+        {
+          "rule": "상장폐지위험",
+          "weight": 35,
+          "count": 1,
+          "latestDate": "2026-06-22"
+        }
+      ],
+      "riskScore": 45,
+      "recentDisclosures": [
+        {
+          "date": "20260619",
+          "rceptNo": "20260618000413",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260626",
+          "rceptNo": "20260626901379",
+          "title": "기타경영사항(자율공시)              (조회공시 요구(현저한 시황변동)에 대한 답변(확정))",
+          "type": "I"
+        },
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900833",
+          "title": "주권매매거래정지해제              (액면병합 주권 변경상장)",
+          "type": "I"
+        }
+      ]
+    },
     {
       "stockCode": "033310",
       "corpCode": "00143226",
@@ -57,9 +108,9 @@
       "signals": [
         {
           "rule": "대주주변경",
-          "weight": 20,
+          "weight": 40,
           "count": 2,
-          "latestDate": "20260623"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 40,
@@ -79,6 +130,64 @@
       ]
     },
     {
+      "stockCode": "002210",
+      "corpCode": "00116268",
+      "name": "동성제약",
+      "totalDisclosures": 3,
+      "signals": [
+        {
+          "rule": "횡령/배임",
+          "weight": 40,
+          "count": 1,
+          "latestDate": "2026-06-23"
+        }
+      ],
+      "riskScore": 40,
+      "recentDisclosures": [
+        {
+          "date": "20260623",
+          "rceptNo": "20260623800708",
+          "title": "기타시장안내              (기업심사위원회 속행 결정 안내)",
+          "type": "I"
+        },
+        {
+          "date": "20260623",
+          "rceptNo": "20260623800476",
+          "title": "불성실공시법인지정예고              ",
+          "type": "I"
+        },
+        {
+          "date": "20260623",
+          "rceptNo": "20260623800205",
+          "title": "횡령ㆍ배임혐의발생              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "032680",
+      "corpCode": "00204226",
+      "name": "소프트센",
+      "totalDisclosures": 1,
+      "signals": [
+        {
+          "rule": "상장폐지위험",
+          "weight": 35,
+          "count": 1,
+          "latestDate": "2026-06-23"
+        }
+      ],
+      "riskScore": 35,
+      "recentDisclosures": [
+        {
+          "date": "20260623",
+          "rceptNo": "20260623900799",
+          "title": "기타시장안내(관리종목지정우려종목)              (소프트센 1우선주(거래량 미달))",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "127120",
       "corpCode": "00642541",
       "name": "제이에스링크",
@@ -86,9 +195,9 @@
       "signals": [
         {
           "rule": "CB발행",
-          "weight": 10,
+          "weight": 30,
           "count": 3,
-          "latestDate": "20260623"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 30,
@@ -135,13 +244,13 @@
           "rule": "대주주변경",
           "weight": 20,
           "count": 1,
-          "latestDate": "20260626"
+          "latestDate": "2026-06-26"
         },
         {
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260625"
+          "latestDate": "2026-06-25"
         }
       ],
       "riskScore": 30,
@@ -169,6 +278,47 @@
   ],
   "companies": [
     {
+      "stockCode": "900100",
+      "corpCode": "00781202",
+      "name": "파이온엑스",
+      "totalDisclosures": 3,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "2026-06-19"
+        },
+        {
+          "rule": "상장폐지위험",
+          "weight": 35,
+          "count": 1,
+          "latestDate": "2026-06-22"
+        }
+      ],
+      "riskScore": 45,
+      "recentDisclosures": [
+        {
+          "date": "20260619",
+          "rceptNo": "20260618000413",
+          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260626",
+          "rceptNo": "20260626901379",
+          "title": "기타경영사항(자율공시)              (조회공시 요구(현저한 시황변동)에 대한 답변(확정))",
+          "type": "I"
+        },
+        {
+          "date": "20260622",
+          "rceptNo": "20260622900833",
+          "title": "주권매매거래정지해제              (액면병합 주권 변경상장)",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "033310",
       "corpCode": "00143226",
       "name": "엠투엔",
@@ -176,9 +326,9 @@
       "signals": [
         {
           "rule": "대주주변경",
-          "weight": 20,
+          "weight": 40,
           "count": 2,
-          "latestDate": "20260623"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 40,
@@ -198,6 +348,64 @@
       ]
     },
     {
+      "stockCode": "002210",
+      "corpCode": "00116268",
+      "name": "동성제약",
+      "totalDisclosures": 3,
+      "signals": [
+        {
+          "rule": "횡령/배임",
+          "weight": 40,
+          "count": 1,
+          "latestDate": "2026-06-23"
+        }
+      ],
+      "riskScore": 40,
+      "recentDisclosures": [
+        {
+          "date": "20260623",
+          "rceptNo": "20260623800708",
+          "title": "기타시장안내              (기업심사위원회 속행 결정 안내)",
+          "type": "I"
+        },
+        {
+          "date": "20260623",
+          "rceptNo": "20260623800476",
+          "title": "불성실공시법인지정예고              ",
+          "type": "I"
+        },
+        {
+          "date": "20260623",
+          "rceptNo": "20260623800205",
+          "title": "횡령ㆍ배임혐의발생              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "032680",
+      "corpCode": "00204226",
+      "name": "소프트센",
+      "totalDisclosures": 1,
+      "signals": [
+        {
+          "rule": "상장폐지위험",
+          "weight": 35,
+          "count": 1,
+          "latestDate": "2026-06-23"
+        }
+      ],
+      "riskScore": 35,
+      "recentDisclosures": [
+        {
+          "date": "20260623",
+          "rceptNo": "20260623900799",
+          "title": "기타시장안내(관리종목지정우려종목)              (소프트센 1우선주(거래량 미달))",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "127120",
       "corpCode": "00642541",
       "name": "제이에스링크",
@@ -205,9 +413,9 @@
       "signals": [
         {
           "rule": "CB발행",
-          "weight": 10,
+          "weight": 30,
           "count": 3,
-          "latestDate": "20260623"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 30,
@@ -254,13 +462,13 @@
           "rule": "대주주변경",
           "weight": 20,
           "count": 1,
-          "latestDate": "20260626"
+          "latestDate": "2026-06-26"
         },
         {
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260625"
+          "latestDate": "2026-06-25"
         }
       ],
       "riskScore": 30,
@@ -295,7 +503,7 @@
           "rule": "소송/분쟁",
           "weight": 25,
           "count": 1,
-          "latestDate": "20260626"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 25,
@@ -318,13 +526,13 @@
           "rule": "CB발행",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260622"
+          "latestDate": "2026-06-22"
         },
         {
           "rule": "CB리픽싱",
           "weight": 15,
           "count": 1,
-          "latestDate": "20260622"
+          "latestDate": "2026-06-22"
         }
       ],
       "riskScore": 25,
@@ -351,9 +559,9 @@
       "signals": [
         {
           "rule": "CB발행",
-          "weight": 10,
+          "weight": 20,
           "count": 2,
-          "latestDate": "20260619"
+          "latestDate": "2026-06-19"
         }
       ],
       "riskScore": 20,
@@ -382,7 +590,7 @@
           "rule": "대주주변경",
           "weight": 20,
           "count": 1,
-          "latestDate": "20260624"
+          "latestDate": "2026-06-24"
         }
       ],
       "riskScore": 20,
@@ -405,7 +613,7 @@
           "rule": "대주주변경",
           "weight": 20,
           "count": 1,
-          "latestDate": "20260622"
+          "latestDate": "2026-06-22"
         }
       ],
       "riskScore": 20,
@@ -426,9 +634,9 @@
       "signals": [
         {
           "rule": "CB발행",
-          "weight": 10,
+          "weight": 20,
           "count": 2,
-          "latestDate": "20260626"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 20,
@@ -481,7 +689,7 @@
           "rule": "대주주변경",
           "weight": 20,
           "count": 1,
-          "latestDate": "20260619"
+          "latestDate": "2026-06-19"
         }
       ],
       "riskScore": 20,
@@ -504,7 +712,7 @@
           "rule": "CB리픽싱",
           "weight": 15,
           "count": 1,
-          "latestDate": "20260623"
+          "latestDate": "2026-06-23"
         }
       ],
       "riskScore": 15,
@@ -513,41 +721,6 @@
           "date": "20260623",
           "rceptNo": "20260623900584",
           "title": "전환가액의조정              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "900100",
-      "corpCode": "00781202",
-      "name": "파이온엑스",
-      "totalDisclosures": 3,
-      "signals": [
-        {
-          "rule": "CB발행",
-          "weight": 10,
-          "count": 1,
-          "latestDate": "20260619"
-        }
-      ],
-      "riskScore": 10,
-      "recentDisclosures": [
-        {
-          "date": "20260619",
-          "rceptNo": "20260618000413",
-          "title": "[기재정정]주요사항보고서(전환사채권발행결정)",
-          "type": "B"
-        },
-        {
-          "date": "20260626",
-          "rceptNo": "20260626901379",
-          "title": "기타경영사항(자율공시)              (조회공시 요구(현저한 시황변동)에 대한 답변(확정))",
-          "type": "I"
-        },
-        {
-          "date": "20260622",
-          "rceptNo": "20260622900833",
-          "title": "주권매매거래정지해제              (액면병합 주권 변경상장)",
           "type": "I"
         }
       ]
@@ -562,7 +735,7 @@
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260625"
+          "latestDate": "2026-06-25"
         }
       ],
       "riskScore": 10,
@@ -597,7 +770,7 @@
           "rule": "CB발행",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260626"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 10,
@@ -620,7 +793,7 @@
           "rule": "CB발행",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260619"
+          "latestDate": "2026-06-19"
         }
       ],
       "riskScore": 10,
@@ -661,7 +834,7 @@
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260626"
+          "latestDate": "2026-06-26"
         }
       ],
       "riskScore": 10,
@@ -684,7 +857,7 @@
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260619"
+          "latestDate": "2026-06-19"
         }
       ],
       "riskScore": 10,
@@ -713,7 +886,7 @@
           "rule": "CB발행",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260622"
+          "latestDate": "2026-06-22"
         }
       ],
       "riskScore": 10,
@@ -742,7 +915,7 @@
           "rule": "CB발행",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260619"
+          "latestDate": "2026-06-19"
         }
       ],
       "riskScore": 10,
@@ -765,7 +938,7 @@
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260622"
+          "latestDate": "2026-06-22"
         }
       ],
       "riskScore": 10,
@@ -788,7 +961,7 @@
           "rule": "증자/감자",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260623"
+          "latestDate": "2026-06-23"
         }
       ],
       "riskScore": 10,
@@ -817,7 +990,7 @@
           "rule": "CB발행",
           "weight": 10,
           "count": 1,
-          "latestDate": "20260622"
+          "latestDate": "2026-06-22"
         }
       ],
       "riskScore": 10,
@@ -1291,22 +1464,6 @@
       ]
     },
     {
-      "stockCode": "032680",
-      "corpCode": "00204226",
-      "name": "소프트센",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260623",
-          "rceptNo": "20260623900799",
-          "title": "기타시장안내(관리종목지정우려종목)              (소프트센 1우선주(거래량 미달))",
-          "type": "I"
-        }
-      ]
-    },
-    {
       "stockCode": "234070",
       "corpCode": "00614089",
       "name": "에이원큐브텍",
@@ -1366,34 +1523,6 @@
           "date": "20260626",
           "rceptNo": "20260626900569",
           "title": "지속가능경영보고서등관련사항(자율공시)              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "002210",
-      "corpCode": "00116268",
-      "name": "동성제약",
-      "totalDisclosures": 3,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260623",
-          "rceptNo": "20260623800708",
-          "title": "기타시장안내              (기업심사위원회 속행 결정 안내)",
-          "type": "I"
-        },
-        {
-          "date": "20260623",
-          "rceptNo": "20260623800476",
-          "title": "불성실공시법인지정예고              ",
-          "type": "I"
-        },
-        {
-          "date": "20260623",
-          "rceptNo": "20260623800205",
-          "title": "횡령ㆍ배임혐의발생              ",
           "type": "I"
         }
       ]
