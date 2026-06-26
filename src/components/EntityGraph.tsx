@@ -62,7 +62,7 @@ export default function EntityGraph({ data, onNodeSelect, onDepthChange, current
 
     cy.on("tap", "node", (evt) => {
       const nd = evt.target.data();
-      if (nd.type === "corp") { window.open(`/corp/${encodeURIComponent(nd.label)}`, "_blank"); return; }
+      if (nd.type === "corp") { window.open(`/corp/${nd.corpCode || encodeURIComponent(nd.label)}`, "_blank"); return; }
       onNodeSelect?.({ type: nd.type, label: nd.label, name: nd.label, flags: nd.flags || [], uid: nd.uid, corpRelations: [], totalConnections: 0, suspiciousCorps: 0 });
     });
 

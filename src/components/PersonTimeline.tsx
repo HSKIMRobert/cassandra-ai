@@ -96,7 +96,7 @@ export default function PersonTimeline({ entries, personName }: Props) {
             <div
               className="w-[116px] flex-shrink-0 text-right text-xs text-[var(--text)] truncate cursor-pointer hover:text-[#a29bfe] transition-colors"
               title={entry.companyName}
-              onClick={() => window.open(`/corp/${encodeURIComponent(entry.companyName)}`, "_blank")}
+              onClick={() => window.open(`/corp/${entry.corpCode || encodeURIComponent(entry.companyName)}`, "_blank")}
             >
               {entry.companyName}
             </div>

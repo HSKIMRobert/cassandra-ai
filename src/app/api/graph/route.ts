@@ -29,6 +29,6 @@ export async function GET(req: NextRequest) {
   const data = await buildDeepGraph(q.trim(), depth);
   const result = { ...data, cached: false, cacheAge: 0, cacheStale: false };
 
-  await setCache(cacheKey, result);
+  await setCache(cacheKey, result, 30 * 60); // 30분 TTL (기존 144h → 30min)
   return NextResponse.json(toJSON(result));
 }
