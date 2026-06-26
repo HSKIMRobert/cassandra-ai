@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T01:13:33.736Z",
+  "generatedAt": "2026-06-26T10:10:16.657Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,31 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 0,
-    "totalSignals": 19,
-    "topRisks": []
+    "highRiskCount": 3,
+    "totalSignals": 24,
+    "topRisks": [
+      {
+        "name": "엠투엔",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "제이에스링크",
+        "score": 30,
+        "signals": [
+          "CB발행"
+        ]
+      },
+      {
+        "name": "알엔티엑스",
+        "score": 30,
+        "signals": [
+          "대주주변경",
+          "증자/감자"
+        ]
+      }
+    ]
   }
 }
