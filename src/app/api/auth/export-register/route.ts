@@ -3,6 +3,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function POST(req: NextRequest) {
     try {
@@ -35,12 +36,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+    const authDeny = await requireAdmin();
+    if (authDeny) return authDeny;
     try {
-        const adminEmail = req.nextUrl.searchParams.get("admin");
-        const ADMIN_EMAILS = ["gameworker@gmail.com"];
-        if (!adminEmail || !ADMIN_EMAILS.includes(adminEmail)) {
-            return NextResponse.json({ error: "관리자 권한 필요" }, { status: 403 });
-        }
 
         const exportUsers = await prisma.appUser.findMany({
             where: { tier: "expert", expertCategory: "media" },

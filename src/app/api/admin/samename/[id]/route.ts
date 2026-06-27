@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { prisma } from "@/lib/prisma";
 import { getCache, setCache } from "@/lib/redis-cache";
 import { requireAdmin } from "@/lib/admin-auth";
+
+async function getAdminEmail(): Promise<string> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const cookieStore = await cookies();
+  const supabase = createServerClient(url, key, {
+    cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} },
+  });
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.email ?? "admin";
+}
 
 // GET /api/admin/samename/[id] — 상세 (각 Person의 회사 관계 포함)
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -47,11 +60,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { id } = await params;
   const body = await req.json();
-  const { action, primaryPersonId, adminEmail } = body as {
+  const { action, primaryPersonId } = body as {
     action: "merge" | "split" | "pending";
     primaryPersonId?: string;
-    adminEmail?: string;
   };
+
+  // resolvedBy는 서버 세션에서 추출 (body 파라미터 무시)
+  const resolvedBy = await getAdminEmail();
 
   const group = await prisma.sameNameGroup.findUnique({ where: { id } });
   if (!group) return NextResponse.json({ error: "그룹 없음" }, { status: 404 });
@@ -89,7 +104,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         data: {
           resolved: true,
           resolvedAt: new Date(),
-          resolvedBy: adminEmail ?? "admin",
+          resolvedBy,
           verdict: "SAME",
         },
       });
@@ -111,7 +126,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       data: {
         resolved: true,
         resolvedAt: new Date(),
-        resolvedBy: adminEmail ?? "admin",
+        resolvedBy,
         verdict: "DIFFERENT",
       },
     });
@@ -121,7 +136,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (action === "pending") {
     await prisma.sameNameGroup.update({
       where: { id },
-      data: { resolved: false, verdict: "PENDING", resolvedBy: adminEmail ?? "admin" },
+      data: { resolved: false, verdict: "PENDING", resolvedBy },
     });
     return NextResponse.json({ ok: true, action: "pending" });
   }

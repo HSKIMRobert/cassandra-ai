@@ -56,6 +56,8 @@ export async function GET(req: NextRequest) {
   const list  = req.nextUrl.searchParams.get("list");
 
   if (list === "1") {
+    const authDeny = await requireAdmin();
+    if (authDeny) return authDeny;
     const invites = await prisma.expertInvite.findMany({
       orderBy: { createdAt: "desc" },
       take: 50,
