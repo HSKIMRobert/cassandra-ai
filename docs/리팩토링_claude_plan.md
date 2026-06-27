@@ -74,16 +74,17 @@ await setCache(cacheKey, result, 30 * 60); // 30분
 
 ---
 
-### ✅ 이슈 E: Filing 표시 역설 — 관계 있는 회사는 공시가 안 보임 **[완료]**
+### ✅ 이슈 E: Filing 표시 역설 — 관계 있는 회사는 공시가 안 보임 **[완료 — 2단계 수정]**
 
 **파일**: `src/lib/graph-queries.ts`
 **수정 커밋**: `82e4dec` (2026-06-27)
 
-`personRelations.length === 0` 역전 조건 제거. hop=0 시드 기업은 항상 공시 표시.
+**1단계 (코드)**: `personRelations.length === 0` 역전 조건 제거. hop=0 시드 기업은 항상 공시 표시.
 
-> **주의**: 공시 탭 미표시가 여전히 발생 중 → 원인 분석 결과, Filing 자체가 DB에 Corp와 연결되지 않음.
-> `daily-sync.ts`가 `dart-corp-codes.json` 뒤쪽 200개만 처리해 DB Corp와 겹치지 않는 구조적 문제.
-> **추가 수정**: `scripts/backfill-filings.ts` 생성 + GitHub Actions 일일 자동 실행 추가 (`2d22916`)
+**2단계 (데이터)**: 코드 조건 수정 이후에도 공시 탭이 비어 있는 근본 원인을 추가 분석.
+`daily-sync.ts`가 `dart-corp-codes.json` 기준 뒤쪽 200개를 처리하지만 DB Corp 목록과 겹치지 않는 구조적 커버리지 문제로 확인.
+→ `scripts/backfill-filings.ts` 신규 생성 (DB Corp 기준 역방향 공시 수집, `--cap-filter` 지원)
+→ GitHub Actions `daily-sync.yml`에 일일 자동 실행 추가 (`2d22916`)
 
 ---
 
@@ -182,7 +183,7 @@ const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
    이슈 I: DeepSeek URL /v1/ 통일
         │
         ▼
-🟡 PHASE 5 — UI 확장 (예정)
+✅ PHASE 5 — UI 확장 (완료 — 2026-06-27)
    동명이인 관리자 UI (/admin/samename)
    WIKI 동명이인 배너
 ```
@@ -203,6 +204,9 @@ const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
 - ✅ `redis-cache.ts` CACHE_TTL 30분 통일, `* 2` 제거
 - ✅ DeepSeek URL `/v1/` prefix 통일
 
-**Phase 5 예정 (UI 확장):**
-- ⬜ 동명이인 관리자 UI (`/admin/samename`) 구현
-- ⬜ WIKI 동명이인 배너 구현
+**Phase 5 완료 (2026-06-27):**
+- ✅ `SameNameGroup` 스키마 보강 (`resolved`, `verdict`, `resolvedAt`, `resolvedBy`)
+- ✅ `Person` 스키마 보강 (`deletedAt`, `mergedInto`)
+- ✅ API: `GET/POST /api/admin/samename`, `GET/POST /api/admin/samename/[id]`
+- ✅ 관리자 UI: `/admin/samename` 목록 + `/admin/samename/[id]` 비교·판정
+- ✅ 인물 페이지 동명이인 배너 (미검토 시 관리자 검토 링크 포함)

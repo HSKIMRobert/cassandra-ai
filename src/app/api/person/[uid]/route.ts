@@ -18,6 +18,8 @@ export async function GET(
 
   const sameNameGroup = await prisma.sameNameGroup.findFirst({ where: { name: person.name } });
   const sameNameCount = sameNameGroup ? sameNameGroup.personIds.length : 1;
+  const sameNameGroupId = sameNameGroup?.id ?? null;
+  const sameNameResolved = sameNameGroup?.resolved ?? null;
 
-  return NextResponse.json(toJSON({ ...person, sameNameCount }));
+  return NextResponse.json(toJSON({ ...person, sameNameCount, sameNameGroupId, sameNameResolved }));
 }

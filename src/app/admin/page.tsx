@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Shield, Users, Eye, TrendingUp, Clock, Link, Copy, CheckCircle2, UserPlus, RefreshCw } from "lucide-react";
+import NextLink from "next/link";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 const ADMIN_EMAILS = ["gameworker@gmail.com"];
@@ -76,6 +77,17 @@ export default function AdminPage() {
                     )) : <p className="text-[10px] text-[var(--text-muted)]">오늘 로그인 없음</p>}
                 </div>
             </div>
+
+            {/* 동명이인 검토 */}
+            <NextLink href="/admin/samename" className="block rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-[#f59e0b] transition-colors p-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-bold flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#f59e0b]" /> 동명이인 검토
+                    </h2>
+                    <span className="text-xs text-[var(--text-muted)]">→ /admin/samename</span>
+                </div>
+                <p className="text-[10px] text-[var(--text-muted)] mt-1">같은 이름의 인물이 동일인인지 검토하고 병합합니다.</p>
+            </NextLink>
 
             {/* Expert 초대 링크 생성 */}
             <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4">

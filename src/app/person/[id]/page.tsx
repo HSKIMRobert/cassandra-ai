@@ -54,12 +54,22 @@ export default function PersonDetailPage() {
         </div>
       )}
 
-      {/* 동명이인 */}
+      {/* 동명이인 배너 */}
       {person.sameNameCount > 1 && (
-        <div className="p-3 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20">
+        <div className="p-3 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20 flex items-center justify-between gap-3">
           <p className="text-xs text-[var(--warning)]">
-            ⚠ 동명이인 {person.sameNameCount}명이 등록되어 있습니다. 생년월일로 구분하세요.
+            ⚠ 동명이인 {person.sameNameCount}명이 감지됐습니다. 생년월일로 구분하세요.
+            {person.sameNameResolved === false && " (관리자 검토 중)"}
+            {person.sameNameResolved === true && " (검토 완료)"}
           </p>
+          {person.sameNameGroupId && (
+            <a
+              href={`/admin/samename/${person.sameNameGroupId}`}
+              className="shrink-0 text-[10px] text-[var(--warning)] underline hover:opacity-80"
+            >
+              관리자 검토
+            </a>
+          )}
         </div>
       )}
 

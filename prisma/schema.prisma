@@ -42,6 +42,8 @@ model Person {
   bio       String?  // "전 사이월드제트 CFO, 현 인트로메딕 상무이사"
   aliases   String[] @default([])
   flags     String[] @default([]) // ["blacklist", "suspicious"]
+  deletedAt DateTime?  // 병합으로 제거된 Person soft-delete
+  mergedInto String?   // 병합된 경우 대상 Person ID
   createdAt DateTime @default(now())
 
   corpRelations CorpPersonRelation[]
@@ -53,13 +55,18 @@ model Person {
 
 // ─── 동명이인 그룹 (name 기반 묶음) ───
 model SameNameGroup {
-  id       String   @id @default(uuid())
-  name     String   // 동명이인 그룹명
-  personIds String[] @default([]) // Person.personUid 배열
-  note     String?  // 구분 설명
-  createdAt DateTime @default(now())
+  id         String    @id @default(uuid())
+  name       String    // 동명이인 그룹명
+  personIds  String[]  @default([]) // Person.personUid 배열
+  note       String?   // 구분 설명
+  resolved   Boolean   @default(false)   // 검토 완료 여부
+  resolvedAt DateTime?                   // 완료 일시
+  resolvedBy String?                     // 관리자 ID
+  verdict    String?   // "SAME" | "DIFFERENT" | "PENDING"
+  createdAt  DateTime  @default(now())
 
   @@index([name])
+  @@index([resolved])
 }
 
 // ─── 법인/조합 (SPC, 신기술조합, 투자조합 등) ───
