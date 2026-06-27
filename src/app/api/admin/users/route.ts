@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPA_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin();
+  if (auth) return auth;
   try {
     // Supabase Admin REST API로 전체 유저 목록 조회
     const res = await fetch(`${SUPA_URL}/auth/v1/admin/users?page=1&per_page=200`, {

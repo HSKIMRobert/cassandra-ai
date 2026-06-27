@@ -1,13 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
 const safe = async <T>(fn: () => Promise<T>, fallback: T): Promise<T> => {
   try { return await fn(); } catch { return fallback; }
 };
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin();
+  if (auth) return auth;
   const today = new Date();
   const kst = new Date(today.getTime() + 9 * 60 * 60 * 1000);
   const todayStart = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate()) - 9 * 60 * 60 * 1000);
