@@ -11,7 +11,7 @@ if (URL && TOKEN) {
 
 // 인메모리 폴백 (Upstash 없을 때)
 const memCache = new Map<string, { data: any; ts: number }>();
-const CACHE_TTL = 72 * 60 * 60; // 72시간 (초)
+const CACHE_TTL = 30 * 60; // 30분 (기본값)
 
 export async function getCache(key: string): Promise<{ data: any; age: number; stale: boolean } | null> {
   try {
@@ -38,7 +38,7 @@ export async function setCache(key: string, data: any, ttlSec?: number): Promise
   try {
     const payload = JSON.stringify({ data, ts: Date.now() });
     if (redis) {
-      await redis.set(key, payload, { ex: ttlSec || CACHE_TTL * 2 });
+      await redis.set(key, payload, { ex: ttlSec || CACHE_TTL });
       return;
     }
     // 폴백

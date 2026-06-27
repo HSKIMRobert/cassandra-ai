@@ -3,7 +3,7 @@ import { buildDeepGraph, getPersonTimeline } from "@/lib/graph-queries";
 import { prisma } from "@/lib/prisma";
 import { getCache, setCache } from "@/lib/redis-cache";
 
-const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
+const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
 
 async function callDeepSeek(prompt: string, systemPrompt: string): Promise<string> {
   const apiKey = process.env.DEEPSEEK_API_KEY;
@@ -32,7 +32,8 @@ export async function POST(req: NextRequest) {
     const corpNodes = graphData.nodes.filter(n => n.data.type === "corp");
     const signalsByCorpName: Record<string, string[]> = {};
 
-    for (const cn of corpNodes.slice(0, 10)) {
+    const sortedCorpNodes = [...corpNodes].sort((a, b) => (b.data.flags?.length ?? 0) - (a.data.flags?.length ?? 0));
+    for (const cn of sortedCorpNodes.slice(0, 30)) {
       const corpId = cn.data.id.replace("corp-", "");
       const signals = await prisma.signal.findMany({ where: { corpId }, orderBy: { firedAt: "desc" }, take: 5, select: { ruleName: true, score: true, firedAt: true, detail: true } });
       if (signals.length > 0) signalsByCorpName[cn.data.label] = signals.map(s => `${s.ruleName}(점수:${s.score.toFixed(0)}) ${s.firedAt.toISOString().slice(0,10)}`);
@@ -40,7 +41,8 @@ export async function POST(req: NextRequest) {
 
     const personNodes = graphData.nodes.filter(n => n.data.type === "person");
     const personTimelines: Record<string, string> = {};
-    for (const pn of personNodes.slice(0, 5)) {
+    const sortedPersonNodes = [...personNodes].sort((a, b) => (b.data.flags?.length ?? 0) - (a.data.flags?.length ?? 0));
+    for (const pn of sortedPersonNodes.slice(0, 15)) {
       const personId = pn.data.id.replace("person-", "");
       try {
         const timeline = await getPersonTimeline(personId);
@@ -70,7 +72,7 @@ export async function POST(req: NextRequest) {
     const userPrompt = `검색어: "${query}" (${depth}hop 관계망 분석)\n\n## 노드 현황\n- 연결 기업(${corpNodes.length}): ${nodesSummary.corps}\n- 연결 인물(${personNodes.length}): ${nodesSummary.persons}\n- 연결 법인/조합(${graphData.nodes.filter(n => n.data.type === "fund").length}): ${nodesSummary.funds}\n- 감사인(${graphData.nodes.filter(n => n.data.type === "auditor").length}): ${nodesSummary.auditors}\n\n## 관계망 엣지\n${edgesSummary}\n\n## 위험 시그널\n${signalStr}\n\n## 인물 이력 타임라인\n${timelineStr}`;
 
     const analysis = await callDeepSeek(userPrompt, systemPrompt);
-    await setCache(cacheKey, analysis);
+    await setCache(cacheKey, analysis, 30 * 60);
 
     return NextResponse.json({ analysis, cached: false, meta: { query, depth, nodeCount: graphData.stats?.totalNodes ?? 0, edgeCount: graphData.stats?.totalEdges ?? 0, signalCorpCount: Object.keys(signalsByCorpName).length } });
   } catch (err: any) {
