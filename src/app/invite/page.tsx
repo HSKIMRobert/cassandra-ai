@@ -12,6 +12,7 @@ function InviteForm() {
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [checking, setChecking] = useState(true);
@@ -30,18 +31,17 @@ function InviteForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (password !== password2) { setError("비밀번호가 일치하지 않습니다."); return; }
-        if (password.length < 6) { setError("비밀번호는 6자 이상이어야 합니다."); return; }
         if (!name.trim()) { setError("이름을 입력해주세요."); return; }
+        if (password.length < 6) { setError("비밀번호는 6자 이상이어야 합니다."); return; }
+        if (password !== password2) { setError("비밀번호가 일치하지 않습니다."); return; }
 
         setLoading(true); setError("");
 
         try {
-            // 1) 서버에서 Admin API로 유저 생성 + 이메일 인증 자동 완료
             const res = await fetch("/api/admin/invite", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, name: name.trim() }),
+                body: JSON.stringify({ email, password, name: name.trim(), phone: phone.trim() }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -50,11 +50,11 @@ function InviteForm() {
                 return;
             }
 
-            // 2) 즉시 로그인 (이메일 인증 완료 상태이므로 반드시 성공)
+            // 자동 로그인 시도
             const supabase = createSupabaseBrowser();
             const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
             if (signInError) {
-                // 자동 로그인 실패해도 계정은 생성됐으므로 로그인 페이지로 안내
+                // 계정은 생성됐으므로 로그인 페이지로 안내
                 router.push(`/login?email=${encodeURIComponent(email)}&hint=invite`);
                 return;
             }
@@ -84,25 +84,49 @@ function InviteForm() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-5 space-y-3">
+                    {/* 이메일 (고정) */}
                     <div>
                         <label className="text-[10px] text-[var(--text-muted)]">이메일</label>
                         <input type="email" value={email} disabled
                             className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm opacity-60" />
                     </div>
+
+                    {/* 이름 */}
                     <div>
                         <label className="text-[10px] text-[var(--text-muted)]">이름 *</label>
                         <input type="text" value={name} onChange={e => setName(e.target.value)} required
                             placeholder="실명" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
                     </div>
+
+                    {/* 연락처 */}
                     <div>
-                        <label className="text-[10px] text-[var(--text-muted)]">비밀번호 *</label>
+                        <label className="text-[10px] text-[var(--text-muted)]">연락처 (휴대폰)</label>
+                        <input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
+                            placeholder="010-0000-0000" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+                    </div>
+
+                    <div className="border-t border-[var(--border)] pt-1" />
+
+                    {/* 비밀번호 */}
+                    <div>
+                        <label className="text-[10px] text-[var(--text-muted)]">비밀번호 * (6자 이상)</label>
                         <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
                             placeholder="6자 이상" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
                     </div>
+
+                    {/* 비밀번호 확인 */}
                     <div>
                         <label className="text-[10px] text-[var(--text-muted)]">비밀번호 확인 *</label>
                         <input type="password" value={password2} onChange={e => setPassword2(e.target.value)} required
-                            placeholder="한번 더 입력" className="w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border border-[var(--border)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+                            placeholder="한번 더 입력"
+                            className={`w-full mt-1 px-3 py-2 rounded bg-[var(--bg)] border text-sm focus:outline-none ${
+                                password2 && password !== password2
+                                    ? "border-[#ef4444] focus:border-[#ef4444]"
+                                    : "border-[var(--border)] focus:border-[var(--accent)]"
+                            }`} />
+                        {password2 && password !== password2 && (
+                            <p className="text-[10px] text-[#ef4444] mt-0.5">비밀번호가 일치하지 않습니다.</p>
+                        )}
                     </div>
 
                     {error && (
@@ -111,7 +135,7 @@ function InviteForm() {
                         </div>
                     )}
 
-                    <button type="submit" disabled={loading}
+                    <button type="submit" disabled={loading || (!!password2 && password !== password2)}
                         className="w-full py-2.5 rounded-lg bg-[var(--accent)] text-white text-sm font-medium disabled:opacity-50">
                         {loading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "가입하기"}
                     </button>

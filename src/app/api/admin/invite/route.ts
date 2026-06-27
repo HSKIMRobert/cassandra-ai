@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
 
 // PATCH: 서버에서 Supabase Admin으로 유저 생성 + 이메일 인증 자동 완료
 export async function PATCH(req: NextRequest) {
-  const { email, password, name } = await req.json();
+  const { email, password, name, phone } = await req.json();
   if (!email || !password) return NextResponse.json({ error: "이메일/비밀번호 필요" }, { status: 400 });
 
   // SUPABASE_SERVICE_ROLE_KEY 사전 체크
@@ -128,14 +128,14 @@ export async function PATCH(req: NextRequest) {
   // 초대 완료 처리
   await prisma.expertInvite.update({
     where: { email },
-    data: { acceptedAt: new Date(), name: name || null },
+    data: { acceptedAt: new Date(), name: name || null, phone: phone || null },
   });
 
   // AppUser 기록
   await prisma.appUser.upsert({
     where: { email },
-    update: { tier: "expert", name: name || email.split("@")[0] },
-    create: { email, passwordHash: "", name: name || email.split("@")[0], role: "user", tier: "expert" },
+    update: { tier: "expert", name: name || email.split("@")[0], phone: phone || null },
+    create: { email, passwordHash: "", name: name || email.split("@")[0], phone: phone || null, role: "user", tier: "expert" },
   });
 
   return NextResponse.json({ ok: true });

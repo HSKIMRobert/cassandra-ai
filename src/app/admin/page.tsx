@@ -78,6 +78,17 @@ export default function AdminPage() {
                 </div>
             </div>
 
+            {/* Expert 관리 */}
+            <NextLink href="/admin/experts" className="block rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-[#22c55e] transition-colors p-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-bold flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#22c55e]" /> Expert 관리
+                    </h2>
+                    <span className="text-xs text-[var(--text-muted)]">→ /admin/experts</span>
+                </div>
+                <p className="text-[10px] text-[var(--text-muted)] mt-1">초대된 Expert 목록 · 가입 현황 · 초대자 추적</p>
+            </NextLink>
+
             {/* 동명이인 검토 */}
             <NextLink href="/admin/samename" className="block rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-[#f59e0b] transition-colors p-4">
                 <div className="flex items-center justify-between">
