@@ -20,8 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install && npx prisma generate
 
-      - name: Run daily sync (DART 공시)
-        run: npx tsx scripts/daily-sync.ts
+      - name: Run daily sync (DB Corp 기준 DART 공시)
+        run: npx tsx scripts/daily-sync.ts --limit 300
         env:
           DATABASE_URL: ${{ vars.DATABASE_URL }}
           DART_API_KEY: ${{ vars.DART_API_KEY }}
@@ -33,7 +33,7 @@ jobs:
           DART_API_KEY: ${{ vars.DART_API_KEY }}
           TOSS_CLIENT_ID: ${{ vars.TOSS_CLIENT_ID }}
           TOSS_CLIENT_SECRET: ${{ vars.TOSS_CLIENT_SECRET }}
-        continue-on-error: true   # Toss 실패해도 DART sync는 유지
+        continue-on-error: true
 
       - name: Backfill filings (코스닥 5000억 이하 → DART 공시 연결)
         run: npx tsx scripts/backfill-filings.ts --limit 200 --days 90 --cap-filter
@@ -47,6 +47,21 @@ jobs:
         env:
           DATABASE_URL: ${{ vars.DATABASE_URL }}
           DART_API_KEY: ${{ vars.DART_API_KEY }}
+        continue-on-error: true
+
+      - name: Backfill market cap (Toss 현재가 × DART 상장주식수)
+        run: npx tsx scripts/backfill-marketcap.ts --limit 300
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
+          DART_API_KEY: ${{ vars.DART_API_KEY }}
+          TOSS_CLIENT_ID: ${{ vars.TOSS_CLIENT_ID }}
+          TOSS_CLIENT_SECRET: ${{ vars.TOSS_CLIENT_SECRET }}
+        continue-on-error: true
+
+      - name: Merge same-name persons (동명이인 그룹 자동 감지)
+        run: npx tsx scripts/merge-samename.ts
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
         continue-on-error: true
 
       - name: Commit updated data

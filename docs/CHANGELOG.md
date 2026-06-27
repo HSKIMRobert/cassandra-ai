@@ -4,6 +4,27 @@
 
 ---
 
+## v0.9 — daily-sync DB 전환 + GHA 자동화 보강 (2026-06-27)
+
+### daily-sync DB 전환
+- `dart-corp-codes.json` 의존 완전 제거 → `prisma.corp.findMany()` 기준
+- `--limit 300` 인자 지원 (기존 하드코딩 200 → 확장 가능)
+- DB에 없던 기업은 더 이상 sync 대상에 포함되지 않음 (데이터 정합성 보장)
+
+### GHA `daily-sync.yml` 자동화 보강
+| 추가 스텝 | 실행 주기 | 목적 |
+|-----------|-----------|------|
+| `backfill-marketcap.ts` | 매일 | Toss 현재가 × DART 상장주식수 → Corp.marketCap (IP 우회) |
+| `merge-samename.ts` | 매일 | 동명이인 SameNameGroup 자동 감지 → `/admin/samename` UI 데이터 확보 |
+
+### Phase 5 — 동명이인 관리자 UI (`25e268a`)
+- `/admin/samename`: 그룹 목록 (미검토 필터, 판정 상태 뱃지)
+- `/admin/samename/[id]`: 인물 비교 카드 + 기준 Person 선택 + merge/split/pending 판정
+- 병합 로직: 관계 이전 + soft-delete + 캐시 무효화 (트랜잭션)
+- 인물 페이지: 동명이인 배너 → 미검토 시 관리자 검토 링크 포함
+
+---
+
 ## v0.8 — 리팩토링 + 파이프라인 복구 (2026-06-27)
 
 ### P0 핫픽스 (`82e4dec`)

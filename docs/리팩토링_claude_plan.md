@@ -186,6 +186,11 @@ const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
 ✅ PHASE 5 — UI 확장 (완료 — 2026-06-27)
    동명이인 관리자 UI (/admin/samename)
    WIKI 동명이인 배너
+        │
+        ▼
+✅ PHASE 6 — daily-sync DB 전환 + GHA 자동화 보강 (완료 — 2026-06-27)
+   daily-sync.ts: dart-corp-codes.json 의존 제거 → DB Corp 기준 (--limit 300)
+   GHA daily-sync.yml: backfill-marketcap + merge-samename 일일 자동 실행 추가
 ```
 
 ---
@@ -210,3 +215,8 @@ const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
 - ✅ API: `GET/POST /api/admin/samename`, `GET/POST /api/admin/samename/[id]`
 - ✅ 관리자 UI: `/admin/samename` 목록 + `/admin/samename/[id]` 비교·판정
 - ✅ 인물 페이지 동명이인 배너 (미검토 시 관리자 검토 링크 포함)
+
+**Phase 6 완료 (2026-06-27):**
+- ✅ `daily-sync.ts` DB Corp 기준 전환 (`dart-corp-codes.json` 의존 제거, `--limit 300`)
+- ✅ GHA `daily-sync.yml`: `backfill-marketcap` 일일 자동 실행 추가 (Toss IP 우회)
+- ✅ GHA `daily-sync.yml`: `merge-samename` 일일 자동 실행 추가 (동명이인 그룹 자동 감지)
