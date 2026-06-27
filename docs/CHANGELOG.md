@@ -1,6 +1,16 @@
 # CASSANDRA AI — 작업 히스토리
 
-> 최종 업데이트: 2026-06-27 (v1.1)
+> 최종 업데이트: 2026-06-27 (v1.2)
+
+---
+
+## v1.2 — 보안 감사 후속 수정 (`ebef59a`)
+
+| # | 심각도 | 이슈 | 조치 |
+|---|--------|------|------|
+| S1 | CRITICAL | `/api/admin/invite` GET `?list=1` — 미인증 초대 목록 노출 | `requireAdmin()` 추가 |
+| S2 | CRITICAL | `/api/auth/export-register` GET — URL 파라미터 `?admin=email` 우회 | `requireAdmin()` 서버 세션으로 교체 |
+| S3 | HIGH | `/api/admin/samename/[id]` POST — `adminEmail` body 파라미터가 `resolvedBy` 감사 로그에 저장 | 서버 Supabase 세션에서 추출, body 파라미터 무시 |
 
 ---
 
