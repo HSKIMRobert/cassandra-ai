@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const PAGE_SIZE = 20;
 
 export async function GET(req: NextRequest) {
+  const deny = await requireAdmin();
+  if (deny) return deny;
+
   const { searchParams } = req.nextUrl;
   const page = parseInt(searchParams.get("page") ?? "1", 10);
   const unresolved = searchParams.get("unresolved") === "1";

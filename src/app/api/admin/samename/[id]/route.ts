@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCache, setCache } from "@/lib/redis-cache";
+import { requireAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/samename/[id] — 상세 (각 Person의 회사 관계 포함)
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const deny = await requireAdmin();
+  if (deny) return deny;
+
   const { id } = await params;
 
   const group = await prisma.sameNameGroup.findUnique({ where: { id } });
@@ -38,6 +42,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 // POST /api/admin/samename/[id] — merge / split / pending 액션
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const deny = await requireAdmin();
+  if (deny) return deny;
+
   const { id } = await params;
   const body = await req.json();
   const { action, primaryPersonId, adminEmail } = body as {
