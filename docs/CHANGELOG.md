@@ -1,6 +1,28 @@
 # CASSANDRA AI — 작업 히스토리
 
-> 최종 업데이트: 2026-06-27 (v1.0)
+> 최종 업데이트: 2026-06-27 (v1.1)
+
+---
+
+## v1.1 — 보안 감사 + 코드 리뷰 대응 (2026-06-27)
+
+### 보안 핫픽스 (`11becd0`)
+| # | 심각도 | 이슈 | 조치 |
+|---|--------|------|------|
+| C1 | CRITICAL | `/api/admin/debug` — `SUPABASE_SERVICE_ROLE_KEY` 노출 | **라우트 삭제** |
+| C2 | CRITICAL | `/api/admin/users` — 인증 없이 유저 이메일 노출 | `requireAdmin()` 추가 |
+| C3 | CRITICAL | `/api/admin/stats` — 인증 없이 통계 노출 | `requireAdmin()` 추가 |
+| H1 | HIGH | `adminEmail` 파라미터 우회 (5개 API) | `requireAdmin()` 서버 세션 검증으로 교체 |
+| H2 | HIGH | `.env` 파일 런타임 직접 읽기 | `process.env.DART_API_KEY` 사용 |
+| H3 | HIGH | `/api/wiki` POST 인증 없음 | Supabase 세션 인증 추가 |
+
+### 코드 리뷰 검증
+- BFS N+1 → `Promise.all` 병렬 처리 ✅
+- `CorpAuditRelation` 정식 모델 사용 ✅
+- `CACHE_TTL` 30분, `*2` 제거 ✅
+- DeepSeek URL `/v1/` prefix ✅
+- `daily-sync.ts` DB Corp 기반 전환 ✅
+- SQL Injection / XSS 클린 ✅
 
 ---
 
