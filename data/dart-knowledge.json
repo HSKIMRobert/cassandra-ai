@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-27T09:48:06.255Z",
+  "generatedAt": "2026-06-28T01:16:04.672Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,14 +11,54 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 6,
-    "totalSignals": 21,
+    "highRiskCount": 11,
+    "totalSignals": 62,
     "topRisks": [
       {
-        "name": "엠투엔",
-        "score": 40,
+        "name": "체시스",
+        "score": 60,
         "signals": [
           "대주주변경"
+        ]
+      },
+      {
+        "name": "에이팩트",
+        "score": 50,
+        "signals": [
+          "대주주변경",
+          "CB발행"
+        ]
+      },
+      {
+        "name": "비투엔",
+        "score": 50,
+        "signals": [
+          "대주주변경",
+          "CB발행"
+        ]
+      },
+      {
+        "name": "케이피엠테크",
+        "score": 45,
+        "signals": [
+          "증자/감자",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "KS인더스트리",
+        "score": 45,
+        "signals": [
+          "증자/감자",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "오리엔트바이오",
+        "score": 45,
+        "signals": [
+          "증자/감자",
+          "상장폐지위험"
         ]
       },
       {
@@ -29,32 +69,24 @@
         ]
       },
       {
-        "name": "파이온엑스",
+        "name": "아스타",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "대창단조",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "토비스",
         "score": 35,
         "signals": [
           "상장폐지위험"
-        ]
-      },
-      {
-        "name": "소프트센",
-        "score": 35,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "제이에스링크",
-        "score": 30,
-        "signals": [
-          "CB발행"
-        ]
-      },
-      {
-        "name": "알엔티엑스",
-        "score": 30,
-        "signals": [
-          "대주주변경",
-          "증자/감자"
         ]
       }
     ]
