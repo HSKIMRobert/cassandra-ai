@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-29T01:16:08.895Z",
+  "generatedAt": "2026-06-29T10:42:22.111Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 12,
-    "totalSignals": 62,
+    "highRiskCount": 15,
+    "totalSignals": 69,
     "topRisks": [
       {
         "name": "체시스",
@@ -69,21 +69,21 @@
         ]
       },
       {
+        "name": "삼천리",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "신테카바이오",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
         "name": "아스타",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "대창단조",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "신성이엔지",
         "score": 40,
         "signals": [
           "대주주변경"
