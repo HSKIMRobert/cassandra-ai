@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T10:05:57.683Z",
+  "generatedAt": "2026-06-29T01:16:08.895Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,7 +11,7 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 11,
+    "highRiskCount": 12,
     "totalSignals": 62,
     "topRisks": [
       {
@@ -83,10 +83,10 @@
         ]
       },
       {
-        "name": "토비스",
-        "score": 35,
+        "name": "신성이엔지",
+        "score": 40,
         "signals": [
-          "상장폐지위험"
+          "대주주변경"
         ]
       }
     ]
