@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T01:17:00.584Z",
+  "generatedAt": "2026-07-01T10:27:13.031Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 16,
-    "totalSignals": 73,
+    "highRiskCount": 17,
+    "totalSignals": 76,
     "topRisks": [
       {
         "name": "프리티",
@@ -60,6 +60,13 @@
         ]
       },
       {
+        "name": "삼성중공업",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
         "name": "삼천리",
         "score": 40,
         "signals": [
@@ -75,13 +82,6 @@
       },
       {
         "name": "대원전선",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "미원상사",
         "score": 40,
         "signals": [
           "대주주변경"
