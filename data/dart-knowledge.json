@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T10:18:36.239Z",
+  "generatedAt": "2026-07-01T01:17:00.584Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 18,
-    "totalSignals": 78,
+    "highRiskCount": 16,
+    "totalSignals": 73,
     "topRisks": [
       {
         "name": "프리티",
@@ -38,14 +38,6 @@
         ]
       },
       {
-        "name": "케이피엠테크",
-        "score": 45,
-        "signals": [
-          "증자/감자",
-          "상장폐지위험"
-        ]
-      },
-      {
         "name": "KS인더스트리",
         "score": 45,
         "signals": [
@@ -54,18 +46,17 @@
         ]
       },
       {
-        "name": "오리엔트바이오",
-        "score": 45,
+        "name": "SG글로벌",
+        "score": 40,
         "signals": [
-          "증자/감자",
-          "상장폐지위험"
+          "대주주변경"
         ]
       },
       {
-        "name": "동성제약",
+        "name": "SG세계물산",
         "score": 40,
         "signals": [
-          "횡령/배임"
+          "대주주변경"
         ]
       },
       {
@@ -84,6 +75,13 @@
       },
       {
         "name": "대원전선",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "미원상사",
         "score": 40,
         "signals": [
           "대주주변경"
