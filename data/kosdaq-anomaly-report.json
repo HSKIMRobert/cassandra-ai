@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T08:13:59.324Z",
+  "generatedAt": "2026-07-26T10:50:40.255Z",
   "totalStocks": 257,
   "hypothesis": "회사명 변경 + 사업목적 추가 + 소송/경영권 분쟁 → 주가 변동성 증가",
   "filters": {
@@ -7,37 +7,14 @@
     "maxMarketCap": "5,000억원"
   },
   "summary": {
-    "volatilityScoreGt0": 25,
-    "nameChanges": 2,
-    "majorHolderChanges": 7,
+    "volatilityScoreGt0": 0,
+    "nameChanges": 0,
+    "majorHolderChanges": 0,
     "purposeAdditions": 0,
-    "lawsuits": 2,
-    "cbIssuances": 15
+    "lawsuits": 0,
+    "cbIssuances": 0
   },
   "stocks": [
-    {
-      "rank": 18,
-      "name": "멤레이비티",
-      "code": "072770",
-      "price": "933",
-      "change": "+60 (+6.87%)",
-      "changePercent": 6.87,
-      "volume": "401,252",
-      "volumeRaw": 401252,
-      "marketCap": "387억",
-      "marketCapRaw": 387,
-      "flags": {
-        "hasNameChange": true,
-        "nameChangeDetail": "상호변경안내              ",
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "최대주주변경              ",
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 12,
-        "volatilityScore": 70
-      }
-    },
     {
       "rank": 1,
       "name": "신테카바이오",
@@ -51,102 +28,12 @@
       "marketCapRaw": 445,
       "flags": {
         "hasNameChange": false,
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "최대주주변경을수반하는주식담보제공계약해제ㆍ취소등              ",
+        "hasMajorHolderChange": false,
         "hasPurposeAddition": false,
         "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 9,
-        "volatilityScore": 45
-      }
-    },
-    {
-      "rank": 6,
-      "name": "에이비온",
-      "code": "203400",
-      "price": "805",
-      "change": "+87 (+12.12%)",
-      "changePercent": 12.12,
-      "volume": "1,241,153",
-      "volumeRaw": 1241153,
-      "marketCap": "725억",
-      "marketCapRaw": 725,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "최대주주변경을수반하는주식담보제공계약해제ㆍ취소등              ",
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 3,
-        "volatilityScore": 45
-      }
-    },
-    {
-      "rank": 8,
-      "name": "삼영엠텍",
-      "code": "054540",
-      "price": "7,260",
-      "change": "+720 (+11.01%)",
-      "changePercent": 11.01,
-      "volume": "4,014,505",
-      "volumeRaw": 4014505,
-      "marketCap": "944억",
-      "marketCapRaw": 944,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "[기재정정]최대주주변경을수반하는주식담보제공계약체결              ",
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 4,
-        "volatilityScore": 45
-      }
-    },
-    {
-      "rank": 17,
-      "name": "NHN벅스",
-      "code": "104200",
-      "price": "2,615",
-      "change": "-5 (-0.19%)",
-      "changePercent": -0.19,
-      "volume": "27,851",
-      "volumeRaw": 27851,
-      "marketCap": "388억",
-      "marketCapRaw": 388,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "최대주주변경을수반하는주식양수도계약체결              ",
-        "hasPurposeAddition": false,
-        "hasLawsuit": true,
-        "lawsuitDetail": "소송등의제기ㆍ신청(경영권분쟁소송)              (직무집행정지 등 가처분)",
         "hasCB": false,
         "cbCount": 0,
-        "volatilityScore": 45
-      }
-    },
-    {
-      "rank": 9,
-      "name": "빛과전자",
-      "code": "069540",
-      "price": "2,145",
-      "change": "-325 (-13.16%)",
-      "changePercent": -13.16,
-      "volume": "4,946,476",
-      "volumeRaw": 4946476,
-      "marketCap": "2417억",
-      "marketCapRaw": 2417,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "최대주주변경              ",
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 17,
-        "volatilityScore": 45
+        "volatilityScore": 0
       }
     },
     {
@@ -165,390 +52,9 @@
         "hasMajorHolderChange": false,
         "hasPurposeAddition": false,
         "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 2,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 17,
-      "name": "에이텀",
-      "code": "355690",
-      "price": "4,180",
-      "change": "+270 (+6.91%)",
-      "changePercent": 6.91,
-      "volume": "112,372",
-      "volumeRaw": 112372,
-      "marketCap": "393억",
-      "marketCapRaw": 393,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 6,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 1,
-      "name": "DH오토리드",
-      "code": "290120",
-      "price": "2,405",
-      "change": "+15 (+0.63%)",
-      "changePercent": 0.63,
-      "volume": "7,494",
-      "volumeRaw": 7494,
-      "marketCap": "381억",
-      "marketCapRaw": 381,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 6,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 5,
-      "name": "파수AI",
-      "code": "150900",
-      "price": "3,275",
-      "change": "-35 (-1.06%)",
-      "changePercent": -1.06,
-      "volume": "24,309",
-      "volumeRaw": 24309,
-      "marketCap": "383억",
-      "marketCapRaw": 383,
-      "flags": {
-        "hasNameChange": true,
-        "nameChangeDetail": "상호변경안내              ",
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
         "hasCB": false,
         "cbCount": 0,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 2,
-      "name": "JW신약",
-      "code": "067290",
-      "price": "1,914",
-      "change": "-68 (-3.43%)",
-      "changePercent": -3.43,
-      "volume": "18,592,164",
-      "volumeRaw": 18592164,
-      "marketCap": "1073억",
-      "marketCapRaw": 1073,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 2,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 10,
-      "name": "해성옵틱스",
-      "code": "076610",
-      "price": "1,157",
-      "change": "-122 (-9.54%)",
-      "changePercent": -9.54,
-      "volume": "4,288,417",
-      "volumeRaw": 4288417,
-      "marketCap": "685억",
-      "marketCapRaw": 685,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 2,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 19,
-      "name": "에코플라스틱",
-      "code": "038110",
-      "price": "2,015",
-      "change": "-5 (-0.25%)",
-      "changePercent": -0.25,
-      "volume": "2,821,358",
-      "volumeRaw": 2821358,
-      "marketCap": "830억",
-      "marketCapRaw": 830,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": true,
-        "lawsuitDetail": "소송등의판결ㆍ결정(일정금액이상의청구)              ",
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 25
-      }
-    },
-    {
-      "rank": 13,
-      "name": "디에스케이",
-      "code": "109740",
-      "price": "5,080",
-      "change": "+400 (+8.55%)",
-      "changePercent": 8.55,
-      "volume": "44,413",
-      "volumeRaw": 44413,
-      "marketCap": "1306억",
-      "marketCapRaw": 1306,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": true,
-        "holderChangeDetail": "최대주주변경을수반하는주식양수도계약체결              ",
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 20
-      }
-    },
-    {
-      "rank": 15,
-      "name": "HLB생명과학",
-      "code": "067630",
-      "price": "2,205",
-      "change": "+160 (+7.82%)",
-      "changePercent": 7.82,
-      "volume": "2,146,244",
-      "volumeRaw": 2146244,
-      "marketCap": "2688억",
-      "marketCapRaw": 2688,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 9,
-        "volatilityScore": 15
-      }
-    },
-    {
-      "rank": 6,
-      "name": "엔투텍",
-      "code": "227950",
-      "price": "1,114",
-      "change": "-22 (-1.94%)",
-      "changePercent": -1.94,
-      "volume": "33,173",
-      "volumeRaw": 33173,
-      "marketCap": "384억",
-      "marketCapRaw": 384,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 1,
-        "volatilityScore": 15
-      }
-    },
-    {
-      "rank": 10,
-      "name": "레이저옵텍",
-      "code": "199550",
-      "price": "2,610",
-      "change": "-30 (-1.14%)",
-      "changePercent": -1.14,
-      "volume": "8,070",
-      "volumeRaw": 8070,
-      "marketCap": "387억",
-      "marketCapRaw": 387,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 1,
-        "volatilityScore": 15
-      }
-    },
-    {
-      "rank": 16,
-      "name": "PS일렉트로닉스",
-      "code": "332570",
-      "price": "7,070",
-      "change": "-130 (-1.81%)",
-      "changePercent": -1.81,
-      "volume": "3,305,321",
-      "volumeRaw": 3305321,
-      "marketCap": "3303억",
-      "marketCapRaw": 3303,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 6,
-        "volatilityScore": 15
-      }
-    },
-    {
-      "rank": 7,
-      "name": "HLB제약",
-      "code": "047920",
-      "price": "9,020",
-      "change": "+950 (+11.77%)",
-      "changePercent": 11.77,
-      "volume": "1,823,216",
-      "volumeRaw": 1823216,
-      "marketCap": "2959억",
-      "marketCapRaw": 2959,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 10
-      }
-    },
-    {
-      "rank": 9,
-      "name": "세종텔레콤",
-      "code": "036630",
-      "price": "7,060",
-      "change": "+580 (+8.95%)",
-      "changePercent": 8.95,
-      "volume": "41,600",
-      "volumeRaw": 41600,
-      "marketCap": "706억",
-      "marketCapRaw": 706,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 10
-      }
-    },
-    {
-      "rank": 10,
-      "name": "GRT",
-      "code": "900290",
-      "price": "2,580",
-      "change": "+210 (+8.86%)",
-      "changePercent": 8.86,
-      "volume": "2,430,350",
-      "volumeRaw": 2430350,
-      "marketCap": "2110억",
-      "marketCapRaw": 2110,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 10
-      }
-    },
-    {
-      "rank": 14,
-      "name": "옴니시스템",
-      "code": "057540",
-      "price": "880",
-      "change": "+68 (+8.37%)",
-      "changePercent": 8.37,
-      "volume": "1,486,972",
-      "volumeRaw": 1486972,
-      "marketCap": "523억",
-      "marketCapRaw": 523,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 10
-      }
-    },
-    {
-      "rank": 8,
-      "name": "에쎈테크",
-      "code": "043340",
-      "price": "810",
-      "change": "-6 (-0.74%)",
-      "changePercent": -0.74,
-      "volume": "79,909",
-      "volumeRaw": 79909,
-      "marketCap": "385억",
-      "marketCapRaw": 385,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 10
-      }
-    },
-    {
-      "rank": 15,
-      "name": "폴라리스세원",
-      "code": "234100",
-      "price": "2,660",
-      "change": "-25 (-0.93%)",
-      "changePercent": -0.93,
-      "volume": "9,830",
-      "volumeRaw": 9830,
-      "marketCap": "388억",
-      "marketCapRaw": 388,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": false,
-        "cbCount": 0,
-        "volatilityScore": 10
-      }
-    },
-    {
-      "rank": 2,
-      "name": "이글벳",
-      "code": "044960",
-      "price": "3,025",
-      "change": "+5 (+0.17%)",
-      "changePercent": 0.17,
-      "volume": "36,758",
-      "volumeRaw": 36758,
-      "marketCap": "382억",
-      "marketCapRaw": 382,
-      "flags": {
-        "hasNameChange": false,
-        "hasMajorHolderChange": false,
-        "hasPurposeAddition": false,
-        "hasLawsuit": false,
-        "hasCB": true,
-        "cbCount": 1,
-        "volatilityScore": 5
+        "volatilityScore": 0
       }
     },
     {
@@ -615,6 +121,111 @@
       }
     },
     {
+      "rank": 6,
+      "name": "에이비온",
+      "code": "203400",
+      "price": "805",
+      "change": "+87 (+12.12%)",
+      "changePercent": 12.12,
+      "volume": "1,241,153",
+      "volumeRaw": 1241153,
+      "marketCap": "725억",
+      "marketCapRaw": 725,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 7,
+      "name": "HLB제약",
+      "code": "047920",
+      "price": "9,020",
+      "change": "+950 (+11.77%)",
+      "changePercent": 11.77,
+      "volume": "1,823,216",
+      "volumeRaw": 1823216,
+      "marketCap": "2959억",
+      "marketCapRaw": 2959,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 8,
+      "name": "삼영엠텍",
+      "code": "054540",
+      "price": "7,260",
+      "change": "+720 (+11.01%)",
+      "changePercent": 11.01,
+      "volume": "4,014,505",
+      "volumeRaw": 4014505,
+      "marketCap": "944억",
+      "marketCapRaw": 944,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 9,
+      "name": "세종텔레콤",
+      "code": "036630",
+      "price": "7,060",
+      "change": "+580 (+8.95%)",
+      "changePercent": 8.95,
+      "volume": "41,600",
+      "volumeRaw": 41600,
+      "marketCap": "706억",
+      "marketCapRaw": 706,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 10,
+      "name": "GRT",
+      "code": "900290",
+      "price": "2,580",
+      "change": "+210 (+8.86%)",
+      "changePercent": 8.86,
+      "volume": "2,430,350",
+      "volumeRaw": 2430350,
+      "marketCap": "2110억",
+      "marketCapRaw": 2110,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 11,
       "name": "아이크래프트",
       "code": "052460",
@@ -657,6 +268,69 @@
       }
     },
     {
+      "rank": 13,
+      "name": "디에스케이",
+      "code": "109740",
+      "price": "5,080",
+      "change": "+400 (+8.55%)",
+      "changePercent": 8.55,
+      "volume": "44,413",
+      "volumeRaw": 44413,
+      "marketCap": "1306억",
+      "marketCapRaw": 1306,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 14,
+      "name": "옴니시스템",
+      "code": "057540",
+      "price": "880",
+      "change": "+68 (+8.37%)",
+      "changePercent": 8.37,
+      "volume": "1,486,972",
+      "volumeRaw": 1486972,
+      "marketCap": "523억",
+      "marketCapRaw": 523,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 15,
+      "name": "HLB생명과학",
+      "code": "067630",
+      "price": "2,205",
+      "change": "+160 (+7.82%)",
+      "changePercent": 7.82,
+      "volume": "2,146,244",
+      "volumeRaw": 2146244,
+      "marketCap": "2688억",
+      "marketCapRaw": 2688,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 16,
       "name": "노타",
       "code": "486990",
@@ -667,6 +341,48 @@
       "volumeRaw": 489295,
       "marketCap": "4291억",
       "marketCapRaw": 4291,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 17,
+      "name": "에이텀",
+      "code": "355690",
+      "price": "4,180",
+      "change": "+270 (+6.91%)",
+      "changePercent": 6.91,
+      "volume": "112,372",
+      "volumeRaw": 112372,
+      "marketCap": "393억",
+      "marketCapRaw": 393,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 18,
+      "name": "멤레이비티",
+      "code": "072770",
+      "price": "933",
+      "change": "+60 (+6.87%)",
+      "changePercent": 6.87,
+      "volume": "401,252",
+      "volumeRaw": 401252,
+      "marketCap": "387억",
+      "marketCapRaw": 387,
       "flags": {
         "hasNameChange": false,
         "hasMajorHolderChange": false,
@@ -720,6 +436,48 @@
       }
     },
     {
+      "rank": 1,
+      "name": "DH오토리드",
+      "code": "290120",
+      "price": "2,405",
+      "change": "+15 (+0.63%)",
+      "changePercent": 0.63,
+      "volume": "7,494",
+      "volumeRaw": 7494,
+      "marketCap": "381억",
+      "marketCapRaw": 381,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 2,
+      "name": "이글벳",
+      "code": "044960",
+      "price": "3,025",
+      "change": "+5 (+0.17%)",
+      "changePercent": 0.17,
+      "volume": "36,758",
+      "volumeRaw": 36758,
+      "marketCap": "382억",
+      "marketCapRaw": 382,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 3,
       "name": "사이냅소프트",
       "code": "466410",
@@ -762,6 +520,48 @@
       }
     },
     {
+      "rank": 5,
+      "name": "파수AI",
+      "code": "150900",
+      "price": "3,275",
+      "change": "-35 (-1.06%)",
+      "changePercent": -1.06,
+      "volume": "24,309",
+      "volumeRaw": 24309,
+      "marketCap": "383억",
+      "marketCapRaw": 383,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 6,
+      "name": "엔투텍",
+      "code": "227950",
+      "price": "1,114",
+      "change": "-22 (-1.94%)",
+      "changePercent": -1.94,
+      "volume": "33,173",
+      "volumeRaw": 33173,
+      "marketCap": "384억",
+      "marketCapRaw": 384,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 7,
       "name": "케이디켐",
       "code": "221980",
@@ -783,6 +583,27 @@
       }
     },
     {
+      "rank": 8,
+      "name": "에쎈테크",
+      "code": "043340",
+      "price": "810",
+      "change": "-6 (-0.74%)",
+      "changePercent": -0.74,
+      "volume": "79,909",
+      "volumeRaw": 79909,
+      "marketCap": "385억",
+      "marketCapRaw": 385,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 9,
       "name": "서진오토모티브",
       "code": "122690",
@@ -793,6 +614,27 @@
       "volumeRaw": 19955,
       "marketCap": "386억",
       "marketCapRaw": 386,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 10,
+      "name": "레이저옵텍",
+      "code": "199550",
+      "price": "2,610",
+      "change": "-30 (-1.14%)",
+      "changePercent": -1.14,
+      "volume": "8,070",
+      "volumeRaw": 8070,
+      "marketCap": "387억",
+      "marketCapRaw": 387,
       "flags": {
         "hasNameChange": false,
         "hasMajorHolderChange": false,
@@ -867,6 +709,27 @@
       }
     },
     {
+      "rank": 15,
+      "name": "폴라리스세원",
+      "code": "234100",
+      "price": "2,660",
+      "change": "-25 (-0.93%)",
+      "changePercent": -0.93,
+      "volume": "9,830",
+      "volumeRaw": 9830,
+      "marketCap": "388억",
+      "marketCapRaw": 388,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 16,
       "name": "케일럼",
       "code": "258610",
@@ -875,6 +738,27 @@
       "changePercent": 0,
       "volume": "27,239",
       "volumeRaw": 27239,
+      "marketCap": "388억",
+      "marketCapRaw": 388,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 17,
+      "name": "NHN벅스",
+      "code": "104200",
+      "price": "2,615",
+      "change": "-5 (-0.19%)",
+      "changePercent": -0.19,
+      "volume": "27,851",
+      "volumeRaw": 27851,
       "marketCap": "388억",
       "marketCapRaw": 388,
       "flags": {
@@ -940,6 +824,27 @@
       "volumeRaw": 19361692,
       "marketCap": "1151억",
       "marketCapRaw": 1151,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 2,
+      "name": "JW신약",
+      "code": "067290",
+      "price": "1,914",
+      "change": "-68 (-3.43%)",
+      "changePercent": -3.43,
+      "volume": "18,592,164",
+      "volumeRaw": 18592164,
+      "marketCap": "1073억",
+      "marketCapRaw": 1073,
       "flags": {
         "hasNameChange": false,
         "hasMajorHolderChange": false,
@@ -1035,6 +940,48 @@
       }
     },
     {
+      "rank": 9,
+      "name": "빛과전자",
+      "code": "069540",
+      "price": "2,145",
+      "change": "-325 (-13.16%)",
+      "changePercent": -13.16,
+      "volume": "4,946,476",
+      "volumeRaw": 4946476,
+      "marketCap": "2417억",
+      "marketCapRaw": 2417,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 10,
+      "name": "해성옵틱스",
+      "code": "076610",
+      "price": "1,157",
+      "change": "-122 (-9.54%)",
+      "changePercent": -9.54,
+      "volume": "4,288,417",
+      "volumeRaw": 4288417,
+      "marketCap": "685억",
+      "marketCapRaw": 685,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 12,
       "name": "에스씨디",
       "code": "042110",
@@ -1119,6 +1066,27 @@
       }
     },
     {
+      "rank": 16,
+      "name": "PS일렉트로닉스",
+      "code": "332570",
+      "price": "7,070",
+      "change": "-130 (-1.81%)",
+      "changePercent": -1.81,
+      "volume": "3,305,321",
+      "volumeRaw": 3305321,
+      "marketCap": "3303억",
+      "marketCapRaw": 3303,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
       "rank": 17,
       "name": "마키나락스",
       "code": "477850",
@@ -1150,6 +1118,27 @@
       "volumeRaw": 2961792,
       "marketCap": "601억",
       "marketCapRaw": 601,
+      "flags": {
+        "hasNameChange": false,
+        "hasMajorHolderChange": false,
+        "hasPurposeAddition": false,
+        "hasLawsuit": false,
+        "hasCB": false,
+        "cbCount": 0,
+        "volatilityScore": 0
+      }
+    },
+    {
+      "rank": 19,
+      "name": "에코플라스틱",
+      "code": "038110",
+      "price": "2,015",
+      "change": "-5 (-0.25%)",
+      "changePercent": -0.25,
+      "volume": "2,821,358",
+      "volumeRaw": 2821358,
+      "marketCap": "830억",
+      "marketCapRaw": 830,
       "flags": {
         "hasNameChange": false,
         "hasMajorHolderChange": false,
