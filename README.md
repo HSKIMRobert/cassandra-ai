@@ -8,25 +8,51 @@
 >
 > 코스닥 1,822개 종목 DART 공시 실시간 분석 + 관계망 그래프 + 사주 기반 종목 궁합 + 페르소나 투자 AI
 >
-> **Toss Securities API**로 한국 주식 실시간 시세 수신
+> **Toss Securities API**로 한국 주식 실시간 시세 제공
 
-**배포**: [dart-monitor-pi.vercel.app](https://dart-monitor-pi.vercel.app)
-**English**: [README_EN.md](README_EN.md)
+**배포**: [dart-monitor-pi.vercel.app](https://dart-monitor-pi.vercel.app) → 목표 **[lab.vibequant.cc](https://lab.vibequant.cc)** ([VibeQuant.cc](https://vibequant.cc))  
+**English**: [README_EN.md](README_EN.md) · **이전 계획**: [docs/CLOUDFLARE_MIGRATION.md](docs/CLOUDFLARE_MIGRATION.md)
 
 ---
 
-## 핵심 아이디어
+## 리팩토링 간단 계획 (2026-07)
 
-**$0/월 인프라** — GitHub를 무료 JSON 스토리지 겸 CDN으로 활용.
-Vercel + Neon PostgreSQL + Upstash Redis + Supabase Auth + GitHub Actions 로 구성.
+> 현황: DART/KOSDAQ 산출물 한 달째 `[]`, 인명(`personUid`) 매칭 실패 → 관계망 비어 있음.  
+> 방향: **수집(배치) ≠ 서빙(Cloudflare)** 분리 후 **VibeQuant.cc**로 통합. $0/월 유지.
+
+| 단계 | 내용 |
+|------|------|
+| **A. 안정화** | KOSDAQ 파이프라인 복구 + 0건 CI fail · API 인증/레이트리밋 · `personUid` 단일화 |
+| **B. 인프라** | Vercel/Neon/Upstash → **CF Pages + Workers + D1/R2/KV**. Auth만 Supabase 유지 |
+| **C. 수집** | 고빈도 DART는 **유휴 아이맥 cron**(1순위) / GHA·OCI는 백업. Workers는 읽기만 |
+| **D. 제품 이전 순서** | **Quant → Trump → SpaceX → 사주** → (데이터 복구 후) **관계망·코스닥** |
+| **E. 통합** | `lab.vibequant.cc` + `api.vibequant.cc/cassandra/*` |
+
+상세 로드맵·무료 티어 예산·성공 기준: **[docs/CLOUDFLARE_MIGRATION.md](docs/CLOUDFLARE_MIGRATION.md)**
 
 ```
-인프라 비용: $0/월
-├── Vercel Hobby          → 웹 호스팅 + API ($0)
-├── Neon Free             → PostgreSQL 0.5GB ($0)
-├── Upstash Redis Free    → 캐시 256MB ($0)
-├── Supabase Auth Free    → 50,000 MAU ($0)
-└── GitHub Actions        → 크롤러/스크래퍼 (공개 레포 무제한)
+목표 ($0/월)
+├── Cloudflare Pages     → UI (lab.vibequant.cc)
+├── Workers + KV/D1/R2   → API · 캐시 · 스냅샷
+├── Supabase Auth        → 로그인만 (당분간)
+├── Idle iMac / GHA      → DART·인명·관계 배치 ingest
+└── (폐기) Vercel · Neon · Upstash 서빙 역할
+```
+
+---
+
+## 핵심 아이디어 (현행 → 이전 중)
+
+**현행 $0/월** — Vercel + Neon + Upstash + Supabase + GHA.  
+**목표** — Cloudflare 단일 서빙 + 배치 ingest (아이맥). GitHub `data/*.json`은 R2로 이전.
+
+```
+인프라 비용: $0/월 (현행)
+├── Vercel Hobby          → 웹 호스팅 + API ($0)  ⚠ CF Pages로 이전
+├── Neon Free             → PostgreSQL 0.5GB ($0) ⚠ D1/R2로 이전
+├── Upstash Redis Free    → 캐시 256MB ($0)       ⚠ KV로 이전
+├── Supabase Auth Free    → 50,000 MAU ($0)       ✓ Auth만 유지
+└── GitHub Actions        → 크롤러                  → iMac 주력 + GHA 백업
 ```
 
 ---
@@ -50,7 +76,7 @@ Vercel + Neon PostgreSQL + Upstash Redis + Supabase Auth + GitHub Actions 로 �
 ## 주요 기능
 
 ### 코스닥 시그널
-- **Toss Securities API**로 한국 주식 실시간 시세 수신
+- **Toss Securities API**로 한국 주식 실시간 시세 제공
 - DART 12개월 실공시 데이터 (사명변경 7건, 대주주변경 48건, 소송 26건)
 - CB 발행/리픽싱 67건 (리픽싱 6건 고위험)
 - 8종 룰셋: CB발행, CB리픽싱, 사명변경, 대주주변경, 소송/분쟁, 증자/감자, 감사위험, 대금지연
@@ -121,14 +147,14 @@ npm run logs             # 로그인/방문자 통계
 | 계층 | 기술 |
 |------|------|
 | 프레임워크 | Next.js 15 + TypeScript |
-| DB | PostgreSQL (Neon Serverless) |
-| ORM | Prisma 6 |
-| 캐시 | Upstash Redis |
+| DB | PostgreSQL (Neon Serverless) → D1/R2 이전 예정 |
+| ORM | Prisma 6 → Drizzle 검토 |
+| 캐시 | Upstash Redis → Workers KV 이전 예정 |
 | 인증 | Supabase Auth (Google OAuth) |
 | UI | React 19 + Tailwind CSS 4 + Recharts + Cytoscape.js |
 | 실시간 시세 | Toss Securities API + Yahoo Finance |
 | 외부 API | DART OpenAPI, Naver Finance |
-| 배포 | Vercel ($0) + Neon ($0) + Supabase ($0) |
+| 배포 | Vercel → Cloudflare Pages/Workers (VibeQuant.cc) |
 
 ---
 
@@ -150,7 +176,9 @@ npm run logs             # 로그인/방문자 통계
 
 ## 문서
 
-- [ROADMAP.md](docs/ROADMAP.md) — 작업 로드맵 + 히스토리
+- [CLOUDFLARE_MIGRATION.md](docs/CLOUDFLARE_MIGRATION.md) — **CF 이전 · VibeQuant 통합 · 수집/서빙 분리**
+- [ROADMAP.md](docs/ROADMAP.md) — 작업 로드맵 + 히스토리 (P0 버그·품질)
+- [REFACTORING_PLAN.md](docs/REFACTORING_PLAN.md) — 관계망·인명 매칭 리팩토링
 - [SERVICE_FLOW.md](docs/SERVICE_FLOW.md) — 서비스 흐름도
 - [CHANGELOG.md](docs/CHANGELOG.md) — 변경 이력
 - [AUTH_SYSTEM.md](docs/AUTH_SYSTEM.md) — 인증 시스템 설계
@@ -158,7 +186,6 @@ npm run logs             # 로그인/방문자 통계
 - [REFRESH_POLICY.md](docs/REFRESH_POLICY.md) — 데이터 갱신 정책
 - [SOCIAL_POSTS.md](docs/SOCIAL_POSTS.md) — 소셜 미디어 포스팅
 - [dev_llms.txt](docs/dev_llms.txt) — LLM 개발 명세
-- [REFACTORING_PLAN.md](docs/REFACTORING_PLAN.md) — 관계망 리팩토링 계획
 
 ---
 

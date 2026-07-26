@@ -1,7 +1,24 @@
 # CASSANDRA AI — 작업 로드맵
 
-> 최종 갱신: 2026-07-26 · 기준 커밋 `51b7082` · 배포 [dart-monitor-pi.vercel.app](https://dart-monitor-pi.vercel.app)
-> 관련: [CHANGELOG.md](CHANGELOG.md) (완료 이력) · [REFACTORING_PLAN.md](REFACTORING_PLAN.md) · [리팩토링_평가0627.md](리팩토링_평가0627.md)
+> 최종 갱신: 2026-07-26 · 기준 커밋 `eb200ab` · 배포 [dart-monitor-pi.vercel.app](https://dart-monitor-pi.vercel.app)
+> 관련: [CLOUDFLARE_MIGRATION.md](CLOUDFLARE_MIGRATION.md) (**이전·통합 본문**) · [CHANGELOG.md](CHANGELOG.md) · [REFACTORING_PLAN.md](REFACTORING_PLAN.md)
+
+---
+
+## 이전·통합 한눈에 (우선)
+
+> 상세·무료 티어 예산·성공 기준 → **[CLOUDFLARE_MIGRATION.md](CLOUDFLARE_MIGRATION.md)**
+
+| 순서 | 작업 |
+|------|------|
+| A | DART/KOSDAQ 복구 + personUid + API 보안 (이전 전 필수) |
+| B | CF Pages/Workers/D1/R2/KV + `lab.vibequant.cc` |
+| C | 수집 = **유휴 아이맥**(주력) / GHA·OCI 백업 — Workers는 서빙만 |
+| D | 제품 컷오버: **Quant → Trump → SpaceX → 사주 → 관계망** |
+| E | Neon/Upstash/Vercel 서빙 역할 폐기 |
+
+관계망(M5)은 DeepSeek V4 Pro / Claude와 원인 분석 후 진행 ([CLOUDFLARE_MIGRATION §7](CLOUDFLARE_MIGRATION.md)).  
+아래 §1~§4는 **당장 깨진 것·품질** 체크리스트. Cloudflare 상세는 마이그레이션 문서로 이관.
 
 ---
 
@@ -153,52 +170,14 @@ README의 "사주 질문 제한 비로그인 3회 / 로그인 5회"는 클라이
 - [ ] `scripts/backtest-riskflags.ts` 정기 실행 → 룰셋별 TP율을 [QUANT_BACKTEST.md](QUANT_BACKTEST.md)에 반영
 - [ ] TP율 낮은 룰 임계값 조정 또는 제거 (현재 8종 룰셋을 사실상 동일 신뢰도로 취급)
 
-### 3-4. Cloudflare 무료 티어 이전 (인프라 마이그레이션)
+### 3-4. Cloudflare · VibeQuant 통합 (상세 이관)
 
-> 기존 $0/월 인프라(Vercel + Neon + Upstash + Supabase)를 Cloudflare 생태계로 통합.
-> 목표: 싱글 벤더 의존성 감소 + 무료 티어 한도 상향 (Workers 10M/월, D1 5GB, KV 1GB, R2 10GB).
-
-#### 이전 대상 매트릭스
-
-| 현행 | 대체 (Cloudflare) | 주요 변경점 |
-|------|------------------|-------------|
-| Vercel Hobby | **Cloudflare Pages** (정적) + **Workers** (API) | `@opennextjs/cloudflare` 어댑터 또는 API만 Workers 마이그레이션 |
-| Neon PostgreSQL | **D1** | Prisma → Drizzle ORM, PostgreSQL SQL → SQLite 호환 SQL 전환 |
-| Upstash Redis (256MB) | **Workers KV** (1GB) | `redis-cache.ts` → KV API (`PUT`/`GET` with `expirationTtl`) |
-| Supabase Auth (50K MAU) | **Supabase 유지** 또는 **Cloudflare Access** | Supabase 측 세션 쿠키 → Workers 환경 `Request.cf` 기반 검증 |
-| GitHub Actions (크롤러) | **Workers Cron Triggers** | `daily-sync.yml` 워크플로우 → Workers ScheduledEvent (`cron: "0 0,9 * * *"`) |
-| GitHub JSON CDN | **R2** (10GB) | `data/*.json` 정적 파일 → R2 버킷 (CDN 캐시 기본 제공) |
-| Vercel Functions (API 41개) | **Workers** | API 라우트 41개 → Workers `fetch` 핸들러 (`itty-router` 또는 `Hono`) |
-
-#### migration 단계
-
-- [ ] **Phase 1 — 평가·PoC** (1~2일)
-  - Next.js Pages 정적 export 호환성 확인 (`next.config.js` → `output: "export"`? `@opennextjs/cloudflare`?)
-  - Prisma → Drizzle 전환 PoC: `schema.prisma` → `drizzle/schema.ts`, D1 어댑터 연결 테스트
-  - Redis → KV 마이그레이션: `redis-cache.ts` 래퍼를 KV API로 재구현 (인메모리 폴백도 동일하게 유지)
-  - Supabase 세션 → Workers에서 검증 가능 여부 확인 (`supabase-js`의 `createServerClient`가 Workers 호환인지)
-- [ ] **Phase 2 — API 이전** (3~5일)
-  - `src/app/api/` 41개 라우트 → Workers fetch 핸들러 (`itty-router` 기반)
-  - D1 데이터 마이그레이션: Neon PostgreSQL dump → D1 import
-  - KV 캐시 키 재매핑 (현행 `redis-cache.ts`의 키 패턴 유지)
-  - GHA `daily-sync.yml` → Workers Cron (`src/cron/daily.ts`)
-- [ ] **Phase 3 — 프론트엔드 + SSG** (2~3일)
-  - `/quant`, `/persona`, `/saju`, `/trump`, `/spacex` → 정적 페이지 (데이터는 클라이언트 측 fetch → Workers API)
-  - `/dashboard`, `/`, `/board`, `/wiki`, `/admin` → 인증필요 CSR 페이지
-  - Vercel DNS → Cloudflare DNS 전환
-- [ ] **Phase 4 — 정리·폐기** (1일)
-  - Neon DB · Upstash Redis 계정 다운그레이드 (데이터 보존 기간 설정)
-  - Vercel 프로젝트 유지 (롤백 대비, 도메인만 이전)
-
-#### 리스크
-
-| 리스크 | 영향 | 대응 |
-|--------|------|------|
-| Next.js App Router → Workers 제약 | ISR·미들웨어·Server Actions 미지원 가능 | API만 Workers로, 정적/CSR은 Pages로 분리 |
-| Prisma → Drizzle 스키마 불일치 | 24개 테이블 관계·인덱스 누락 | `prisma db pull` → Drizzle 자동 생성 도구 사용 |
-| KV consistency model (eventual) | 캐시 캐싱 용도 → 무관, 단 aggressive 업데이트 시 stale | KV 대신 D1으로 캐시 필요 케이스 분리 (e.g., `pageview`) |
-| Supabase SSR → Workers 환경 | `@supabase/ssr`의 쿠키 기반 세션이 Workers에서 작동 안 할 가능성 | Supabase REST API 직접 호출로 폴백, JWT 검증만 Workers에서 수행 |
-| Vercel 10s → Workers 30s CPU 제한 | `daily-sync`, `backfill-*` 등 장기 실행 스크립트 제한 | Workers Cron으로 분할 실행, Queues 활용한 청크 처리 |
+> **본문:** [CLOUDFLARE_MIGRATION.md](CLOUDFLARE_MIGRATION.md)
+>
+> 요약: 서빙 = CF Pages/Workers/D1/R2/KV · 수집 = 유휴 아이맥(+GHA 백업) · Auth = Supabase 유지.  
+> 제품 컷오버: **Quant → Trump → SpaceX → 사주 → 관계망**. 호스트: `lab.vibequant.cc`.
+>
+> Workers Cron으로 대량 DART를 돌리지 말 것 (무료 CPU 10ms). 고빈도는 iMac/OCI ingest.
 
 ---
 
@@ -236,18 +215,16 @@ README의 "사주 질문 제한 비로그인 3회 / 로그인 5회"는 클라이
 ## 5. 권장 처리 순서
 
 | 순서 | 작업 | 근거 |
-|---|---|---|---|
-| 1 | §1-1 KOSDAQ 파이프라인 복구 | 서비스 핵심 기능이 한 달째 빈 데이터 |
-| 2 | §1-2 API 인증 게이트 | Expert 전용 데이터가 실제로 공개 노출 중 |
-| 3 | §1-3 레이트리밋 | LLM/DART 키 비용 무방비 |
-| 4 | §1-4 DeepSeek URL 1줄 + 클라이언트 통합 | 즉시 가능 |
-| 5 | §2-1 CI (tsc + build) | 이후 모든 변경의 안전망 |
-| 6 | §2-2 순수 로직 테스트 | "작성 = 동작" 착각 방지 ([리팩토링_평가0627.md](리팩토링_평가0627.md) §5) |
-| 7 | §3-2 관계망 데이터 커버리지 검증 | Fund 노드·엣지 실제 적재 확인, §1-1 복구 후 우선 |
-| 8 | §3-2 공시 본문(XBRL) 파싱 | 2,630건 공시의 인물·법인 엣지 누락 해소 |
-| 9 | §3-1 semiconductor-trio 커밋 또는 삭제 | 미결 상태 해소 |
-| 10 | §4-1 API 응답 지연 (dashboard 7.2s) | 사용자 경험 직접 영향 |
-| — | §3-4 Cloudflare 마이그레이션 PoC | §1~§2 완료 후 본격 추진. Phase 1 평가 먼저 |
+|---|---|---|
+| 1 | KOSDAQ 파이프라인 복구 + 0건 CI fail | 한 달째 빈 데이터 |
+| 2 | personUid 단일화 + officers/crawl dry-run | 인명 매칭·관계망 전제 |
+| 3 | API 인증 · 레이트리밋 · DeepSeek 통합 | 보안·비용 |
+| 4 | iMac(또는 OCI) ingest PoC → R2 | 수집/서빙 분리 검증 |
+| 5 | CI + 최소 테스트 | 이전 안전망 |
+| 6 | **M1 Quant → M2 Trump → M3 SpaceX → M4 사주** CF 컷오버 | 시세·LLM 페이지 먼저 ([CLOUDFLARE_MIGRATION](CLOUDFLARE_MIGRATION.md)) |
+| 7 | **M5 관계망** — 구조화 API·백필·Fund 엣지 | 데이터 복구 후 ([REFACTORING_PLAN](REFACTORING_PLAN.md)) |
+| 8 | Neon/Upstash/Vercel 서빙 폐기 | SPOF·운용 단순화 |
+| 9 | semiconductor-trio 커밋/삭제 · API 지연 | 정리 |
 
 # 부록 — 완료 이력
 
