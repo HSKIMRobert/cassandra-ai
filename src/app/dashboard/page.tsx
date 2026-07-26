@@ -163,7 +163,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-xl font-bold">코스닥 주가 영향 검토 시그널</h1>
           <p className="text-[10px] text-[var(--text-muted)] mt-0.5 leading-relaxed">
-            Toss Securities API × DART OpenAPI × LLM — 투자 리스크 모니터링 툴
+            Naver Finance × DART OpenAPI × LLM — 투자 리스크 모니터링 툴
           </p>
           <p className="text-xs text-[var(--text-muted)] mt-0.5">
             시총 5,000억 미만 100종목 · DART 실공시 분석 · SPAC 제외
@@ -456,7 +456,7 @@ export default function DashboardPage() {
 
       <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
         <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-          <strong className="text-[var(--warning)]">※ 데이터 출처</strong> — Toss 증권 Open API (시세) + DART OpenAPI (공시)
+          <strong className="text-[var(--warning)]">※ 데이터 출처</strong> — Naver Finance API (시세) + DART OpenAPI (공시)
           · SPAC 제외 · 시총 5,000억 미만 · 변동성 점수 = 사명(25) + 대주주(20) + 소송(25) + CB(5~15) + 사업목적(15) + 증자/감자(10)
         </p>
         <div className="flex items-center gap-3 pt-1 border-t border-[var(--border)]">

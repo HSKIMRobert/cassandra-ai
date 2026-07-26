@@ -1,7 +1,9 @@
 /**
- * Corp 시가총액 백필 (Toss API 현재가 × DART 상장주식수)
+ * Corp 시가총액 백필 (Naver Finance 시총 × 종목코드 매칭)
  * 실행: npx tsx scripts/backfill-marketcap.ts [--limit 200]
  *
+ * 2026-07: Toss Open API IP 화이트리스트 정책으로 GHA/로컬 동적 IP에서
+ * OAuth 실패 → Naver Finance marketValue API로 롤백.
  * 완료 후 backfill-relations/backfill-filings에서 --cap-filter 5000억 이하 필터 사용 가능
  */
 
@@ -14,101 +16,78 @@ const args = process.argv.slice(2);
 const limitArg = args.indexOf("--limit");
 const LIMIT = limitArg !== -1 ? parseInt(args[limitArg + 1], 10) : 300;
 
-const TOSS_BASE = "https://openapi.tossinvest.com";
-let _token: { token: string; expiry: number } | null = null;
+const UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15";
 
-async function getTossToken(): Promise<string | null> {
-  const id = process.env.TOSS_CLIENT_ID;
-  const secret = process.env.TOSS_CLIENT_SECRET;
-  if (!id || !secret) return null;
-  if (_token && Date.now() < _token.expiry) return _token.token;
-  const res = await fetch(`${TOSS_BASE}/oauth2/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ grant_type: "client_credentials", client_id: id, client_secret: secret }),
-  }).catch(() => null);
-  if (!res?.ok) return null;
-  const d = await res.json();
-  _token = { token: d.access_token, expiry: Date.now() + (d.expires_in - 3600) * 1000 };
-  return _token.token;
-}
-
-// Toss API 배치 현재가
-async function batchPrices(symbols: string[], token: string): Promise<Record<string, number>> {
-  const url = new URL(`${TOSS_BASE}/api/v1/prices`);
-  url.searchParams.set("symbols", symbols.join(","));
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${token}` },
-    signal: AbortSignal.timeout(10000),
-  }).catch(() => null);
-  if (!res?.ok) return {};
-  const data = await res.json();
+/** Naver marketValue 단위: 억원 → Corp.marketCap(원) = 억원 * 1e8 */
+async function fetchNaverMarketCaps(
+  market: "KOSDAQ" | "KOSPI",
+  maxPages = 40
+): Promise<Record<string, number>> {
   const map: Record<string, number> = {};
-  for (const item of (data.result ?? [])) map[item.symbol] = parseFloat(item.lastPrice) || 0;
+  for (let page = 1; page <= maxPages; page++) {
+    const url =
+      `https://m.stock.naver.com/api/stocks/marketValue/${market}` +
+      `?page=${page}&pageSize=50&sortType=marketValue`;
+    const res = await fetch(url, {
+      headers: { "User-Agent": UA, Accept: "application/json" },
+      signal: AbortSignal.timeout(12000),
+    }).catch(() => null);
+    if (!res?.ok) break;
+    const data = await res.json().catch(() => null);
+    const stocks = data?.stocks ?? [];
+    if (!stocks.length) break;
+    for (const s of stocks) {
+      const code = String(s.itemCode || "").trim();
+      const raw = Number(String(s.marketValue ?? "").replace(/,/g, ""));
+      if (!code || !raw) continue;
+      // Naver mobile API: marketValue ≈ 억원
+      map[code] = Math.round(raw * 1e8);
+    }
+    await sleep(120);
+  }
   return map;
 }
 
-// DART 상장주식수
-async function fetchListedShares(corpCode: string): Promise<number | null> {
-  const key = process.env.DART_API_KEY;
-  if (!key) return null;
-  const url = `https://opendart.fss.or.kr/api/stockTotqySttus.json?crtfc_key=${key}&corp_code=${corpCode}&bsns_year=${new Date().getFullYear() - 1}&reprt_code=11011`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(8000) }).catch(() => null);
-  if (!res?.ok) return null;
-  const data = await res.json().catch(() => null);
-  if (data?.status !== "000" || !data.list?.length) return null;
-  // 보통주 합계
-  const ordinary = data.list.find((r: any) => r.se === "합계" || r.se === "보통주");
-  if (!ordinary) return null;
-  return parseInt(ordinary.istc_totqy?.replace(/,/g, "") || "0", 10) || null;
-}
-
 async function main() {
-  const token = await getTossToken();
-  if (!token) {
-    console.error("❌ TOSS_CLIENT_ID/TOSS_CLIENT_SECRET 필요");
+  console.log(`\n💰 시가총액 백필 — Naver Finance (최대 ${LIMIT}개)\n`);
+
+  const [kosdaq, kospi] = await Promise.all([
+    fetchNaverMarketCaps("KOSDAQ"),
+    fetchNaverMarketCaps("KOSPI"),
+  ]);
+  const priceMap = { ...kospi, ...kosdaq };
+  console.log(`Naver 시총 맵: KOSPI ${Object.keys(kospi).length} + KOSDAQ ${Object.keys(kosdaq).length}\n`);
+
+  if (Object.keys(priceMap).length === 0) {
+    console.error("❌ Naver marketValue 조회 실패 — 빈 맵");
     process.exit(1);
   }
 
-  console.log(`\n💰 시가총액 백필 (최대 ${LIMIT}개)\n`);
-
   const corps = await prisma.corp.findMany({
     where: { stockCode: { not: "" }, marketCap: null },
-    select: { id: true, stockCode: true, corpCode: true, companyName: true },
+    select: { id: true, stockCode: true, companyName: true },
     take: LIMIT,
   });
 
   console.log(`대상: ${corps.length}개 기업 (시총 미기입)\n`);
 
-  // Toss 현재가 배치 (50개씩)
-  const BATCH = 50;
-  const priceMap: Record<string, number> = {};
-  for (let i = 0; i < corps.length; i += BATCH) {
-    const batch = corps.slice(i, i + BATCH);
-    const symbols = batch.map(c => c.stockCode).filter(Boolean) as string[];
-    const prices = await batchPrices(symbols, token);
-    Object.assign(priceMap, prices);
-    await sleep(300);
-  }
-
-  let updated = 0, skipped = 0;
+  let updated = 0;
+  let skipped = 0;
 
   for (let i = 0; i < corps.length; i++) {
     const corp = corps[i];
-    const price = priceMap[corp.stockCode || ""] || 0;
-    if (!price) { skipped++; continue; }
+    const cap = priceMap[corp.stockCode || ""] || 0;
+    if (!cap) {
+      skipped++;
+      continue;
+    }
 
-    // 상장주식수 — DART API (느림, 필요 시만)
-    const shares = await fetchListedShares(corp.corpCode);
-    await sleep(200);
-
-    if (!shares || shares === 0) { skipped++; continue; }
-
-    const marketCap = BigInt(Math.round(price * shares));
-    await prisma.corp.update({ where: { id: corp.id }, data: { marketCap } });
+    await prisma.corp.update({
+      where: { id: corp.id },
+      data: { marketCap: BigInt(cap) },
+    });
     updated++;
-
-    const capB = Number(marketCap) / 1e8;
+    const capB = cap / 1e8;
     process.stdout.write(`[${i + 1}/${corps.length}] ${corp.companyName}: ${capB.toFixed(0)}억원\n`);
   }
 

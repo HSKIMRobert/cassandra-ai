@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "rank": 17,
+    "name": "NHN벅스",
+    "code": "104200",
+    "price": "2,615",
+    "change": "-5 (-0.19%)",
+    "changePercent": -0.19,
+    "volume": "27,851",
+    "volumeRaw": 27851,
+    "marketCap": "388억",
+    "marketCapRaw": 388,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": true,
+      "holderChangeDetail": "최대주주변경을수반하는주식양수도계약체결              ",
+      "hasPurposeAddition": false,
+      "hasLawsuit": true,
+      "lawsuitDetail": "소송등의제기ㆍ신청(경영권분쟁소송)              (직무집행정지 등 가처분)",
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 45
+    }
+  },
+  {
+    "rank": 19,
+    "name": "에코플라스틱",
+    "code": "038110",
+    "price": "2,015",
+    "change": "-5 (-0.25%)",
+    "changePercent": -0.25,
+    "volume": "2,821,358",
+    "volumeRaw": 2821358,
+    "marketCap": "830억",
+    "marketCapRaw": 830,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": true,
+      "lawsuitDetail": "소송등의판결ㆍ결정(일정금액이상의청구)              ",
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 25
+    }
+  }
+]

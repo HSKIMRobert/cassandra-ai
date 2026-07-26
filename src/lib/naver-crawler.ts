@@ -51,74 +51,95 @@ function computeStats(stocks: StockItem[]) {
 
 const UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15";
 
-async function fetchStocks(
-  sortType: string,
-  pageSize: number
-): Promise<StockItem[]> {
-  const url = `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ?page=1&pageSize=${pageSize}&sortType=${sortType}&t=${Date.now()}`;
-  const res = await fetch(url, {
-    headers: { "User-Agent": UA, "Accept": "application/json" },
-  });
-  const data = await res.json();
-  const stocks: StockItem[] = [];
+type RawStock = StockItem & { volumeRaw: number; marketCapRaw: number };
 
-  for (let i = 0; i < (data.stocks || []).length; i++) {
-    const s = data.stocks[i];
-    const changeSign = s.compareToPreviousPrice?.code === "5" ? "-" :
-                       s.compareToPreviousPrice?.code === "2" ? "+" : "";
-    const changePercent = s.fluctuationsRatio ? parseFloat(s.fluctuationsRatio) : 0;
-    const changeAbs = s.compareToPreviousClosePrice || "";
+/** Naver marketValue API는 sortType을 무시하므로 풀을 받아 클라이언트 정렬 */
+async function fetchKosdaqPool(pages = 5): Promise<RawStock[]> {
+  const all: RawStock[] = [];
+  for (let page = 1; page <= pages; page++) {
+    const url =
+      `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ` +
+      `?page=${page}&pageSize=50&sortType=marketValue&t=${Date.now()}`;
+    const res = await fetch(url, {
+      headers: { "User-Agent": UA, Accept: "application/json" },
+      signal: AbortSignal.timeout(12000),
+    }).catch(() => null);
+    if (!res?.ok) break;
+    const data = await res.json().catch(() => null);
+    const stocks = data?.stocks || [];
+    if (!stocks.length) break;
 
-    stocks.push({
-      rank: i + 1,
-      name: s.stockName || "",
-      code: s.itemCode || "",
-      price: s.closePrice || "",
-      change: changeSign
-        ? `${changeSign}${changeAbs} (${changeSign}${Math.abs(changePercent)}%)`
-        : `${changeAbs} (${changePercent}%)`,
-      changePercent,
-      volume: s.accumulatedTradingVolume
-        ? Number(s.accumulatedTradingVolume).toLocaleString()
-        : "-",
-      marketCap: s.marketValue
-        ? (Number(s.marketValue) / 1e8).toFixed(0) + "억"
-        : "-",
-    });
+    for (const s of stocks) {
+      const changePercent = s.fluctuationsRatio ? parseFloat(s.fluctuationsRatio) : 0;
+      const changeAbs = s.compareToPreviousClosePrice || "";
+      const changeSign =
+        s.compareToPreviousPrice?.code === "5" ? "-" :
+        s.compareToPreviousPrice?.code === "2" ? "+" : "";
+      const volumeRaw = s.accumulatedTradingVolume
+        ? Number(String(s.accumulatedTradingVolume).replace(/,/g, ""))
+        : 0;
+      const marketCapRaw = s.marketValue
+        ? Number(String(s.marketValue).replace(/,/g, ""))
+        : 0;
+
+      all.push({
+        rank: 0,
+        name: s.stockName || "",
+        code: s.itemCode || "",
+        price: s.closePrice || "",
+        change: changeSign
+          ? `${changeSign}${changeAbs} (${changeSign}${Math.abs(changePercent)}%)`
+          : `${changeAbs} (${changePercent}%)`,
+        changePercent,
+        volume: volumeRaw ? volumeRaw.toLocaleString() : "-",
+        marketCap: marketCapRaw ? marketCapRaw.toFixed(0) + "억" : "-",
+        volumeRaw,
+        marketCapRaw,
+      });
+    }
   }
+  return all;
+}
 
-  return stocks;
+function sliceRanked(pool: RawStock[], mode: "cap" | "volume" | "gainers", n: number): StockItem[] {
+  const sorted = [...pool];
+  if (mode === "volume") sorted.sort((a, b) => b.volumeRaw - a.volumeRaw);
+  else if (mode === "gainers") sorted.sort((a, b) => b.changePercent - a.changePercent);
+  else sorted.sort((a, b) => b.marketCapRaw - a.marketCapRaw);
+
+  return sorted.slice(0, n).map((s, i) => {
+    const { volumeRaw: _v, marketCapRaw: _m, ...rest } = s;
+    return { ...rest, rank: i + 1 };
+  });
 }
 
 export async function scrapeNaverFinance(): Promise<MarketData[]> {
   const results: MarketData[] = [];
 
   try {
-    // 1. 시가총액 상위
-    const marketCapStocks = await fetchStocks("MARKET_VALUE", 20);
+    const pool = await fetchKosdaqPool(5);
+
+    const marketCapStocks = sliceRanked(pool, "cap", 20);
     results.push({
       category: "TOP_MARKET_CAP",
       stocks: marketCapStocks,
       stats: computeStats(marketCapStocks),
     });
 
-    // 2. 거래량 상위
-    const volumeStocks = await fetchStocks("ACCUMULATED_TRADING_VOLUME", 20);
+    const volumeStocks = sliceRanked(pool, "volume", 20);
     results.push({
       category: "TOP_VOLUME",
       stocks: volumeStocks,
       stats: computeStats(volumeStocks),
     });
 
-    // 3. 등락률 상위 (급등)
-    const gainerStocks = await fetchStocks("FLUCTUATION_RATE", 20);
+    const gainerStocks = sliceRanked(pool, "gainers", 20);
     results.push({
       category: "TOP_GAINERS",
       stocks: gainerStocks,
       stats: computeStats(gainerStocks),
     });
 
-    // 스냅샷 저장
     for (const d of results) {
       await prisma.marketSnapshot.create({
         data: JSON.parse(JSON.stringify({

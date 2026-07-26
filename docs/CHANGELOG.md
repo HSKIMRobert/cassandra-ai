@@ -1,6 +1,20 @@
 # CASSANDRA AI — 작업 히스토리
 
-> 최종 업데이트: 2026-07-04 (v1.3)
+> 최종 업데이트: 2026-07-26
+
+---
+
+## v1.5 — Toss → Naver Finance 롤백 (2026-07-26)
+
+Toss Open API가 **지정 IP만 허용**하도록 보안 정책이 강화되어 GHA·로컬 동적 IP에서 OAuth 토큰 발급이 실패했고, KOSDAQ 산출물이 한 달간 `[]`로 쌓였다.
+
+| 영역 | 변경 |
+|------|------|
+| `extract-kosdaq.ts` | Naver `marketValue/KOSDAQ` + SPAC/시총 5,000억 필터 복원 · `totalStocks=0` → exit 1 |
+| `naver-crawler.ts` / `quant-data` | Naver 시세 경로 복원 |
+| `backfill-marketcap.ts` | Naver 시총 맵 기반 백필 |
+| `daily-sync.yml` | TOSS env 제거 · KOSDAQ extract fail-fast |
+| 칼럼 | [vibe-investing TOSS/readme.md](https://github.com/gameworkerkim/vibe-investing/blob/main/02.Investment%20Idea%20Column/TOSS/readme.md) |
 
 ---
 

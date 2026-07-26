@@ -38,6 +38,7 @@ interface Stock {
   change: string;
   changePercent: number;
   volume?: string;
+  volumeRaw?: number;
   marketCap?: string;
   marketCapRaw?: number;
 }
@@ -60,34 +61,38 @@ interface StockReport extends Stock {
   flags: AnomalyFlags;
 }
 
-async function fetchKosdaqStocks(sortType: string, count: number, startPage = 1): Promise<Stock[]> {
+async function fetchKosdaqPool(maxPages = 25): Promise<Stock[]> {
+  // 2026-07: m.stock.naver.com 이 sortType을 무시하고 MARKET_VALUE만 반환 →
+  // 페이지를 넉넉히 받아 SPAC/시총 필터 후 클라이언트 정렬.
   const all: Stock[] = [];
   const pageSize = 50;
-  const pages = Math.ceil(count / pageSize) + startPage - 1;
 
-  for (let page = startPage; page <= pages; page++) {
-    const url = `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ?page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+  for (let page = 1; page <= maxPages; page++) {
+    const url = `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ?page=${page}&pageSize=${pageSize}&sortType=marketValue`;
     const res = await fetch(url, {
-      headers: { "User-Agent": UA, "Accept": "application/json" },
-    });
-    const data = await res.json();
+      headers: { "User-Agent": UA, Accept: "application/json" },
+      signal: AbortSignal.timeout(12000),
+    }).catch(() => null);
+    if (!res?.ok) break;
+    const data = await res.json().catch(() => null);
+    const stocks = data?.stocks || [];
+    if (!stocks.length) break;
 
-    for (let i = 0; i < (data.stocks || []).length; i++) {
-      const s = data.stocks[i];
+    for (const s of stocks) {
       const name = s.stockName || "";
-
-      // SPAC 필터
       if (SPAC_KEYWORDS.some((kw) => new RegExp(kw, "i").test(name))) continue;
 
       const marketCapRaw = s.marketValue ? Number(String(s.marketValue).replace(/,/g, "")) : 0;
-      // 시총 5000억 이상 제외 (한계기업 타겟팅)
-      if (marketCapRaw >= 5000) continue;
+      if (marketCapRaw >= 5000) continue; // 시총 5000억 이상 제외
 
       const changePercent = s.fluctuationsRatio ? parseFloat(s.fluctuationsRatio) : 0;
       const changeAbs = s.compareToPreviousClosePrice || "";
+      const volumeRaw = s.accumulatedTradingVolume
+        ? Number(String(s.accumulatedTradingVolume).replace(/,/g, ""))
+        : 0;
 
       all.push({
-        rank: all.length + 1,
+        rank: 0,
         name,
         code: s.itemCode || "",
         price: s.closePrice || "",
@@ -95,19 +100,28 @@ async function fetchKosdaqStocks(sortType: string, count: number, startPage = 1)
           ? `+${changeAbs} (+${changePercent}%)`
           : `${changeAbs} (${changePercent}%)`,
         changePercent,
-        volume: s.accumulatedTradingVolume
-          ? Number(s.accumulatedTradingVolume).toLocaleString()
-          : undefined,
-        marketCap: marketCapRaw ? (marketCapRaw).toFixed(0) + "억" : undefined,
+        volume: volumeRaw ? volumeRaw.toLocaleString() : undefined,
+        volumeRaw,
+        marketCap: marketCapRaw ? marketCapRaw.toFixed(0) + "억" : undefined,
         marketCapRaw,
       });
-
-      if (all.length >= count) break;
     }
-    if (all.length >= count) break;
+    await new Promise((r) => setTimeout(r, 80));
   }
 
   return all;
+}
+
+function rankSlice(pool: Stock[], sortType: string, count: number): Stock[] {
+  const sorted = [...pool];
+  if (sortType === "FLUCTUATION_RATE") {
+    sorted.sort((a, b) => b.changePercent - a.changePercent);
+  } else if (sortType === "ACCUMULATED_TRADING_VOLUME") {
+    sorted.sort((a, b) => (b.volumeRaw || 0) - (a.volumeRaw || 0));
+  } else {
+    sorted.sort((a, b) => (a.marketCapRaw || 0) - (b.marketCapRaw || 0));
+  }
+  return sorted.slice(0, count).map((s, i) => ({ ...s, rank: i + 1 }));
 }
 
 // DART corp_code 매핑 로드
@@ -256,13 +270,11 @@ async function main() {
 
   // 1. Naver에서 주식 데이터 추출
   console.log("1/4 Naver Finance API → 상승 종목 + 인기 종목 + 거래량 상위 추출...");
-  const [gainers, volumeRank] = await Promise.all([
-    fetchKosdaqStocks("FLUCTUATION_RATE", 100),
-    fetchKosdaqStocks("ACCUMULATED_TRADING_VOLUME", 100),
-  ]);
-
-  // 시총 하위권 100개 (30페이지부터 = 1500위권부터)
-  const marketCapRank = await fetchKosdaqStocks("MARKET_VALUE", 100, 30);
+  const pool = await fetchKosdaqPool(25);
+  console.log(`   필터 통과 풀: ${pool.length}개 (시총<5000억, SPAC 제외)`);
+  const gainers = rankSlice(pool, "FLUCTUATION_RATE", 100);
+  const volumeRank = rankSlice(pool, "ACCUMULATED_TRADING_VOLUME", 100);
+  const marketCapRank = rankSlice(pool, "MARKET_VALUE", 100);
 
   console.log(`   상승 종목: ${gainers.length}개`);
   console.log(`   시총 하위: ${marketCapRank.length}개`);
@@ -434,6 +446,15 @@ async function main() {
       if (flags.length > 0) console.log(`      → ${flags.join(", ")}`);
     });
   }
+
+  // 빈 산출물 조용한 커밋 방지 (Toss IP 화이트리스트 장애 재발 시 GHA fail)
+  if (reports.length === 0) {
+    console.error("\n❌ totalStocks=0 — Naver 시세 조회 실패 또는 필터 과다. exit 1");
+    process.exit(1);
+  }
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -4,11 +4,11 @@
 > **이 프로젝트는 [vibe-investing](https://github.com/gameworkerkim/vibe-investing) 모노레포의 일부입니다.**
 > 더 많은 퀀트 전략, 칼럼, 논문, 보안 도구(LAON VaultGuard), 투자 대시보드를 보려면 메인 레포를 방문하세요.
 
-> **Toss X DART X LLM 리스크 모니터링**
+> **Naver × DART × LLM 리스크 모니터링**
 >
 > 코스닥 1,822개 종목 DART 공시 실시간 분석 + 관계망 그래프 + 사주 기반 종목 궁합 + 페르소나 투자 AI
 >
-> **Toss Securities API**로 한국 주식 실시간 시세 제공
+> **Naver Finance API**로 한국 주식 시세 제공 (Toss Open API는 IP 화이트리스트 정책으로 배치 경로에서 롤백)
 
 **배포**: [dart-monitor-pi.vercel.app](https://dart-monitor-pi.vercel.app) → 목표 **[lab.vibequant.cc](https://lab.vibequant.cc)** ([VibeQuant.cc](https://vibequant.cc))  
 **English**: [README_EN.md](README_EN.md) · **이전 계획**: [docs/CLOUDFLARE_MIGRATION.md](docs/CLOUDFLARE_MIGRATION.md)
@@ -76,7 +76,7 @@
 ## 주요 기능
 
 ### 코스닥 시그널
-- **Toss Securities API**로 한국 주식 실시간 시세 제공
+- **Naver Finance API**로 한국 주식 시세 제공 (GHA·로컬 배치용)
 - DART 12개월 실공시 데이터 (사명변경 7건, 대주주변경 48건, 소송 26건)
 - CB 발행/리픽싱 67건 (리픽싱 6건 고위험)
 - 8종 룰셋: CB발행, CB리픽싱, 사명변경, 대주주변경, 소송/분쟁, 증자/감자, 감사위험, 대금지연
@@ -123,7 +123,7 @@
 | DB 시그널 | 141건 |
 | DB 관계 | 5,000+ CorpPersonRelation |
 | DART 매핑 | 3,920개 코스닥 |
-| 실시간 시세 | Toss Securities API |
+| 실시간 시세 | Naver Finance API |
 | 인기 ETF | NASDAQ 10종 |
 | 페르소나 종목 | NASDAQ/KOSPI 200 |
 
@@ -152,7 +152,7 @@ npm run logs             # 로그인/방문자 통계
 | 캐시 | Upstash Redis → Workers KV 이전 예정 |
 | 인증 | Supabase Auth (Google OAuth) |
 | UI | React 19 + Tailwind CSS 4 + Recharts + Cytoscape.js |
-| 실시간 시세 | Toss Securities API + Yahoo Finance |
+| 실시간 시세 | Naver Finance + Yahoo Finance |
 | 외부 API | DART OpenAPI, Naver Finance |
 | 배포 | Vercel → Cloudflare Pages/Workers (VibeQuant.cc) |
 
@@ -164,7 +164,6 @@ npm run logs             # 로그인/방문자 통계
 |------|------|
 | `DATABASE_URL` | Neon PostgreSQL |
 | `DART_API_KEY` | DART OpenAPI |
-| `TOSS_CLIENT_ID`, `TOSS_CLIENT_SECRET` | Toss Securities API |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase Auth |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Auth |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase 서버사이드 |
