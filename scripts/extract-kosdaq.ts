@@ -26,59 +26,9 @@ const DART_BASE = "https://opendart.fss.or.kr/api";
 
 import "dotenv/config";
 
+const UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15";
 const SPAC_KEYWORDS = ["스팩", "SPAC", "기업인수목적", "제\\d+호스팩", "제\\d+호기업인수목적"];
 const OUTPUT_DIR = "data";
-const TOSS_BASE = "https://openapi.tossinvest.com";
-
-// KOSDAQ 대표 종목 — Toss API 기반 (시총순)
-const KOSDAQ_UNIVERSE: { code: string; name: string }[] = [
-  { code: "005930", name: "삼성전자" }, { code: "000660", name: "SK하이닉스" },
-  { code: "035420", name: "NAVER" }, { code: "035720", name: "카카오" },
-  { code: "207940", name: "삼성바이오로직스" }, { code: "068270", name: "셀트리온" },
-  { code: "005380", name: "현대차" }, { code: "000270", name: "기아" },
-  { code: "051910", name: "LG화학" }, { code: "373220", name: "LG에너지솔루션" },
-  { code: "006400", name: "삼성SDI" }, { code: "012330", name: "현대모비스" },
-  { code: "042700", name: "한미반도체" }, { code: "247540", name: "에코프로비엠" },
-  { code: "036570", name: "엔씨소프트" }, { code: "086900", name: "메디톡스" },
-  { code: "112040", name: "위메이드" }, { code: "041510", name: "에스엠" },
-  { code: "064350", name: "현대로템" }, { code: "145020", name: "휴젤" },
-  { code: "095660", name: "네오위즈" }, { code: "263750", name: "펄어비스" },
-  { code: "259960", name: "크래프톤" }, { code: "357780", name: "솔브레인" },
-  { code: "017670", name: "SK텔레콤" }, { code: "032640", name: "LG유플러스" },
-  { code: "011200", name: "HMM" }, { code: "028260", name: "삼성물산" },
-  { code: "010120", name: "LS ELECTRIC" }, { code: "014680", name: "한솔케미칼" },
-  { code: "091990", name: "셀트리온헬스케어" }, { code: "323410", name: "카카오뱅크" },
-  { code: "377300", name: "카카오페이" }, { code: "009150", name: "삼성전기" },
-  { code: "096770", name: "SK이노베이션" }, { code: "011070", name: "LG이노텍" },
-  { code: "034730", name: "SK" }, { code: "000810", name: "삼성화재" },
-  { code: "316140", name: "우리금융지주" }, { code: "055550", name: "신한지주" },
-  { code: "086280", name: "현대글로비스" }, { code: "000100", name: "유한양행" },
-  { code: "090430", name: "아모레퍼시픽" }, { code: "139480", name: "이마트" },
-  { code: "035250", name: "강원랜드" }, { code: "021240", name: "코웨이" },
-  { code: "047050", name: "포스코인터내셔널" }, { code: "024110", name: "기업은행" },
-  { code: "138930", name: "BNK금융지주" }, { code: "030200", name: "KT" },
-];
-
-let _tossTokenCache: { token: string; expiry: number } | null = null;
-
-async function getTossToken(): Promise<string | null> {
-  const clientId = process.env.TOSS_CLIENT_ID;
-  const clientSecret = process.env.TOSS_CLIENT_SECRET;
-  if (!clientId || !clientSecret) { console.warn("   ⚠️ TOSS_CLIENT_ID/SECRET 미설정"); return null; }
-
-  if (_tossTokenCache && Date.now() < _tossTokenCache.expiry) return _tossTokenCache.token;
-
-  const res = await fetch(`${TOSS_BASE}/oauth2/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ grant_type: "client_credentials", client_id: clientId, client_secret: clientSecret }),
-  }).catch(() => null);
-
-  if (!res?.ok) { console.warn("   ⚠️ Toss 토큰 발급 실패"); return null; }
-  const d = await res.json();
-  _tossTokenCache = { token: d.access_token, expiry: Date.now() + (d.expires_in - 3600) * 1000 };
-  return _tossTokenCache.token;
-}
 
 interface Stock {
   rank: number;
@@ -110,86 +60,54 @@ interface StockReport extends Stock {
   flags: AnomalyFlags;
 }
 
-// Toss API 배치 현재가
-async function tossBatchPrices(symbols: string[], token: string): Promise<Record<string, number>> {
-  const url = new URL(`${TOSS_BASE}/api/v1/prices`);
-  url.searchParams.set("symbols", symbols.join(","));
+async function fetchKosdaqStocks(sortType: string, count: number, startPage = 1): Promise<Stock[]> {
+  const all: Stock[] = [];
+  const pageSize = 50;
+  const pages = Math.ceil(count / pageSize) + startPage - 1;
 
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${token}` },
-    signal: AbortSignal.timeout(12000),
-  }).catch(() => null);
+  for (let page = startPage; page <= pages; page++) {
+    const url = `https://m.stock.naver.com/api/stocks/marketValue/KOSDAQ?page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+    const res = await fetch(url, {
+      headers: { "User-Agent": UA, "Accept": "application/json" },
+    });
+    const data = await res.json();
 
-  if (!res?.ok) return {};
-  const data = await res.json();
-  const map: Record<string, number> = {};
-  for (const item of (data.result ?? [])) map[item.symbol] = parseFloat(item.lastPrice) || 0;
-  return map;
-}
+    for (let i = 0; i < (data.stocks || []).length; i++) {
+      const s = data.stocks[i];
+      const name = s.stockName || "";
 
-// Toss API 전일 종가 (2일 캔들)
-async function tossPrevClose(symbol: string, token: string): Promise<number> {
-  const url = new URL(`${TOSS_BASE}/api/v1/candles`);
-  url.searchParams.set("symbol", symbol);
-  url.searchParams.set("interval", "1d");
-  url.searchParams.set("count", "2");
+      // SPAC 필터
+      if (SPAC_KEYWORDS.some((kw) => new RegExp(kw, "i").test(name))) continue;
 
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${token}` },
-    signal: AbortSignal.timeout(6000),
-  }).catch(() => null);
+      const marketCapRaw = s.marketValue ? Number(String(s.marketValue).replace(/,/g, "")) : 0;
+      // 시총 5000억 이상 제외 (한계기업 타겟팅)
+      if (marketCapRaw >= 5000) continue;
 
-  if (!res?.ok) return 0;
-  const d = await res.json();
-  const candles = d.result?.candles ?? [];
-  return candles.length >= 2 ? parseFloat(candles[1].closePrice) || 0 : 0;
-}
+      const changePercent = s.fluctuationsRatio ? parseFloat(s.fluctuationsRatio) : 0;
+      const changeAbs = s.compareToPreviousClosePrice || "";
 
-// Toss API 기반 KOSDAQ 종목 가격 조회 (Naver 대체)
-async function fetchKosdaqStocks(sortType: string, count: number): Promise<Stock[]> {
-  const token = await getTossToken();
-  if (!token) {
-    console.warn("   ⚠️ Toss 토큰 없음 — 빈 목록 반환");
-    return [];
+      all.push({
+        rank: all.length + 1,
+        name,
+        code: s.itemCode || "",
+        price: s.closePrice || "",
+        change: changePercent >= 0
+          ? `+${changeAbs} (+${changePercent}%)`
+          : `${changeAbs} (${changePercent}%)`,
+        changePercent,
+        volume: s.accumulatedTradingVolume
+          ? Number(s.accumulatedTradingVolume).toLocaleString()
+          : undefined,
+        marketCap: marketCapRaw ? (marketCapRaw).toFixed(0) + "억" : undefined,
+        marketCapRaw,
+      });
+
+      if (all.length >= count) break;
+    }
+    if (all.length >= count) break;
   }
 
-  const symbols = KOSDAQ_UNIVERSE.map(s => s.code);
-
-  // 현재가 배치 + 전일 종가 병렬
-  const [curPrices, ...prevPrices] = await Promise.all([
-    tossBatchPrices(symbols, token),
-    ...symbols.map(s => tossPrevClose(s, token)),
-  ]);
-
-  const stocks: Stock[] = KOSDAQ_UNIVERSE.map((s, i) => {
-    const cur = curPrices[s.code] ?? 0;
-    const prev = prevPrices[i] ?? 0;
-    if (!cur) return null;
-
-    const changePct = cur > 0 && prev > 0 ? parseFloat(((cur - prev) / prev * 100).toFixed(2)) : 0;
-    const changeAbs = cur > 0 && prev > 0 ? (cur - prev) : 0;
-
-    return {
-      rank: 0,
-      name: s.name,
-      code: s.code,
-      price: cur.toLocaleString(),
-      change: changePct >= 0
-        ? `+${changeAbs.toFixed(0)} (+${changePct}%)`
-        : `${changeAbs.toFixed(0)} (${changePct}%)`,
-      changePercent: changePct,
-    } as Stock;
-  }).filter((s): s is Stock => s !== null);
-
-  // 요청 sortType에 맞게 정렬
-  let sorted: Stock[];
-  if (sortType === "FLUCTUATION_RATE") {
-    sorted = [...stocks].sort((a, b) => b.changePercent - a.changePercent);
-  } else {
-    sorted = stocks; // MARKET_VALUE, VOLUME: 기본 순서 (universe 순)
-  }
-
-  return sorted.slice(0, count).map((s, i) => ({ ...s, rank: i + 1 }));
+  return all;
 }
 
 // DART corp_code 매핑 로드
@@ -336,14 +254,15 @@ function computeFlags(
 async function main() {
   console.log("📊 코스닥 예비 데이터 추출 시작...\n");
 
-  // 1. Toss 증권 Open API → 상승 종목 + 인기 종목 + 거래량 상위 추출
-  console.log("1/4 Toss 증권 Open API → 상승 종목 + 시장 데이터 추출...");
+  // 1. Naver에서 주식 데이터 추출
+  console.log("1/4 Naver Finance API → 상승 종목 + 인기 종목 + 거래량 상위 추출...");
   const [gainers, volumeRank] = await Promise.all([
     fetchKosdaqStocks("FLUCTUATION_RATE", 100),
     fetchKosdaqStocks("ACCUMULATED_TRADING_VOLUME", 100),
   ]);
 
-  const marketCapRank = await fetchKosdaqStocks("MARKET_VALUE", 100);
+  // 시총 하위권 100개 (30페이지부터 = 1500위권부터)
+  const marketCapRank = await fetchKosdaqStocks("MARKET_VALUE", 100, 30);
 
   console.log(`   상승 종목: ${gainers.length}개`);
   console.log(`   시총 하위: ${marketCapRank.length}개`);
