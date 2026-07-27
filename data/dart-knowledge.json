@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T03:44:39.056Z",
+  "generatedAt": "2026-07-27T12:27:03.024Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 5,
-    "totalSignals": 39,
+    "highRiskCount": 6,
+    "totalSignals": 44,
     "topRisks": [
       {
         "name": "엔피",
@@ -32,6 +32,13 @@
       },
       {
         "name": "오스코텍",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "화승인더스트리",
         "score": 40,
         "signals": [
           "대주주변경"
