@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-26T10:47:49.493Z",
+  "generatedAt": "2026-07-27T03:44:39.056Z",
   "period": {
-    "from": "20260719",
-    "to": "20260726"
+    "from": "20260720",
+    "to": "20260727"
   },
-  "totalCompanies": 63,
-  "totalDisclosures": 101,
+  "totalCompanies": 65,
+  "totalDisclosures": 104,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -1466,6 +1466,22 @@
       ]
     },
     {
+      "stockCode": "188040",
+      "corpCode": "01157846",
+      "name": "바이오포트",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260727",
+          "rceptNo": "20260727900116",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "005810",
       "corpCode": "00155531",
       "name": "풍산홀딩스",
@@ -1605,6 +1621,28 @@
           "date": "20260723",
           "rceptNo": "20260723800464",
           "title": "임시주주총회결과              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "006060",
+      "corpCode": "00166227",
+      "name": "화승인더스트리",
+      "totalDisclosures": 2,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260727",
+          "rceptNo": "20260727800184",
+          "title": "타인에대한채무보증결정              ",
+          "type": "I"
+        },
+        {
+          "date": "20260727",
+          "rceptNo": "20260727800182",
+          "title": "타인에대한채무보증결정              ",
           "type": "I"
         }
       ]
