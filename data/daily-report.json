@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-28T03:16:34.279Z",
+  "generatedAt": "2026-07-28T11:21:06.555Z",
   "period": {
     "from": "20260721",
     "to": "20260728"
   },
-  "totalCompanies": 69,
-  "totalDisclosures": 114,
+  "totalCompanies": 76,
+  "totalDisclosures": 133,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -59,6 +59,35 @@
     }
   ],
   "highRisk": [
+    {
+      "stockCode": "071200",
+      "corpCode": "00435969",
+      "name": "인피니트헬스케어",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "소송/분쟁",
+          "weight": 50,
+          "count": 2,
+          "latestDate": "2026-07-28"
+        }
+      ],
+      "riskScore": 50,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900839",
+          "title": "소송등의제기ㆍ신청(경영권분쟁소송)              (주주총회결의무효확인 등(항소))",
+          "type": "I"
+        },
+        {
+          "date": "20260727",
+          "rceptNo": "20260727900575",
+          "title": "소송등의판결ㆍ결정              (경영권 분쟁 소송)(주주총회결의무효확인 등)",
+          "type": "I"
+        }
+      ]
+    },
     {
       "stockCode": "291230",
       "corpCode": "01276901",
@@ -172,6 +201,35 @@
     }
   ],
   "companies": [
+    {
+      "stockCode": "071200",
+      "corpCode": "00435969",
+      "name": "인피니트헬스케어",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "소송/분쟁",
+          "weight": 50,
+          "count": 2,
+          "latestDate": "2026-07-28"
+        }
+      ],
+      "riskScore": 50,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900839",
+          "title": "소송등의제기ㆍ신청(경영권분쟁소송)              (주주총회결의무효확인 등(항소))",
+          "type": "I"
+        },
+        {
+          "date": "20260727",
+          "rceptNo": "20260727900575",
+          "title": "소송등의판결ㆍ결정              (경영권 분쟁 소송)(주주총회결의무효확인 등)",
+          "type": "I"
+        }
+      ]
+    },
     {
       "stockCode": "291230",
       "corpCode": "01276901",
@@ -337,29 +395,6 @@
           "date": "20260722",
           "rceptNo": "20260722800594",
           "title": "전환가액ㆍ신주인수권행사가액ㆍ교환가액의조정(안내공시)              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "071200",
-      "corpCode": "00435969",
-      "name": "인피니트헬스케어",
-      "totalDisclosures": 1,
-      "signals": [
-        {
-          "rule": "소송/분쟁",
-          "weight": 25,
-          "count": 1,
-          "latestDate": "2026-07-27"
-        }
-      ],
-      "riskScore": 25,
-      "recentDisclosures": [
-        {
-          "date": "20260727",
-          "rceptNo": "20260727900575",
-          "title": "소송등의판결ㆍ결정              (경영권 분쟁 소송)(주주총회결의무효확인 등)",
           "type": "I"
         }
       ]
@@ -631,6 +666,53 @@
       ]
     },
     {
+      "stockCode": "368970",
+      "corpCode": "01491607",
+      "name": "오에스피",
+      "totalDisclosures": 4,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "2026-07-24"
+        },
+        {
+          "rule": "증자/감자",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "2026-07-28"
+        }
+      ],
+      "riskScore": 20,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728000333",
+          "title": "주요사항보고서(유상증자결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260724",
+          "rceptNo": "20260724000568",
+          "title": "주요사항보고서(자기전환사채만기전취득결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900368",
+          "title": "대표이사변경              ",
+          "type": "I"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900378",
+          "title": "임시주주총회결과              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "018470",
       "corpCode": "00149239",
       "name": "조일알미늄",
@@ -875,29 +957,6 @@
       ]
     },
     {
-      "stockCode": "368970",
-      "corpCode": "01491607",
-      "name": "오에스피",
-      "totalDisclosures": 1,
-      "signals": [
-        {
-          "rule": "CB발행",
-          "weight": 10,
-          "count": 1,
-          "latestDate": "2026-07-24"
-        }
-      ],
-      "riskScore": 10,
-      "recentDisclosures": [
-        {
-          "date": "20260724",
-          "rceptNo": "20260724000568",
-          "title": "주요사항보고서(자기전환사채만기전취득결정)",
-          "type": "B"
-        }
-      ]
-    },
-    {
       "stockCode": "009730",
       "corpCode": "00116426",
       "name": "이렘",
@@ -1088,13 +1147,35 @@
       ]
     },
     {
-      "stockCode": "098460",
-      "corpCode": "00579999",
-      "name": "고영",
-      "totalDisclosures": 2,
+      "stockCode": "083450",
+      "corpCode": "00540863",
+      "name": "GST",
+      "totalDisclosures": 1,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728000369",
+          "title": "주요사항보고서(자기주식취득신탁계약체결결정)",
+          "type": "B"
+        }
+      ]
+    },
+    {
+      "stockCode": "098460",
+      "corpCode": "00579999",
+      "name": "고영",
+      "totalDisclosures": 3,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900559",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        },
         {
           "date": "20260721",
           "rceptNo": "20260721901040",
@@ -1286,13 +1367,35 @@
       ]
     },
     {
-      "stockCode": "066980",
-      "corpCode": "00389998",
-      "name": "한성크린텍",
+      "stockCode": "000230",
+      "corpCode": "00146083",
+      "name": "일동홀딩스",
       "totalDisclosures": 1,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800549",
+          "title": "결산실적공시예고(안내공시)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "066980",
+      "corpCode": "00389998",
+      "name": "한성크린텍",
+      "totalDisclosures": 2,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900705",
+          "title": "[기재정정]단일판매ㆍ공급계약체결(자율공시)              ",
+          "type": "I"
+        },
         {
           "date": "20260727",
           "rceptNo": "20260727900472",
@@ -1343,7 +1446,7 @@
       "stockCode": "005810",
       "corpCode": "00155531",
       "name": "풍산홀딩스",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
@@ -1352,6 +1455,28 @@
           "rceptNo": "20260723000655",
           "title": "주요사항보고서(자기주식취득결정)",
           "type": "B"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800731",
+          "title": "기업설명회(IR)개최(안내공시)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "012280",
+      "corpCode": "00141413",
+      "name": "영화금속",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800468",
+          "title": "영업(잠정)실적(공정공시)              ",
+          "type": "I"
         }
       ]
     },
@@ -1359,10 +1484,22 @@
       "stockCode": "272210",
       "corpCode": "00339391",
       "name": "한화시스템",
-      "totalDisclosures": 1,
+      "totalDisclosures": 3,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800501",
+          "title": "[기재정정]단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800345",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        },
         {
           "date": "20260728",
           "rceptNo": "20260728800316",
@@ -1383,6 +1520,50 @@
           "date": "20260724",
           "rceptNo": "20260724900644",
           "title": "결산실적공시예고              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "229000",
+      "corpCode": "01051472",
+      "name": "젠큐릭스",
+      "totalDisclosures": 3,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900818",
+          "title": "주주총회소집결의              (임시주주총회)",
+          "type": "I"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900749",
+          "title": "주주명부폐쇄기간또는기준일설정              ",
+          "type": "I"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728900697",
+          "title": "기타경영사항(자율공시)              (소규모합병 승인 이사회 결의(주주총회 갈음) 결과보고)",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "025750",
+      "corpCode": "00203582",
+      "name": "한솔홈데코",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800424",
+          "title": "임시주주총회결과              ",
           "type": "I"
         }
       ]
@@ -1753,6 +1934,44 @@
           "date": "20260724",
           "rceptNo": "20260724900328",
           "title": "결산실적공시예고              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "004970",
+      "corpCode": "00135962",
+      "name": "신라교역",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800486",
+          "title": "타인에대한채무보증결정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "069620",
+      "corpCode": "00427483",
+      "name": "대웅제약",
+      "totalDisclosures": 2,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800837",
+          "title": "주주총회소집결의              ",
+          "type": "I"
+        },
+        {
+          "date": "20260728",
+          "rceptNo": "20260728800813",
+          "title": "주주명부폐쇄기간또는기준일설정              ",
           "type": "I"
         }
       ]
