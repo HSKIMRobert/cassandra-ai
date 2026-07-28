@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T12:27:03.024Z",
+  "generatedAt": "2026-07-28T03:16:34.280Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,19 +11,11 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 6,
-    "totalSignals": 44,
+    "highRiskCount": 3,
+    "totalSignals": 33,
     "topRisks": [
       {
         "name": "엔피",
-        "score": 45,
-        "signals": [
-          "증자/감자",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "케스피온",
         "score": 45,
         "signals": [
           "증자/감자",
@@ -39,20 +31,6 @@
       },
       {
         "name": "화승인더스트리",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "조일알미늄",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "HD현대일렉트릭",
         "score": 40,
         "signals": [
           "대주주변경"
