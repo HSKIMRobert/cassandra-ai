@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "rank": 19,
+    "name": "앤로보틱스",
+    "code": "138360",
+    "price": "1,741",
+    "change": "-31 (-1.75%)",
+    "changePercent": -1.75,
+    "volume": "2,170,332",
+    "volumeRaw": 2170332,
+    "marketCap": "1576억",
+    "marketCapRaw": 1576,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": false,
+      "hasCB": true,
+      "cbCount": 2,
+      "volatilityScore": 15
+    }
+  }
+]
