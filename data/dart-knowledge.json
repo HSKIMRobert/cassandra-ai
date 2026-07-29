@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T03:20:53.656Z",
+  "generatedAt": "2026-07-29T11:29:27.720Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,7 +12,7 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 4,
-    "totalSignals": 29,
+    "totalSignals": 34,
     "topRisks": [
       {
         "name": "인피니트헬스케어",
