@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T11:29:27.720Z",
+  "generatedAt": "2026-07-30T02:53:31.456Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,21 +12,20 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 4,
-    "totalSignals": 34,
+    "totalSignals": 25,
     "topRisks": [
       {
-        "name": "인피니트헬스케어",
+        "name": "코아스",
         "score": 50,
         "signals": [
           "소송/분쟁"
         ]
       },
       {
-        "name": "엔피",
-        "score": 45,
+        "name": "인피니트헬스케어",
+        "score": 50,
         "signals": [
-          "증자/감자",
-          "상장폐지위험"
+          "소송/분쟁"
         ]
       },
       {
