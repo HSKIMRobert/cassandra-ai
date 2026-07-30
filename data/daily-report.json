@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-30T02:53:31.455Z",
+  "generatedAt": "2026-07-30T11:10:53.927Z",
   "period": {
     "from": "20260723",
     "to": "20260730"
   },
-  "totalCompanies": 70,
-  "totalDisclosures": 118,
+  "totalCompanies": 80,
+  "totalDisclosures": 135,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -480,6 +480,35 @@
       ]
     },
     {
+      "stockCode": "180060",
+      "corpCode": "00874937",
+      "name": "탑선",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "증자/감자",
+          "weight": 20,
+          "count": 2,
+          "latestDate": "2026-07-30"
+        }
+      ],
+      "riskScore": 20,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730000477",
+          "title": "[첨부정정]주요사항보고서(유상증자결정)",
+          "type": "B"
+        },
+        {
+          "date": "20260730",
+          "rceptNo": "20260730000414",
+          "title": "[기재정정]주요사항보고서(유상증자결정)",
+          "type": "B"
+        }
+      ]
+    },
+    {
       "stockCode": "308170",
       "corpCode": "00450010",
       "name": "씨티알모빌리티",
@@ -717,6 +746,35 @@
       ]
     },
     {
+      "stockCode": "317770",
+      "corpCode": "01231786",
+      "name": "엑스페릭스",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "CB발행",
+          "weight": 10,
+          "count": 1,
+          "latestDate": "2026-07-30"
+        }
+      ],
+      "riskScore": 10,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730900646",
+          "title": "[기재정정]타법인주식및출자증권처분결정              ",
+          "type": "I"
+        },
+        {
+          "date": "20260730",
+          "rceptNo": "20260730900639",
+          "title": "[기재정정]주권관련사채권의처분결정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "027040",
       "corpCode": "00130587",
       "name": "서울전자통신",
@@ -903,6 +961,34 @@
       ]
     },
     {
+      "stockCode": "001500",
+      "corpCode": "00137997",
+      "name": "현대차증권",
+      "totalDisclosures": 3,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800922",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        },
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800930",
+          "title": "공정거래자율준수프로그램운영현황(안내공시)              ",
+          "type": "I"
+        },
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800927",
+          "title": "단기차입금증가결정(자율공시)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "065350",
       "corpCode": "00136226",
       "name": "신성델타테크",
@@ -968,6 +1054,22 @@
           "date": "20260724",
           "rceptNo": "20260724900195",
           "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "144510",
+      "corpCode": "01010642",
+      "name": "지씨셀",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730900334",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
           "type": "I"
         }
       ]
@@ -1228,10 +1330,16 @@
       "stockCode": "000230",
       "corpCode": "00146083",
       "name": "일동홀딩스",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800474",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        },
         {
           "date": "20260728",
           "rceptNo": "20260728800549",
@@ -1318,6 +1426,22 @@
           "date": "20260728",
           "rceptNo": "20260728800731",
           "title": "기업설명회(IR)개최(안내공시)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "069330",
+      "corpCode": "00400121",
+      "name": "유아이디",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730900471",
+          "title": "주주총회소집결의              (임시주주총회)",
           "type": "I"
         }
       ]
@@ -1465,6 +1589,22 @@
       ]
     },
     {
+      "stockCode": "180640",
+      "corpCode": "00983040",
+      "name": "한진칼",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800658",
+          "title": "[기재정정]타법인주식및출자증권취득결정(자회사의 주요경영사항)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "476080",
       "corpCode": "01704680",
       "name": "M83",
@@ -1484,10 +1624,16 @@
       "stockCode": "487570",
       "corpCode": "01854763",
       "name": "HS효성",
-      "totalDisclosures": 1,
+      "totalDisclosures": 2,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800861",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        },
         {
           "date": "20260729",
           "rceptNo": "20260729800925",
@@ -1546,14 +1692,36 @@
       "stockCode": "357880",
       "corpCode": "01381984",
       "name": "SKAI",
+      "totalDisclosures": 2,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730900374",
+          "title": "증권발행결과(자율공시)              ",
+          "type": "I"
+        },
+        {
+          "date": "20260729",
+          "rceptNo": "20260729900756",
+          "title": "전환청구권행사              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "382150",
+      "corpCode": "01423916",
+      "name": "온코크로스",
       "totalDisclosures": 1,
       "signals": [],
       "riskScore": 0,
       "recentDisclosures": [
         {
-          "date": "20260729",
-          "rceptNo": "20260729900756",
-          "title": "전환청구권행사              ",
+          "date": "20260730",
+          "rceptNo": "20260730900670",
+          "title": "투자판단관련주요경영사항              (디지털 바이오뱅킹 구축을 위한 단백체 분석 용역 위탁계약 체결)",
           "type": "I"
         }
       ]
@@ -1570,6 +1738,22 @@
           "date": "20260723",
           "rceptNo": "20260723900301",
           "title": "단일판매ㆍ공급계약체결              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "400760",
+      "corpCode": "01480780",
+      "name": "NH올원리츠",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800608",
+          "title": "유형자산처분결정(종속회사의주요경영사항)              ",
           "type": "I"
         }
       ]
@@ -1706,6 +1890,38 @@
           "date": "20260723",
           "rceptNo": "20260723800464",
           "title": "임시주주총회결과              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "236200",
+      "corpCode": "01124653",
+      "name": "슈프리마",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730900786",
+          "title": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
+      "stockCode": "033270",
+      "corpCode": "00158963",
+      "name": "유나이티드",
+      "totalDisclosures": 1,
+      "signals": [],
+      "riskScore": 0,
+      "recentDisclosures": [
+        {
+          "date": "20260730",
+          "rceptNo": "20260730800883",
+          "title": "영업(잠정)실적(공정공시)              ",
           "type": "I"
         }
       ]

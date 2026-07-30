@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T02:53:31.456Z",
+  "generatedAt": "2026-07-30T11:10:53.928Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,7 +12,7 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 4,
-    "totalSignals": 25,
+    "totalSignals": 27,
     "topRisks": [
       {
         "name": "코아스",
