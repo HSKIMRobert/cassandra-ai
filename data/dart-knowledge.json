@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T03:36:25.811Z",
+  "generatedAt": "2026-07-31T11:32:44.900Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,17 +12,17 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 3,
-    "totalSignals": 24,
+    "totalSignals": 30,
     "topRisks": [
       {
-        "name": "인피니트헬스케어",
-        "score": 50,
+        "name": "씨티알모빌리티",
+        "score": 40,
         "signals": [
-          "소송/분쟁"
+          "대주주변경"
         ]
       },
       {
-        "name": "씨티알모빌리티",
+        "name": "두올",
         "score": 40,
         "signals": [
           "대주주변경"
