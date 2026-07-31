@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T11:10:53.928Z",
+  "generatedAt": "2026-07-31T03:36:25.811Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,16 +11,9 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 4,
-    "totalSignals": 27,
+    "highRiskCount": 3,
+    "totalSignals": 24,
     "topRisks": [
-      {
-        "name": "코아스",
-        "score": 50,
-        "signals": [
-          "소송/분쟁"
-        ]
-      },
       {
         "name": "인피니트헬스케어",
         "score": 50,
@@ -29,7 +22,7 @@
         ]
       },
       {
-        "name": "오스코텍",
+        "name": "씨티알모빌리티",
         "score": 40,
         "signals": [
           "대주주변경"
