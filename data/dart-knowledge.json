@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T11:32:44.900Z",
+  "generatedAt": "2026-08-01T03:35:28.300Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,16 +11,9 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 3,
-    "totalSignals": 30,
+    "highRiskCount": 2,
+    "totalSignals": 29,
     "topRisks": [
-      {
-        "name": "씨티알모빌리티",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
       {
         "name": "두올",
         "score": 40,
