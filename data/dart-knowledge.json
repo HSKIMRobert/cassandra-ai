@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T03:34:59.506Z",
+  "generatedAt": "2026-08-02T12:24:59.252Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,23 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 2,
-    "totalSignals": 29,
-    "topRisks": [
-      {
-        "name": "두올",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
-        "name": "화승인더스트리",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      }
-    ]
+    "highRiskCount": 0,
+    "totalSignals": 0,
+    "topRisks": []
   }
 }
