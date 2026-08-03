@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T03:37:11.225Z",
+  "generatedAt": "2026-08-03T12:26:39.960Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 2,
-    "totalSignals": 29,
+    "highRiskCount": 3,
+    "totalSignals": 32,
     "topRisks": [
       {
         "name": "두올",
@@ -26,6 +26,13 @@
         "score": 40,
         "signals": [
           "대주주변경"
+        ]
+      },
+      {
+        "name": "HLB제약",
+        "score": 30,
+        "signals": [
+          "증자/감자"
         ]
       }
     ]
