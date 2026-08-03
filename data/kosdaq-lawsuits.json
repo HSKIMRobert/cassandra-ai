@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "rank": 2,
+    "name": "하이즈항공",
+    "code": "221840",
+    "price": "2,030",
+    "change": "+210 (+11.54%)",
+    "changePercent": 11.54,
+    "volume": "26,112",
+    "volumeRaw": 26112,
+    "marketCap": "380억",
+    "marketCapRaw": 380,
+    "flags": {
+      "hasNameChange": false,
+      "hasMajorHolderChange": false,
+      "hasPurposeAddition": false,
+      "hasLawsuit": true,
+      "lawsuitDetail": "소송등의판결ㆍ결정              (회계장부 등 열람등사 신청)",
+      "hasCB": false,
+      "cbCount": 0,
+      "volatilityScore": 25
+    }
+  }
+]
