@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T03:15:50.552Z",
+  "generatedAt": "2026-08-05T13:06:14.957Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,23 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 2,
-    "totalSignals": 30,
-    "topRisks": [
-      {
-        "name": "성원에너텍",
-        "score": 30,
-        "signals": [
-          "증자/감자"
-        ]
-      },
-      {
-        "name": "HLB제약",
-        "score": 30,
-        "signals": [
-          "증자/감자"
-        ]
-      }
-    ]
+    "highRiskCount": 0,
+    "totalSignals": 0,
+    "topRisks": []
   }
 }
