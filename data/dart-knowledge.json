@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T03:18:35.533Z",
+  "generatedAt": "2026-08-06T11:26:07.658Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,11 +12,19 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 9,
-    "totalSignals": 40,
+    "totalSignals": 42,
     "topRisks": [
       {
         "name": "상보",
         "score": 95,
+        "signals": [
+          "대주주변경",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "수성웹툰",
+        "score": 55,
         "signals": [
           "대주주변경",
           "상장폐지위험"
@@ -47,13 +55,6 @@
       },
       {
         "name": "이스트에이드",
-        "score": 35,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "수성웹툰",
         "score": 35,
         "signals": [
           "상장폐지위험"
