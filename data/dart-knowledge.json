@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T13:06:14.957Z",
+  "generatedAt": "2026-08-06T03:18:35.533Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,75 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 0,
-    "totalSignals": 0,
-    "topRisks": []
+    "highRiskCount": 9,
+    "totalSignals": 40,
+    "topRisks": [
+      {
+        "name": "상보",
+        "score": 95,
+        "signals": [
+          "대주주변경",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "아이스크림에듀",
+        "score": 45,
+        "signals": [
+          "CB발행",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "이노진",
+        "score": 45,
+        "signals": [
+          "증자/감자",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "에쎈테크",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "이스트에이드",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "수성웹툰",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "옴니시스템",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "성원에너텍",
+        "score": 30,
+        "signals": [
+          "증자/감자"
+        ]
+      },
+      {
+        "name": "HLB제약",
+        "score": 30,
+        "signals": [
+          "증자/감자"
+        ]
+      }
+    ]
   }
 }
