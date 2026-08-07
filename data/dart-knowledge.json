@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T02:59:04.879Z",
+  "generatedAt": "2026-08-07T10:04:49.876Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,13 +12,21 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 9,
-    "totalSignals": 38,
+    "totalSignals": 42,
     "topRisks": [
       {
         "name": "상보",
         "score": 95,
         "signals": [
           "대주주변경",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "이노진",
+        "score": 55,
+        "signals": [
+          "증자/감자",
           "상장폐지위험"
         ]
       },
@@ -35,14 +43,6 @@
         "score": 45,
         "signals": [
           "CB발행",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "이노진",
-        "score": 45,
-        "signals": [
-          "증자/감자",
           "상장폐지위험"
         ]
       },
