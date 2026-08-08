@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T10:04:49.876Z",
+  "generatedAt": "2026-08-08T02:04:15.717Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,22 +11,14 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 9,
-    "totalSignals": 42,
+    "highRiskCount": 11,
+    "totalSignals": 40,
     "topRisks": [
       {
         "name": "상보",
         "score": 95,
         "signals": [
           "대주주변경",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "이노진",
-        "score": 55,
-        "signals": [
-          "증자/감자",
           "상장폐지위험"
         ]
       },
@@ -43,6 +35,28 @@
         "score": 45,
         "signals": [
           "CB발행",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "이노진",
+        "score": 45,
+        "signals": [
+          "증자/감자",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "크린앤사이언스",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "대호에이엘",
+        "score": 35,
+        "signals": [
           "상장폐지위험"
         ]
       },
@@ -69,13 +83,6 @@
       },
       {
         "name": "성원에너텍",
-        "score": 30,
-        "signals": [
-          "증자/감자"
-        ]
-      },
-      {
-        "name": "HLB제약",
         "score": 30,
         "signals": [
           "증자/감자"
