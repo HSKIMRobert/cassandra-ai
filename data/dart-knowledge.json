@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T02:18:50.408Z",
+  "generatedAt": "2026-08-10T10:19:55.043Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,14 +11,22 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 11,
-    "totalSignals": 41,
+    "highRiskCount": 13,
+    "totalSignals": 48,
     "topRisks": [
       {
         "name": "상보",
         "score": 95,
         "signals": [
           "대주주변경",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "대호에이엘",
+        "score": 60,
+        "signals": [
+          "소송/분쟁",
           "상장폐지위험"
         ]
       },
@@ -47,14 +55,24 @@
         ]
       },
       {
-        "name": "크린앤사이언스",
-        "score": 35,
+        "name": "주성코퍼레이션",
+        "score": 40,
         "signals": [
-          "상장폐지위험"
+          "대주주변경",
+          "CB발행",
+          "증자/감자"
         ]
       },
       {
-        "name": "대호에이엘",
+        "name": "아미코젠",
+        "score": 35,
+        "signals": [
+          "소송/분쟁",
+          "증자/감자"
+        ]
+      },
+      {
+        "name": "크린앤사이언스",
         "score": 35,
         "signals": [
           "상장폐지위험"
@@ -72,20 +90,6 @@
         "score": 35,
         "signals": [
           "상장폐지위험"
-        ]
-      },
-      {
-        "name": "옴니시스템",
-        "score": 35,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "성원에너텍",
-        "score": 30,
-        "signals": [
-          "증자/감자"
         ]
       }
     ]
