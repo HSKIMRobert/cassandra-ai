@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-09T09:42:22.607Z",
+  "generatedAt": "2026-08-10T02:18:50.407Z",
   "period": {
-    "from": "20260802",
-    "to": "20260809"
+    "from": "20260803",
+    "to": "20260810"
   },
   "totalCompanies": 91,
-  "totalDisclosures": 147,
+  "totalDisclosures": 148,
   "rules": [
     {
       "key": "NAME_CHANGE",
@@ -1238,6 +1238,35 @@
       ]
     },
     {
+      "stockCode": "124500",
+      "corpCode": "00620868",
+      "name": "아이티센글로벌",
+      "totalDisclosures": 2,
+      "signals": [
+        {
+          "rule": "CB리픽싱",
+          "weight": 15,
+          "count": 1,
+          "latestDate": "2026-08-10"
+        }
+      ],
+      "riskScore": 15,
+      "recentDisclosures": [
+        {
+          "date": "20260810",
+          "rceptNo": "20260810900127",
+          "title": "전환가액의조정              (제16회차)",
+          "type": "I"
+        },
+        {
+          "date": "20260806",
+          "rceptNo": "20260806900366",
+          "title": "[기재정정]타인에대한채무보증결정              ",
+          "type": "I"
+        }
+      ]
+    },
+    {
       "stockCode": "101400",
       "corpCode": "00641393",
       "name": "엔시트론",
@@ -1791,22 +1820,6 @@
           "date": "20260807",
           "rceptNo": "20260807900292",
           "title": "임시주주총회결과              ",
-          "type": "I"
-        }
-      ]
-    },
-    {
-      "stockCode": "124500",
-      "corpCode": "00620868",
-      "name": "아이티센글로벌",
-      "totalDisclosures": 1,
-      "signals": [],
-      "riskScore": 0,
-      "recentDisclosures": [
-        {
-          "date": "20260806",
-          "rceptNo": "20260806900366",
-          "title": "[기재정정]타인에대한채무보증결정              ",
           "type": "I"
         }
       ]
