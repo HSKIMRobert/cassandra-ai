@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T02:11:39.676Z",
+  "generatedAt": "2026-08-11T10:04:12.041Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,22 +11,30 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 12,
-    "totalSignals": 46,
+    "highRiskCount": 15,
+    "totalSignals": 51,
     "topRisks": [
+      {
+        "name": "대호에이엘",
+        "score": 85,
+        "signals": [
+          "소송/분쟁",
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "서한",
+        "score": 80,
+        "signals": [
+          "CB발행",
+          "상장폐지위험"
+        ]
+      },
       {
         "name": "상보",
         "score": 75,
         "signals": [
           "대주주변경",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "대호에이엘",
-        "score": 60,
-        "signals": [
-          "소송/분쟁",
           "상장폐지위험"
         ]
       },
@@ -64,6 +72,13 @@
         ]
       },
       {
+        "name": "신라섬유",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
         "name": "아미코젠",
         "score": 35,
         "signals": [
@@ -73,20 +88,6 @@
       },
       {
         "name": "크린앤사이언스",
-        "score": 35,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "에쎈테크",
-        "score": 35,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "이스트에이드",
         "score": 35,
         "signals": [
           "상장폐지위험"
