@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T10:19:55.043Z",
+  "generatedAt": "2026-08-11T02:11:39.676Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,12 +11,12 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 13,
-    "totalSignals": 48,
+    "highRiskCount": 12,
+    "totalSignals": 46,
     "topRisks": [
       {
         "name": "상보",
-        "score": 95,
+        "score": 75,
         "signals": [
           "대주주변경",
           "상장폐지위험"
@@ -28,6 +28,15 @@
         "signals": [
           "소송/분쟁",
           "상장폐지위험"
+        ]
+      },
+      {
+        "name": "주성코퍼레이션",
+        "score": 60,
+        "signals": [
+          "대주주변경",
+          "CB발행",
+          "증자/감자"
         ]
       },
       {
@@ -52,15 +61,6 @@
         "signals": [
           "증자/감자",
           "상장폐지위험"
-        ]
-      },
-      {
-        "name": "주성코퍼레이션",
-        "score": 40,
-        "signals": [
-          "대주주변경",
-          "CB발행",
-          "증자/감자"
         ]
       },
       {
