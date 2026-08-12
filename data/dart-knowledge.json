@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T02:29:44.462Z",
+  "generatedAt": "2026-08-12T10:08:22.701Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,7 +12,7 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 14,
-    "totalSignals": 41,
+    "totalSignals": 46,
     "topRisks": [
       {
         "name": "서한",
@@ -63,6 +63,14 @@
         ]
       },
       {
+        "name": "엔피",
+        "score": 45,
+        "signals": [
+          "증자/감자",
+          "상장폐지위험"
+        ]
+      },
+      {
         "name": "상보",
         "score": 40,
         "signals": [
@@ -78,13 +86,6 @@
       },
       {
         "name": "신라섬유",
-        "score": 35,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "크린앤사이언스",
         "score": 35,
         "signals": [
           "상장폐지위험"
