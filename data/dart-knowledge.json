@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T02:31:01.076Z",
+  "generatedAt": "2026-08-13T10:09:34.072Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,14 +11,23 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 7,
-    "totalSignals": 36,
+    "highRiskCount": 9,
+    "totalSignals": 41,
     "topRisks": [
       {
         "name": "대호에이엘",
-        "score": 50,
+        "score": 75,
         "signals": [
           "소송/분쟁"
+        ]
+      },
+      {
+        "name": "엔시트론",
+        "score": 50,
+        "signals": [
+          "소송/분쟁",
+          "CB리픽싱",
+          "증자/감자"
         ]
       },
       {
@@ -63,6 +72,13 @@
         "score": 35,
         "signals": [
           "상장폐지위험"
+        ]
+      },
+      {
+        "name": "코아스",
+        "score": 30,
+        "signals": [
+          "CB발행"
         ]
       }
     ]
