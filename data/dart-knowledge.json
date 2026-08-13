@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T10:08:22.701Z",
+  "generatedAt": "2026-08-13T02:31:01.076Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,34 +11,9 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 14,
-    "totalSignals": 46,
+    "highRiskCount": 7,
+    "totalSignals": 36,
     "topRisks": [
-      {
-        "name": "서한",
-        "score": 80,
-        "signals": [
-          "CB발행",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "주성코퍼레이션",
-        "score": 60,
-        "signals": [
-          "대주주변경",
-          "CB발행",
-          "증자/감자"
-        ]
-      },
-      {
-        "name": "수성웹툰",
-        "score": 55,
-        "signals": [
-          "대주주변경",
-          "상장폐지위험"
-        ]
-      },
       {
         "name": "대호에이엘",
         "score": 50,
@@ -47,18 +22,10 @@
         ]
       },
       {
-        "name": "아이스크림에듀",
+        "name": "서한",
         "score": 45,
         "signals": [
           "CB발행",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "이노진",
-        "score": 45,
-        "signals": [
-          "증자/감자",
           "상장폐지위험"
         ]
       },
@@ -71,21 +38,28 @@
         ]
       },
       {
-        "name": "상보",
+        "name": "DSR",
         "score": 40,
         "signals": [
           "대주주변경"
         ]
       },
       {
-        "name": "국일신동",
+        "name": "주성코퍼레이션",
+        "score": 40,
+        "signals": [
+          "대주주변경"
+        ]
+      },
+      {
+        "name": "신라섬유",
         "score": 35,
         "signals": [
           "상장폐지위험"
         ]
       },
       {
-        "name": "신라섬유",
+        "name": "크린앤사이언스",
         "score": 35,
         "signals": [
           "상장폐지위험"
