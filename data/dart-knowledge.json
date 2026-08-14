@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T10:09:34.072Z",
+  "generatedAt": "2026-08-14T02:30:08.889Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,10 +12,17 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 9,
-    "totalSignals": 41,
+    "totalSignals": 38,
     "topRisks": [
       {
         "name": "대호에이엘",
+        "score": 75,
+        "signals": [
+          "소송/분쟁"
+        ]
+      },
+      {
+        "name": "고려아연",
         "score": 75,
         "signals": [
           "소송/분쟁"
@@ -35,14 +42,6 @@
         "score": 45,
         "signals": [
           "CB발행",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "엔피",
-        "score": 45,
-        "signals": [
-          "증자/감자",
           "상장폐지위험"
         ]
       },
