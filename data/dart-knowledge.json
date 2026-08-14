@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T02:30:08.889Z",
+  "generatedAt": "2026-08-14T10:07:51.429Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 9,
-    "totalSignals": 38,
+    "highRiskCount": 10,
+    "totalSignals": 40,
     "topRisks": [
       {
         "name": "대호에이엘",
@@ -24,6 +24,13 @@
       {
         "name": "고려아연",
         "score": 75,
+        "signals": [
+          "소송/분쟁"
+        ]
+      },
+      {
+        "name": "CJ CGV",
+        "score": 50,
         "signals": [
           "소송/분쟁"
         ]
