@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T10:07:51.429Z",
+  "generatedAt": "2026-08-15T01:40:08.288Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 10,
-    "totalSignals": 40,
+    "highRiskCount": 8,
+    "totalSignals": 34,
     "topRisks": [
       {
         "name": "대호에이엘",
@@ -36,34 +36,17 @@
         ]
       },
       {
-        "name": "엔시트론",
-        "score": 50,
-        "signals": [
-          "소송/분쟁",
-          "CB리픽싱",
-          "증자/감자"
-        ]
-      },
-      {
-        "name": "서한",
-        "score": 45,
-        "signals": [
-          "CB발행",
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "DSR",
-        "score": 40,
-        "signals": [
-          "대주주변경"
-        ]
-      },
-      {
         "name": "주성코퍼레이션",
         "score": 40,
         "signals": [
           "대주주변경"
+        ]
+      },
+      {
+        "name": "와이즈버즈",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
         ]
       },
       {
@@ -74,10 +57,11 @@
         ]
       },
       {
-        "name": "크린앤사이언스",
+        "name": "엔시트론",
         "score": 35,
         "signals": [
-          "상장폐지위험"
+          "소송/분쟁",
+          "증자/감자"
         ]
       },
       {
