@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T09:44:01.749Z",
+  "generatedAt": "2026-08-18T01:40:36.932Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,19 +11,19 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 8,
-    "totalSignals": 34,
+    "highRiskCount": 7,
+    "totalSignals": 28,
     "topRisks": [
       {
-        "name": "대호에이엘",
+        "name": "고려아연",
         "score": 75,
         "signals": [
           "소송/분쟁"
         ]
       },
       {
-        "name": "고려아연",
-        "score": 75,
+        "name": "대호에이엘",
+        "score": 50,
         "signals": [
           "소송/분쟁"
         ]
@@ -33,13 +33,6 @@
         "score": 50,
         "signals": [
           "소송/분쟁"
-        ]
-      },
-      {
-        "name": "주성코퍼레이션",
-        "score": 40,
-        "signals": [
-          "대주주변경"
         ]
       },
       {
