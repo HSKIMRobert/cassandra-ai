@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T01:40:36.932Z",
+  "generatedAt": "2026-08-18T09:36:49.031Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,14 +11,21 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 7,
-    "totalSignals": 28,
+    "highRiskCount": 12,
+    "totalSignals": 38,
     "topRisks": [
       {
         "name": "고려아연",
         "score": 75,
         "signals": [
           "소송/분쟁"
+        ]
+      },
+      {
+        "name": "신라섬유",
+        "score": 70,
+        "signals": [
+          "상장폐지위험"
         ]
       },
       {
@@ -36,6 +43,14 @@
         ]
       },
       {
+        "name": "이브이첨단소재",
+        "score": 45,
+        "signals": [
+          "CB발행",
+          "상장폐지위험"
+        ]
+      },
+      {
         "name": "와이즈버즈",
         "score": 35,
         "signals": [
@@ -43,7 +58,14 @@
         ]
       },
       {
-        "name": "신라섬유",
+        "name": "대신정보통신",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "진영",
         "score": 35,
         "signals": [
           "상장폐지위험"
@@ -58,10 +80,11 @@
         ]
       },
       {
-        "name": "코아스",
+        "name": "루멘스",
         "score": 30,
         "signals": [
-          "CB발행"
+          "대주주변경",
+          "증자/감자"
         ]
       }
     ]
