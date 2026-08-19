@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T09:36:49.031Z",
+  "generatedAt": "2026-08-19T01:42:23.327Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,26 +11,12 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 12,
-    "totalSignals": 38,
+    "highRiskCount": 11,
+    "totalSignals": 33,
     "topRisks": [
       {
         "name": "고려아연",
         "score": 75,
-        "signals": [
-          "소송/분쟁"
-        ]
-      },
-      {
-        "name": "신라섬유",
-        "score": 70,
-        "signals": [
-          "상장폐지위험"
-        ]
-      },
-      {
-        "name": "대호에이엘",
-        "score": 50,
         "signals": [
           "소송/분쟁"
         ]
@@ -52,6 +38,13 @@
       },
       {
         "name": "와이즈버즈",
+        "score": 35,
+        "signals": [
+          "상장폐지위험"
+        ]
+      },
+      {
+        "name": "신라섬유",
         "score": 35,
         "signals": [
           "상장폐지위험"
@@ -85,6 +78,13 @@
         "signals": [
           "대주주변경",
           "증자/감자"
+        ]
+      },
+      {
+        "name": "코아스",
+        "score": 30,
+        "signals": [
+          "CB발행"
         ]
       }
     ]
