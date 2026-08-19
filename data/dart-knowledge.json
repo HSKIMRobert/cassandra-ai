@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T01:42:23.327Z",
+  "generatedAt": "2026-08-19T09:37:02.482Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -11,8 +11,8 @@
   },
   "companies": {},
   "dailyReport": {
-    "highRiskCount": 11,
-    "totalSignals": 33,
+    "highRiskCount": 12,
+    "totalSignals": 39,
     "topRisks": [
       {
         "name": "고려아연",
@@ -34,6 +34,13 @@
         "signals": [
           "CB발행",
           "상장폐지위험"
+        ]
+      },
+      {
+        "name": "본느",
+        "score": 40,
+        "signals": [
+          "횡령/배임"
         ]
       },
       {
@@ -78,13 +85,6 @@
         "signals": [
           "대주주변경",
           "증자/감자"
-        ]
-      },
-      {
-        "name": "코아스",
-        "score": 30,
-        "signals": [
-          "CB발행"
         ]
       }
     ]
