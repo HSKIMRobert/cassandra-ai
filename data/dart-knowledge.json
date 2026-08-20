@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T01:41:28.436Z",
+  "generatedAt": "2026-08-20T09:37:17.966Z",
   "totalCompanies": 0,
   "totalDisclosures": 0,
   "categories": {
@@ -12,8 +12,17 @@
   "companies": {},
   "dailyReport": {
     "highRiskCount": 11,
-    "totalSignals": 35,
+    "totalSignals": 38,
     "topRisks": [
+      {
+        "name": "본느",
+        "score": 85,
+        "signals": [
+          "소송/분쟁",
+          "CB발행",
+          "횡령/배임"
+        ]
+      },
       {
         "name": "고려아연",
         "score": 75,
@@ -34,13 +43,6 @@
         "signals": [
           "CB발행",
           "상장폐지위험"
-        ]
-      },
-      {
-        "name": "본느",
-        "score": 40,
-        "signals": [
-          "횡령/배임"
         ]
       },
       {
